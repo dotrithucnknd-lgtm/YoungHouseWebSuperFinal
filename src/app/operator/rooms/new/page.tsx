@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { ArrowLeftIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -52,7 +52,7 @@ export default function NewRoomUnitPage() {
         data.map((s: any) => ({
           id: s.id,
           name: s.name,
-          price: s.price,
+          price: s.unit_price,
           unit: s.unit
         }))
       );
@@ -74,7 +74,7 @@ export default function NewRoomUnitPage() {
       room_id: form.room_id || null,
       name: newService.name.trim(),
       type: newService.type,
-      price: parseFloat(newService.price),
+      unit_price: parseFloat(newService.price),
       unit: newService.unit,
     }).select().single();
 
@@ -84,7 +84,7 @@ export default function NewRoomUnitPage() {
     }
 
     if (data) {
-      setSelectedServices(prev => [...prev, { id: data.id, name: data.name, price: data.price, unit: data.unit }]);
+      setSelectedServices(prev => [...prev, { id: data.id, name: data.name, price: data.unit_price, unit: data.unit }]);
       setServices(prev => [...prev, data]);
     }
 
@@ -129,7 +129,35 @@ export default function NewRoomUnitPage() {
         await supabase.from("room_unit_services").insert(serviceInserts);
       }
 
-      alert("Thêm phòng thành công!");
+      // Fetch house title to construct the username
+      const { data: houseData } = await supabase
+        .from("rooms")
+        .select("title")
+        .eq("id", form.room_id)
+        .single();
+      const houseTitle = houseData?.title || "";
+
+      // Call API route to create room account using service role key on server
+      let accountMsg = "";
+      try {
+        const accResponse = await fetch('/api/rooms/create-account', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            roomUnitId: data.id,
+            roomName: data.name,
+            houseTitle: houseTitle,
+          })
+        });
+        const accResult = await accResponse.json();
+        if (accResponse.ok && accResult.success) {
+          accountMsg = `\n\nĐã tự động tạo tài khoản phòng:\nTài khoản: ${accResult.username}\nMật khẩu: ${accResult.password}`;
+        }
+      } catch (accErr) {
+        console.error("Failed to auto-create room account:", accErr);
+      }
+
+      alert(`Thêm phòng thành công!${accountMsg}`);
       router.push("/operator/rooms");
     } catch (err: any) {
       alert("Lỗi: " + (err.message || "Không thể tạo phòng"));

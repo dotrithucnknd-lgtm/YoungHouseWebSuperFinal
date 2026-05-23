@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { FC, useState } from "react";
 import facebookSvg from "@/images/Facebook.svg";
@@ -43,7 +43,11 @@ const PageLogin: FC<PageLoginProps> = ({}) => {
     setError(null);
 
     try {
-      const { user, error: loginError } = await loginUser(formData);
+      const finalCredentials = { ...formData };
+      if (finalCredentials.email && !finalCredentials.email.includes("@")) {
+        finalCredentials.email = `${finalCredentials.email.trim().toLowerCase()}@younghouse.vn`;
+      }
+      const { user, error: loginError } = await loginUser(finalCredentials);
       
       if (loginError) {
         setError(loginError);
@@ -58,6 +62,8 @@ const PageLogin: FC<PageLoginProps> = ({}) => {
             router.push('/operator');
           } else if (user.role === 'admin') {
             router.push('/admin');
+          } else if (user.role === 'tenant') {
+            router.push('/tenant');
           } else {
             router.push('/');
           }
@@ -152,14 +158,14 @@ const PageLogin: FC<PageLoginProps> = ({}) => {
           <form className="grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
             <label className="block">
               <span className="text-neutral-800 dark:text-neutral-200">
-                Địa chỉ email
+                Tài khoản hoặc Email
               </span>
               <Input
-                type="email"
+                type="text"
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                placeholder="email@example.com"
+                placeholder="Ví dụ: P101Yh1 hoặc email@example.com"
                 className="mt-1"
                 required
               />

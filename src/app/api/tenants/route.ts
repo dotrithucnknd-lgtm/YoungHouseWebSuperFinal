@@ -1,5 +1,6 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabaseClient';
+import crypto from 'crypto';
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,28 +31,31 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if phone already exists
+    // Check if tenant already exists in profiles
     const { data: existingProfile } = await supabase
       .from('profiles')
-      .select('id')
+      .select('*')
       .eq('phone', phone)
-      .single();
+      .maybeSingle();
 
     if (existingProfile) {
       return NextResponse.json(
-        { error: 'Số điện thoại đã tồn tại trong hệ thống' },
+        { error: 'Số điện thoại này đã được đăng ký trong hệ thống' },
         { status: 400 }
       );
     }
+
+    const profileId = crypto.randomUUID();
 
     // Create profile with generated UUID
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .insert({
+        id: profileId,
         name,
         phone,
-        DoB: DoB || null,
-        role: 'renter',
+        dob: DoB || null,
+        role: 'tenant',
       })
       .select()
       .single();

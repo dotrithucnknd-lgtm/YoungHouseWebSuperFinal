@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { ArrowLeftIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -94,7 +94,7 @@ export default function EditRoomUnitPage() {
           .map(s => ({
             id: s.id,
             name: s.name,
-            price: s.price,
+            price: s.unit_price,
             unit: s.unit
           }));
         setSelectedServices(assignedServices);
@@ -121,7 +121,7 @@ export default function EditRoomUnitPage() {
       room_id: form.room_id || null,
       name: newService.name.trim(),
       type: newService.type,
-      price: parseFloat(newService.price),
+      unit_price: parseFloat(newService.price),
       unit: newService.unit,
     }).select().single();
 
@@ -131,7 +131,7 @@ export default function EditRoomUnitPage() {
     }
 
     if (data) {
-      setSelectedServices(prev => [...prev, { id: data.id, name: data.name, price: data.price, unit: data.unit }]);
+      setSelectedServices(prev => [...prev, { id: data.id, name: data.name, price: data.unit_price, unit: data.unit }]);
       setServices(prev => [...prev, data]);
     }
 
@@ -148,7 +148,7 @@ export default function EditRoomUnitPage() {
     if (isSelected) {
       setSelectedServices(prev => prev.filter(s => s.id !== svc.id));
     } else {
-      setSelectedServices(prev => [...prev, { id: svc.id, name: svc.name, price: svc.price, unit: svc.unit }]);
+      setSelectedServices(prev => [...prev, { id: svc.id, name: svc.name, price: svc.unit_price, unit: svc.unit }]);
     }
   };
 
@@ -330,7 +330,7 @@ export default function EditRoomUnitPage() {
                         className="rounded text-green-600 focus:ring-green-500 h-4 w-4" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-neutral-900 dark:text-white truncate">{svc.name}</p>
-                        <p className="text-xs text-neutral-500">{Number(svc.price).toLocaleString("vi-VN")}đ / {svc.unit}</p>
+                        <p className="text-xs text-neutral-500">{Number(svc.unit_price).toLocaleString("vi-VN")}đ / {svc.unit}</p>
                       </div>
                     </label>
                   );
