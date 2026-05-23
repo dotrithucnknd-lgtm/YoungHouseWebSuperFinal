@@ -189,6 +189,16 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/home-2',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/listing-stay-detail',
+        destination: '/phong-tro-detail',
+        permanent: false,
+      },
+      {
         source: '/post',
         destination: '/blog',
         permanent: true,

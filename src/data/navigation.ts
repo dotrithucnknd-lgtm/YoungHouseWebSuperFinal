@@ -150,7 +150,6 @@ export const NAVIGATION_DEMO_2: NavItemType[] = [
         name: "Stay listings (map)",
       },
       { id: "nav2-phong-tro-detail", href: "/phong-tro-detail", name: "Stay detail" },
-
     ],
   },
   {
