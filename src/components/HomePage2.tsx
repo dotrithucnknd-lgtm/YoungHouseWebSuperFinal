@@ -107,41 +107,20 @@ export default function HomePage2() {
           <BackgroundSection />
           <SectionGridFeatureProperty />
         </div>
-        <SectionHowItWork
-          data={[
-            {
-              id: 1,
-              img: HIW1img,
-              imgDark: HIW1imgDark,
-              title: "Smart search",
-              desc: "Name the area or type of home you are looking for the search bar. Our app will find you the perfect match.",
-            },
-            {
-              id: 2,
-              img: HIW2img,
-              imgDark: HIW2imgDark,
-              title: "Choose property",
-              desc: "From the number of options our app will provide, you can select any property that you like to explore.",
-            },
-            {
-              id: 3,
-              img: HIW3img,
-              imgDark: HIW3imgDark,
-              title: "Book you property",
-              desc: "Find a home or space from our search bar. Enter your specific location, property type and price range.",
-            },
-          ]}
-        />
 
-      
+
 
 
         <SectionWhyChooseYoungHouse />
 
-    
 
-        
 
+
+
+
+
+
+        <SectionHomeFAQ />
 
         <SectionSliderNewCategories
           heading="Explore by types of stays"
@@ -149,10 +128,6 @@ export default function HomePage2() {
           categoryCardType="card5"
           itemPerRow={5}
         />
-
-        <SectionHomeFAQ />
-
-        <SectionSubscribe2 />
       </div>
     </main>
   );

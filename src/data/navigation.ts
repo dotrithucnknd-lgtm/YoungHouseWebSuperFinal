@@ -1,4 +1,4 @@
-﻿import { MegamenuItem, NavItemType } from "@/shared/Navigation/NavigationItem";
+import { MegamenuItem, NavItemType } from "@/shared/Navigation/NavigationItem";
 import ncNanoId from "@/utils/ncNanoId";
 import { Route } from "@/routers/types";
 import __megamenu from "./jsons/__megamenu.json";
@@ -99,30 +99,31 @@ export const NAVIGATION_DEMO: NavItemType[] = [
     id: "nav-home",
     href: "/",
     name: "Home",
-   
+
   },
   {
     id: "nav-phong-tro",
     href: "/phong-tro",
     name: "Nhà trọ, phòng trọ",
-    
+
   },
   {
-    id: "nav-pass-phong",
-    href: "/pass-phong-public",
-    name: "Pass Phòng",
-    
+    id: "nav-wishlist",
+    href: "/wishlist",
+    name: "Yêu thích",
+
   },
   {
-    id: "nav-video-review",
-    href: "/video-review",
-    name: "Video review",
+    id: "nav-tuyen-dung",
+    href: "/tuyen-dung",
+    name: "Tuyển dụng",
+
   },
   {
-    id: "nav-about",
-    href: "/about",
-    name: "Về chúng tớ",
-    
+    id: "nav-contact",
+    href: "/contact",
+    name: "Liên hệ",
+
   },
 
 ];
