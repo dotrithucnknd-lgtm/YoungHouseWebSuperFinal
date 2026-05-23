@@ -26,6 +26,8 @@ import rightImgPng from "@/images/our-features-2.png";
 import SectionGridFeatureProperty from "@/app/(home)/SectionGridFeatureProperty";
 import SectionDowloadApp from "@/app/(home)/SectionDowloadApp";
 import SectionHero2 from "@/app/(server-components)/SectionHero2";
+import SectionWhyChooseYoungHouse from "@/components/SectionWhyChooseYoungHouse";
+import SectionHomeFAQ from "@/components/SectionHomeFAQ";
 import Image from "next/image";
 
 const DEMO_CATS_2: TaxonomyType[] = [
@@ -100,29 +102,11 @@ export default function HomePage2() {
       <div className="container relative space-y-24 mb-24 lg:space-y-28 lg:mb-28">
         <SectionHero2 className="" />
 
-        <div className="ncSectionLogos grid grid-cols-3 lg:grid-cols-5 gap-5 sm:gap-16">
-          <div className="flex items-end justify-center">
-            <Image className="block dark:hidden" src={logo1} alt="logo1" />
-            <Image className="hidden dark:block" src={logo1Dark} alt="logo1" />
-          </div>
-          <div className="flex items-end justify-center">
-            <Image className="block dark:hidden" src={logo4} alt="logo4" />
-            <Image className="hidden dark:block" src={logo4Dark} alt="logo4" />
-          </div>
-          <div className="flex items-end justify-center">
-            <Image className="block dark:hidden" src={logo2} alt="logo2" />
-            <Image className="hidden dark:block" src={logo2Dark} alt="logo2" />
-          </div>
-          <div className="flex items-end justify-center">
-            <Image className="block dark:hidden" src={logo3} alt="logo3" />
-            <Image className="hidden dark:block" src={logo3Dark} alt="logo3" />
-          </div>
-          <div className="flex items-end justify-center">
-            <Image className="block dark:hidden" src={logo5} alt="logo5" />
-            <Image className="hidden dark:block" src={logo5Dark} alt="logo5" />
-          </div>
-        </div>
 
+        <div className="relative py-16">
+          <BackgroundSection />
+          <SectionGridFeatureProperty />
+        </div>
         <SectionHowItWork
           data={[
             {
@@ -149,27 +133,15 @@ export default function HomePage2() {
           ]}
         />
 
-        <div className="relative py-16">
-          <BackgroundSection />
-          <SectionGridFeatureProperty />
-        </div>
+      
 
-        <SectionOurFeatures type="type2" rightImg={rightImgPng} />
 
-        <SectionDowloadApp />
+        <SectionWhyChooseYoungHouse />
 
-        <SectionSliderNewCategories
-          categories={DEMO_CATS_2}
-          categoryCardType="card4"
-          itemPerRow={4}
-          heading="Suggestions for discovery"
-          subHeading="Popular places to stay that Chisfis recommends for you"
-        />
+    
 
-        <div className="relative py-16">
-          <BackgroundSection className="bg-neutral-100 dark:bg-black dark:bg-opacity-20 " />
-          <SectionGridAuthorBox boxCard="box2" />
-        </div>
+        
+
 
         <SectionSliderNewCategories
           heading="Explore by types of stays"
@@ -177,6 +149,8 @@ export default function HomePage2() {
           categoryCardType="card5"
           itemPerRow={5}
         />
+
+        <SectionHomeFAQ />
 
         <SectionSubscribe2 />
       </div>
