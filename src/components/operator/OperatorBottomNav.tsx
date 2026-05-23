@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import Link from "next/link";
@@ -112,3 +112,4 @@ const OperatorBottomNav: React.FC<OperatorBottomNavProps> = ({ onMenuClick }) =>
 };
 
 export default OperatorBottomNav;
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { Fragment, useEffect, useMemo, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
@@ -360,3 +360,4 @@ const AdminManageHotRooms: React.FC<AdminManageHotRoomsProps> = ({
 };
 
 export default AdminManageHotRooms;
+

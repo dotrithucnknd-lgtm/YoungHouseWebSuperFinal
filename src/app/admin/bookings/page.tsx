@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -341,4 +341,5 @@ const AdminBookingsPage = () => {
 };
 
 export default AdminBookingsPage;
+
 

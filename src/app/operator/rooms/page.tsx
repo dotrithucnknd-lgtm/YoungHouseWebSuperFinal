@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { MagnifyingGlassIcon, PlusIcon, ArrowPathIcon, ChevronDownIcon, ChevronUpIcon, LightBulbIcon, TrashIcon, UserIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
@@ -385,4 +385,5 @@ export default function RoomsPage() {
     </div>
   );
 }
+
 

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { FC, useEffect, useState, ReactNode } from "react";
 import Heading from "@/shared/Heading";
@@ -65,3 +65,4 @@ const HeaderFilter: FC<HeaderFilterProps> = ({
 };
 
 export default HeaderFilter;
+

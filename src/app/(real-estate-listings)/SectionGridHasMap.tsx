@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { FC, useState } from "react";
 import AnyReactComponent from "@/components/AnyReactComponent/AnyReactComponent";
@@ -111,3 +111,4 @@ const SectionGridHasMap: FC<SectionGridHasMapProps> = () => {
 };
 
 export default SectionGridHasMap;
+

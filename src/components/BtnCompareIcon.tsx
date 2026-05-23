@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { FC, useState } from "react";
 import { useCompare } from "@/contexts/CompareContext";
@@ -114,4 +114,5 @@ const BtnCompareIcon: FC<BtnCompareIconProps> = ({
 };
 
 export default BtnCompareIcon;
+
 

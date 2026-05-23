@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Heading from "@/shared/Heading";
 import React, { FC, useState } from "react";
@@ -20,7 +20,7 @@ const DEMO_DATA = [
     clientName: "Khách hàng YoungHouse 2",
     clientAddress: "62 Phú Hữu, Tân Xã, Thạch Thất, Hà Nội",
     content:
-      "Nhà trọ này hoàn toàn giống với hình ảnh đăng trên Hoà Lạc Có Trọ Xinh. Dịch vụ tuyệt vời, chúng tôi có một sống tuyệt vời!",
+      "Nhà trọ này hoàn toàn giống với hình ảnh đăng trên YoungHouse Hòa Lạc. Dịch vụ tuyệt vời, chúng tôi có một sống tuyệt vời!",
   },
   {
     id: 2,
@@ -81,8 +81,8 @@ const SectionClientSay: FC<SectionClientSayProps> = ({
 
   return (
     <div className={`nc-SectionClientSay relative ${className} `}>
-      <Heading desc="Để xem những gì mọi người nói về Hoà Lạc Có Trọ Xinh" isCenter>
-        Những gì mọi người nói về Hoà Lạc Có Trọ Xinh
+      <Heading desc="Để xem những gì mọi người nói về YoungHouse Hòa Lạc" isCenter>
+        Những gì mọi người nói về YoungHouse Hòa Lạc
       </Heading>
       <div className="relative md:mb-16 max-w-2xl mx-auto">
         {renderIllustration()}
@@ -149,3 +149,6 @@ const SectionClientSay: FC<SectionClientSayProps> = ({
 };
 
 export default SectionClientSay;
+
+
+

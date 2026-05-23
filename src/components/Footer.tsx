@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Logo from "@/shared/Logo";
 import SocialsList1 from "@/shared/SocialsList1";
@@ -38,9 +38,9 @@ const widgetMenus: WidgetFooterMenu[] = [
     id: "2",
     title: "Kết nối với ",
     menus: [
-      { href: "https://www.facebook.com/hoalaccotroxinh/", label: "Facebook" },
-      { href: "https://www.instagram.com/hoalaccotroxinh/", label: "Instagram" },
-      { href: "https://www.tiktok.com/@hoalaccotroxinh", label: "TikTok" },
+      { href: "https://www.facebook.com/younghousehoalac/", label: "Facebook" },
+      { href: "https://www.instagram.com/younghousehoalac/", label: "Instagram" },
+      { href: "https://www.tiktok.com/@younghousehoalac", label: "TikTok" },
       { href: "https://zalo.me/0372858098", label: "Zalo" },
     ],
   },
@@ -101,3 +101,5 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
+
+

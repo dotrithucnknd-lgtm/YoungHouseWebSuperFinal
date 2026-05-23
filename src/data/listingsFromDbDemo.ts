@@ -1,4 +1,4 @@
-import db from "./jsons/dbdemo.json";
+﻿import db from "./jsons/dbdemo.json";
 import { StayDataType } from "./types";
 import { Route } from "@/routers/types";
 
@@ -50,5 +50,6 @@ export function loadDbDemoListings(limit?: number): StayDataType[] {
 
   return typeof limit === "number" ? listings.slice(0, limit) : listings;
 }
+
 
 

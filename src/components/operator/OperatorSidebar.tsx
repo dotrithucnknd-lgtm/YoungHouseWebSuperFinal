@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect } from "react";
 import Link from "next/link";
@@ -257,7 +257,7 @@ const OperatorSidebar: React.FC<OperatorSidebarProps> = ({ isMobileOpen = false,
       {/* Support Section */}
       <div className="border-t border-neutral-200 dark:border-neutral-800 px-4 py-4">
         <p className="text-xs font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider mb-3">
-          Hỗ trợ riêng cho bạn
+          Liên hệ đội ngũ IT
         </p>
         <div className="flex items-center gap-3 p-3 rounded-lg border" style={{ backgroundColor: 'rgba(198,130,75,0.08)', borderColor: 'rgba(198,130,75,0.2)' }}>
           <div className="w-10 h-10 bg-primary-500 rounded-full flex items-center justify-center text-white flex-shrink-0">
@@ -267,7 +267,7 @@ const OperatorSidebar: React.FC<OperatorSidebarProps> = ({ isMobileOpen = false,
           </div>
           <div className="min-w-0">
             <p className="text-sm font-semibold text-neutral-900 dark:text-white truncate">
-              QUÁCH XUÂN BÁCH
+              ĐỘI NGŨ IT
             </p>
             <a
               href="tel:0372858098"
@@ -277,6 +277,15 @@ const OperatorSidebar: React.FC<OperatorSidebarProps> = ({ isMobileOpen = false,
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
               </svg>
               037.2858.098
+            </a>
+            <a
+              href="tel:0834347969"
+              className="text-sm text-primary-600 dark:text-primary-400 font-medium flex items-center gap-1 hover:underline"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              083.4347.969
             </a>
           </div>
         </div>
@@ -311,3 +320,5 @@ const OperatorSidebar: React.FC<OperatorSidebarProps> = ({ isMobileOpen = false,
 };
 
 export default OperatorSidebar;
+
+

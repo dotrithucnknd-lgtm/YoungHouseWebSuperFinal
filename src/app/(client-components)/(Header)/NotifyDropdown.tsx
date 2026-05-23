@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Popover, Transition } from "@headlessui/react";
 import { FC, Fragment, useEffect, useState } from "react";
@@ -242,3 +242,4 @@ const NotifyDropdown: FC<Props> = ({ className = "" }) => {
 };
 
 export default NotifyDropdown;
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -214,3 +214,4 @@ function StatCard({ label, value, icon, color, isText }: {
     </div>
   );
 }
+

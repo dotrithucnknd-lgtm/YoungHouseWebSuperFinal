@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Trích ID video TikTok từ:
  * - URL chia sẻ: https://www.tiktok.com/@user/video/7549...
  * - Iframe embed: .../embed/v2/7549...
@@ -75,3 +75,4 @@ export function buildTikTokPlayerIframeSrc(
 export function buildTikTokEmbedSrc(videoId: string): string {
   return buildTikTokPlayerIframeSrc(videoId);
 }
+

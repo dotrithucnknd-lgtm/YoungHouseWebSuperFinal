@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+﻿import React, { FC } from "react";
 import imagePng from "@/images/hero-right.png";
 import HeroSearchForm from "../(client-components)/(HeroSearchForm)/HeroSearchForm";
 import Image from "next/image";
@@ -39,3 +39,4 @@ const SectionHero: FC<SectionHeroProps> = ({ className = "" }) => {
 };
 
 export default SectionHero;
+

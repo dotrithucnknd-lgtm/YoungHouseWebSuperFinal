@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { FC, useState, useEffect } from "react";
 import { addToWishlist, removeFromWishlist, isInWishlist } from "@/lib/supabaseServices";
@@ -103,3 +103,4 @@ const BtnLikeIcon: FC<BtnLikeIconProps> = ({
 };
 
 export default BtnLikeIcon;
+

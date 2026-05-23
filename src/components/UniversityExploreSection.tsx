@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import { fetchUniversitiesWithRoomCounts, UniversityWithRoomCount } from "@/lib/supabaseServices";

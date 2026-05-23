@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
@@ -446,4 +446,5 @@ export default function NewContractPage() {
     </div>
   );
 }
+
 

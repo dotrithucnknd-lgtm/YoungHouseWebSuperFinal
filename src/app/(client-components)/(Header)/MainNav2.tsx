@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+﻿import React, { FC } from "react";
 import Logo from "@/shared/Logo";
 import MenuBar from "@/shared/MenuBar";
 import LangDropdown from "./LangDropdown";
@@ -59,3 +59,4 @@ const MainNav2: FC<MainNav2Props> = ({ className = "" }) => {
 };
 
 export default MainNav2;
+

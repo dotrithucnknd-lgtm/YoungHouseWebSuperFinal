@@ -1,10 +1,10 @@
-import React from "react";
+﻿import React from "react";
 import BgGlassmorphism from "@/components/BgGlassmorphism";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Điều khoản sử dụng - Trọ Hoà Lạc",
-  description: "Điều khoản sử dụng dịch vụ và quy định dành cho người tìm trọ và chủ trọ tại hệ thống Trọ Hoà Lạc (hoalac.com).",
+  title: "Điều khoản sử dụng - YoungHouse Hòa Lạc",
+  description: "Điều khoản sử dụng dịch vụ và quy định dành cho người tìm trọ và chủ trọ tại hệ thống YoungHouse Hòa Lạc (hoalac.com).",
 };
 
 export default function TermPage() {
@@ -36,7 +36,7 @@ export default function TermPage() {
               Chấp thuận các điều khoản
             </h2>
             <p>
-              Chào mừng bạn đến với <strong>Trọ Hoà Lạc</strong> (trohoalac.com). Bằng cách truy cập, đăng ký tài khoản, đăng tin hoặc sử dụng bất kỳ dịch vụ nào trên website của chúng tôi, bạn đồng ý tuân thủ và chịu sự ràng buộc bởi các điều khoản, điều kiện dưới đây. Nếu bạn không đồng ý với bất kỳ phần nào của các điều khoản này, vui lòng ngừng sử dụng website.
+              Chào mừng bạn đến với <strong>YoungHouse Hòa Lạc</strong> (trohoalac.com). Bằng cách truy cập, đăng ký tài khoản, đăng tin hoặc sử dụng bất kỳ dịch vụ nào trên website của chúng tôi, bạn đồng ý tuân thủ và chịu sự ràng buộc bởi các điều khoản, điều kiện dưới đây. Nếu bạn không đồng ý với bất kỳ phần nào của các điều khoản này, vui lòng ngừng sử dụng website.
             </p>
           </section>
 
@@ -51,7 +51,7 @@ export default function TermPage() {
             <ul className="list-disc pl-6 space-y-2">
               <li>Cung cấp thông tin liên hệ chính xác khi trao đổi với chủ trọ hoặc đặt lịch xem phòng.</li>
               <li>Tự kiểm chứng thực tế tình trạng phòng trọ, chất lượng dịch vụ, hợp đồng và các khoản đặt cọc trực tiếp với chủ trọ trước khi thực hiện bất kỳ giao dịch tài chính nào.</li>
-              <li>Trọ Hoà Lạc chỉ là nền tảng kết nối thông tin trung gian, chúng tôi không chịu trách nhiệm pháp lý cho các tranh chấp tài chính hoặc hợp đồng phát sinh giữa bạn và chủ nhà.</li>
+              <li>YoungHouse Hòa Lạc chỉ là nền tảng kết nối thông tin trung gian, chúng tôi không chịu trách nhiệm pháp lý cho các tranh chấp tài chính hoặc hợp đồng phát sinh giữa bạn và chủ nhà.</li>
             </ul>
           </section>
 
@@ -92,7 +92,7 @@ export default function TermPage() {
               Giới hạn trách nhiệm pháp lý
             </h2>
             <p>
-              Trọ Hoà Lạc nỗ lực tối đa để xác minh thông tin đăng tải, tuy nhiên chúng tôi không thể đảm bảo độ chính xác tuyệt đối 100% của mọi thông tin do người dùng tự đăng.
+              YoungHouse Hòa Lạc nỗ lực tối đa để xác minh thông tin đăng tải, tuy nhiên chúng tôi không thể đảm bảo độ chính xác tuyệt đối 100% của mọi thông tin do người dùng tự đăng.
             </p>
             <p>
               Chúng tôi không chịu trách nhiệm cho bất kỳ tổn thất, thiệt hại trực tiếp hoặc gián tiếp nào (bao gồm mất mát tiền đặt cọc, tranh chấp hợp đồng thuê nhà, sự cố an ninh tại khu trọ) phát sinh từ việc bạn sử dụng các thông tin hoặc liên hệ từ website này.
@@ -119,3 +119,6 @@ export default function TermPage() {
     </div>
   );
 }
+
+
+

@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+﻿import React, { FC } from "react";
 import Heading from "@/shared/Heading";
 
 export interface Statistic {
@@ -35,7 +35,7 @@ const SectionStatistic: FC<SectionStatisticProps> = ({ className = "" }) => {
   return (
     <div className={`nc-SectionStatistic relative ${className}`}>
       <Heading
-        desc="Những điều cốt lõi tụi mình theo đuổi khi xây Hoà Lạc Có Trọ Xinh."
+        desc="Những điều cốt lõi tụi mình theo đuổi khi xây YoungHouse Hòa Lạc."
       >
         🚀 Giá trị cốt lõi
       </Heading>
@@ -59,3 +59,6 @@ const SectionStatistic: FC<SectionStatisticProps> = ({ className = "" }) => {
 };
 
 export default SectionStatistic;
+
+
+

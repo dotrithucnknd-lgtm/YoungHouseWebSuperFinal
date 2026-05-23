@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import { ReactNode } from "react";
@@ -58,3 +58,4 @@ const Heading2: React.FC<Heading2Props> = ({
 };
 
 export default Heading2;
+

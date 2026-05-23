@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from "react";
+﻿import React, { FC, ReactNode } from "react";
 import { DEMO_STAY_LISTINGS } from "@/data/listings";
 import { StayDataType } from "@/data/types";
 import ButtonPrimary from "@/shared/ButtonPrimary";
@@ -50,3 +50,4 @@ const SectionGridFeatureProperty: FC<SectionGridFeaturePropertyProps> = ({
 };
 
 export default SectionGridFeatureProperty;
+

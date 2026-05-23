@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Route } from "@/routers/types";
 import Link from "next/link";
@@ -50,3 +50,4 @@ export const Nav = () => {
     </div>
   );
 };
+

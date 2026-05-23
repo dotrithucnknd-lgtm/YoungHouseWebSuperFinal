@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Upload image with retry logic for schema cache issues
  */
 
@@ -113,3 +113,4 @@ export async function uploadImageWithRetry(
     };
   }
 }
+

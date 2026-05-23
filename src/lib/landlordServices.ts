@@ -1,4 +1,4 @@
-import { supabase } from './supabaseClient';
+﻿import { supabase } from './supabaseClient';
 
 // ==================== INTERFACES ====================
 
@@ -1279,3 +1279,4 @@ export async function deleteTenant(tenantId: string): Promise<{ success: boolean
     return { success: false, error: error.message || 'Có lỗi xảy ra khi xóa khách thuê' };
   }
 }
+

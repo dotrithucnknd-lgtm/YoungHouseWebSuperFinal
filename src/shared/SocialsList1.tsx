@@ -1,4 +1,4 @@
-import { SocialType } from "@/shared/SocialsShare";
+﻿import { SocialType } from "@/shared/SocialsShare";
 import TikTokIcon from "@/shared/TikTokIcon";
 import React, { FC } from "react";
 
@@ -7,9 +7,9 @@ export interface SocialsList1Props {
 }
 
 const socials: SocialType[] = [
-  { name: "Facebook", icon: "lab la-facebook-square", href: "https://www.facebook.com/hoalaccotroxinh/" },
-  { name: "Instagram", icon: "lab la-instagram", href: "https://www.instagram.com/hoalaccotroxinh/" },
-  { name: "TikTok", icon: "tiktok", href: "https://www.tiktok.com/@hoalaccotroxinh" },
+  { name: "Facebook", icon: "lab la-facebook-square", href: "https://www.facebook.com/younghousehoalac/" },
+  { name: "Instagram", icon: "lab la-instagram", href: "https://www.instagram.com/younghousehoalac/" },
+  { name: "TikTok", icon: "tiktok", href: "https://www.tiktok.com/@younghousehoalac" },
 ];
 
 const SocialsList1: FC<SocialsList1Props> = ({ className = "space-y-2.5" }) => {
@@ -40,3 +40,4 @@ const SocialsList1: FC<SocialsList1Props> = ({ className = "space-y-2.5" }) => {
 };
 
 export default SocialsList1;
+

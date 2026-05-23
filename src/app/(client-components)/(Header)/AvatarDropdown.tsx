@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Popover, Transition } from "@headlessui/react";
 import { Fragment } from "react";
@@ -391,3 +391,4 @@ export default function AvatarDropdown({ className = "" }: Props) {
     </>
   );
 }
+

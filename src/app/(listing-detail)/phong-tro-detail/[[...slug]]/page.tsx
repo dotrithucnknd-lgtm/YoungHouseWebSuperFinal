@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { FC, Fragment, useState, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
@@ -492,7 +492,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
           <span className="ml-2.5 text-neutral-500 dark:text-neutral-400">
             Đăng bởi{" "}
             <span className="text-neutral-900 dark:text-neutral-200 font-medium">
-              Hoà Lạc Có Trọ Xinh
+              YoungHouse Hòa Lạc
             </span>
           </span>
         </div>
@@ -767,7 +767,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
           
           <div>
             <a className="block text-xl font-medium" href="##">
-              Hoà Lạc Có Trọ Xinh
+              YoungHouse Hòa Lạc
             </a>
             <div className="mt-1.5 flex items-center text-sm text-neutral-500 dark:text-neutral-400">
               <StartRating />
@@ -779,7 +779,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
 
         {/* desc */}
         <span className="block text-neutral-6000 dark:text-neutral-300">
-          Hoà Lạc Có Trọ Xinh là trang web cho thuê phòng trọ uy tín tại Hoà Lạc 
+          YoungHouse Hòa Lạc là trang web cho thuê phòng trọ uy tín tại Hoà Lạc 
         </span>
 
         {/* info */}
@@ -1418,3 +1418,6 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
 };
 
 export default ListingStayDetailPage;
+
+
+

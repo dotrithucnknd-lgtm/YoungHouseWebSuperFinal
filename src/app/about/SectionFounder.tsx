@@ -1,4 +1,4 @@
-import Heading from "@/shared/Heading";
+﻿import Heading from "@/shared/Heading";
 import React from "react";
 
 export interface People {
@@ -12,7 +12,7 @@ export interface People {
 const FOUNDER_DEMO: People[] = [
   {
     id: "1",
-    name: `Hoà Lạc Có Trọ Xinh`,
+    name: `YoungHouse Hòa Lạc`,
     job: "Đội vận hành & kiểm duyệt tin",
     icon: "🛠️",
     bgClass: "from-amber-200 to-orange-200 dark:from-amber-900/40 dark:to-orange-900/30",
@@ -73,3 +73,6 @@ const SectionFounder = () => {
 };
 
 export default SectionFounder;
+
+
+

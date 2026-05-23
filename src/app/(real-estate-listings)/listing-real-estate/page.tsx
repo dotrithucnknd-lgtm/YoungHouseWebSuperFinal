@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import SectionGridFilterCard from "../SectionGridFilterCard";
 import { StayDataType } from "@/data/types";
 
@@ -32,3 +32,4 @@ const ListingRealEstatePage = async () => {
 };
 
 export default ListingRealEstatePage;
+

@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+﻿import React, { FC } from "react";
 import type { RoomStatus } from "@/data/types";
 
 export interface RoomStatusBadgeProps {
@@ -41,4 +41,5 @@ const RoomStatusBadge: FC<RoomStatusBadgeProps> = ({ status, className = "" }) =
 };
 
 export default RoomStatusBadge;
+
 

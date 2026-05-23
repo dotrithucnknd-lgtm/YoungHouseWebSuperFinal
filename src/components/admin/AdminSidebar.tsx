@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect } from "react";
 import Link from "next/link";
@@ -252,3 +252,5 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isMobileOpen = false, onMob
 };
 
 export default AdminSidebar;
+
+

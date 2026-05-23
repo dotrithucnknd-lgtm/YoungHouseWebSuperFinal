@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useEffect, useState } from "react";
 import NcInputNumber from "@/components/NcInputNumber";
 import { FC } from "react";
@@ -91,3 +91,4 @@ const GuestsInput: FC<GuestsInputProps> = ({
 };
 
 export default GuestsInput;
+

@@ -1,10 +1,10 @@
-import React from "react";
+﻿import React from "react";
 import BgGlassmorphism from "@/components/BgGlassmorphism";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Chính sách bảo mật - Trọ Hoà Lạc",
-  description: "Chính sách bảo mật thông tin cá nhân và quyền riêng tư của người dùng tại hệ thống Trọ Hoà Lạc (hoalac.com).",
+  title: "Chính sách bảo mật - YoungHouse Hòa Lạc",
+  description: "Chính sách bảo mật thông tin cá nhân và quyền riêng tư của người dùng tại hệ thống YoungHouse Hòa Lạc (hoalac.com).",
 };
 
 export default function PrivacyPage() {
@@ -125,3 +125,6 @@ export default function PrivacyPage() {
     </div>
   );
 }
+
+
+

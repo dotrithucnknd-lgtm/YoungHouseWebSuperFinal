@@ -3,28 +3,28 @@
 /* THEME PALETTE 10 indigo-coolGrey ========================================== */
 :root {
   /* PRIMARY COLOR */
-  --c-primary-50: 198, 130, 75;
-  --c-primary-100: 198, 130, 75;
-  --c-primary-200: 198, 130, 75;
-  --c-primary-300: 198, 130, 75;
-  --c-primary-400: 198, 130, 75;
-  --c-primary-500: 198, 130, 75;
-  --c-primary-600: 198, 130, 75;
-  --c-primary-700: 198, 130, 75;
-  --c-primary-800: 198, 130, 75;
-  --c-primary-900: 198, 130, 75;
+  --c-primary-50: 240, 249, 255;
+  --c-primary-100: 224, 242, 254;
+  --c-primary-200: 186, 230, 253;
+  --c-primary-300: 125, 211, 252;
+  --c-primary-400: 56, 189, 248;
+  --c-primary-500: 0, 156, 222;
+  --c-primary-600: 2, 132, 199;
+  --c-primary-700: 3, 105, 161;
+  --c-primary-800: 7, 89, 133;
+  --c-primary-900: 12, 74, 110;
 
   /* SECONDARY COLOR */
-  --c-secondary-50: 55, 65, 81;
-  --c-secondary-100: 55, 65, 81;
-  --c-secondary-200: 55, 65, 81;
-  --c-secondary-300: 55, 65, 81;
-  --c-secondary-400: 55, 65, 81;
-  --c-secondary-500: 55, 65, 81;
-  --c-secondary-600: 55, 65, 81;
-  --c-secondary-700: 55, 65, 81;
-  --c-secondary-800: 55, 65, 81;
-  --c-secondary-900: 55, 65, 81;
+  --c-secondary-50: 253, 242, 248;
+  --c-secondary-100: 252, 231, 243;
+  --c-secondary-200: 251, 207, 232;
+  --c-secondary-300: 249, 168, 212;
+  --c-secondary-400: 244, 114, 182;
+  --c-secondary-500: 236, 0, 140;
+  --c-secondary-600: 219, 39, 119;
+  --c-secondary-700: 190, 24, 93;
+  --c-secondary-800: 157, 23, 77;
+  --c-secondary-900: 131, 24, 67;
 
   /* NEUTRAL COLOR */
   --c-neutral-50: 249, 250, 251;

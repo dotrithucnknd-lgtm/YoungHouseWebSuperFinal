@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -124,4 +124,5 @@ const NotificationBanner: React.FC = () => {
 };
 
 export default NotificationBanner;
+
 

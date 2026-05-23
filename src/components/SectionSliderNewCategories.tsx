@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { FC, useEffect, useState } from "react";
 import { TaxonomyType } from "@/data/types";
@@ -193,3 +193,4 @@ const SectionSliderNewCategories: FC<SectionSliderNewCategoriesProps> = ({
 };
 
 export default SectionSliderNewCategories;
+

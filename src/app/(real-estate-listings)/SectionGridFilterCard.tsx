@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+﻿import React, { FC } from "react";
 import { DEMO_STAY_LISTINGS } from "@/data/listings";
 import { StayDataType } from "@/data/types";
 import Pagination from "@/shared/Pagination";
@@ -46,3 +46,4 @@ const SectionGridFilterCard: FC<SectionGridFilterCardProps> = ({
 };
 
 export default SectionGridFilterCard;
+

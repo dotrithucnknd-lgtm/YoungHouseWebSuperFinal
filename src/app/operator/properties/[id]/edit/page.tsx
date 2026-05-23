@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -567,3 +567,4 @@ export default function EditPropertyPage() {
     </div>
   );
 }
+

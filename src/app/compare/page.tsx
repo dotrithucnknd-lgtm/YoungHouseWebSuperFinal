@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import { useCompare } from "@/contexts/CompareContext";
@@ -266,4 +266,5 @@ export default function ComparePage() {
     </div>
   );
 }
+
 

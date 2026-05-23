@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { FC, useState } from "react";
 import facebookSvg from "@/images/Facebook.svg";
@@ -199,3 +199,4 @@ const PageLogin: FC<PageLoginProps> = ({}) => {
 };
 
 export default PageLogin;
+

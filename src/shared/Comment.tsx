@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { FC } from "react";
 import Avatar from "@/shared/Avatar";
 
@@ -60,3 +60,4 @@ const Comment: FC<CommentProps> = ({ isSmall }) => {
 };
 
 export default Comment;
+

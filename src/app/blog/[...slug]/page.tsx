@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { DEMO_POSTS } from "@/data/posts";
 import { PostDataType } from "@/data/types";
 import Avatar from "@/shared/Avatar";
@@ -320,3 +320,4 @@ const Page = ({
 };
 
 export default Page;
+

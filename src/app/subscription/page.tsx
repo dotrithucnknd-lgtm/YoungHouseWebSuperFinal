@@ -1,4 +1,4 @@
-import { CheckIcon } from "@heroicons/react/24/solid";
+﻿import { CheckIcon } from "@heroicons/react/24/solid";
 import React, { FC } from "react";
 import ButtonPrimary from "@/shared/ButtonPrimary";
 import ButtonSecondary from "@/shared/ButtonSecondary";
@@ -127,3 +127,4 @@ const PageSubcription: FC<PageSubcriptionProps> = () => {
 };
 
 export default PageSubcription;
+

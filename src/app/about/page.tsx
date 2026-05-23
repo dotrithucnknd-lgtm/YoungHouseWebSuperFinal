@@ -1,4 +1,4 @@
-import rightImg from "@/images/travelhero2.jpg";
+﻿import rightImg from "@/images/travelhero2.jpg";
 import React, { FC } from "react";
 import SectionFounder from "./SectionFounder";
 import SectionStatistic from "./SectionStatistic";
@@ -20,7 +20,7 @@ const PageAbout: FC<PageAboutProps> = ({}) => {
           rightImg={rightImg}
           heading={
             <>
-              Về <span className="text-primary-600">Hoà Lạc Có Trọ Xinh</span>
+              Về <span className="text-primary-600">YoungHouse Hòa Lạc</span>
             </>
           }
           btnText="Đăng tin phòng trọ"
@@ -85,3 +85,6 @@ const PageAbout: FC<PageAboutProps> = ({}) => {
 };
 
 export default PageAbout;
+
+
+

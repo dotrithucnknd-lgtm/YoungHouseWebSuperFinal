@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 
@@ -50,7 +50,7 @@ export default function SectionPartners() {
           Hệ sinh thái uy tín
         </span>
         <h2 className="mt-4 text-3xl font-black text-neutral-900 dark:text-white tracking-tight sm:text-4xl">
-          Đơn vị đồng hành cùng Trọ Hoà Lạc
+          Đơn vị đồng hành cùng YoungHouse Hòa Lạc
         </h2>
         <p className="mt-3 text-neutral-500 dark:text-neutral-400 text-sm sm:text-base">
           Liên kết chặt chẽ cùng các đơn vị quản lý, vận hành và phát triển nhà ở chất lượng cao quanh khu công nghệ cao Hoà Lạc.
@@ -73,3 +73,6 @@ export default function SectionPartners() {
     </div>
   );
 }
+
+
+

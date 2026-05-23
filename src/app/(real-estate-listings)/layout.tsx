@@ -1,4 +1,4 @@
-import BackgroundSection from "@/components/BackgroundSection";
+﻿import BackgroundSection from "@/components/BackgroundSection";
 import SectionGridAuthorBox from "@/components/SectionGridAuthorBox";
 import SectionSliderNewCategories from "@/components/SectionSliderNewCategories";
 import React, { ReactNode } from "react";
@@ -39,3 +39,4 @@ const Layout = ({ children }: { children: ReactNode }) => {
 };
 
 export default Layout;
+

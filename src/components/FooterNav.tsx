@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   HomeIcon,
@@ -105,3 +105,4 @@ const FooterNav = () => {
 };
 
 export default FooterNav;
+

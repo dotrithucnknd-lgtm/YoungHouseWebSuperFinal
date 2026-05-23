@@ -1,4 +1,4 @@
-import StartRating from "@/components/StartRating";
+﻿import StartRating from "@/components/StartRating";
 import React, { FC } from "react";
 import ButtonPrimary from "@/shared/ButtonPrimary";
 import Image from "next/image";
@@ -140,3 +140,4 @@ const PayPage: FC<PayPageProps> = () => {
 };
 
 export default PayPage;
+

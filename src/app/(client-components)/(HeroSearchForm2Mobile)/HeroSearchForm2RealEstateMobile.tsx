@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Dialog, Tab, Transition } from "@headlessui/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
@@ -154,3 +154,4 @@ const HeroSearchForm2RealEstateMobile = () => {
 };
 
 export default HeroSearchForm2RealEstateMobile;
+

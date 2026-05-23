@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { Fragment, useState } from "react";
 import { Dialog, Tab, Transition } from "@headlessui/react";
@@ -148,3 +148,4 @@ const HeroSearchForm2Mobile = () => {
 };
 
 export default HeroSearchForm2Mobile;
+

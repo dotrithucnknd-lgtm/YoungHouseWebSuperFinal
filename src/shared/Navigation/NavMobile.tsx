@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import ButtonClose from "@/shared/ButtonClose";
@@ -109,7 +109,7 @@ const NavMobile: React.FC<NavMobileProps> = ({
         <Logo />
         <div className="flex flex-col mt-5 text-neutral-700 dark:text-neutral-300 text-sm">
           <span>
-            Tìm phòng trọ phù hợp với bạn - Đến ngay Trohoalac.io.vn
+            Tìm phòng trọ phù hợp với bạn - Đến ngay YoungHouse Hòa Lạc
           </span>
 
           <div className="flex justify-between items-center mt-4">
@@ -132,3 +132,6 @@ const NavMobile: React.FC<NavMobileProps> = ({
 };
 
 export default NavMobile;
+
+
+

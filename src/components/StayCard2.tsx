@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { FC } from "react";
 import GallerySlider from "@/components/GallerySlider";
 import { DEMO_STAY_LISTINGS } from "@/data/listings";
@@ -135,3 +135,4 @@ const StayCard2: FC<StayCard2Props> = ({
 };
 
 export default StayCard2;
+

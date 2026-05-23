@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { addToWishlist, removeFromWishlist, isInWishlist } from "@/lib/supabaseServices";
@@ -128,3 +128,4 @@ const LikeSaveBtns: React.FC<LikeSaveBtnsProps> = ({ roomId, className = "" }) =
 };
 
 export default LikeSaveBtns;
+

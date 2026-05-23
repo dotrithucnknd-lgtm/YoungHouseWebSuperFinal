@@ -1,4 +1,4 @@
-import { Route } from "@/routers/types";
+﻿import { Route } from "@/routers/types";
 import { StaticImageData } from "next/image";
 
 //  ######  CustomLink  ######## //
@@ -103,4 +103,5 @@ export interface StayDataType {
   };
   maps?: string;
 }
+
 

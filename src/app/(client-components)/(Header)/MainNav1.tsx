@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { FC } from "react";
 import Logo from "@/shared/Logo";
@@ -122,3 +122,4 @@ const MainNav1: FC<MainNav1Props> = ({ className = "" }) => {
 };
 
 export default MainNav1;
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { FC, useEffect, useState } from "react";
 import Label from "@/components/Label";
@@ -190,3 +190,4 @@ const AccountPage = () => {
 };
 
 export default AccountPage;
+

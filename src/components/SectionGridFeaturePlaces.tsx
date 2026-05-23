@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { FC, ReactNode, useMemo, useState } from "react";
 import { DEMO_STAY_LISTINGS } from "@/data/listings";
@@ -112,3 +112,4 @@ const SectionGridFeaturePlaces: FC<SectionGridFeaturePlacesProps> = ({
 };
 
 export default SectionGridFeaturePlaces;
+

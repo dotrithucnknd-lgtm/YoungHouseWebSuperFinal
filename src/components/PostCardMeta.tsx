@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+﻿import React, { FC } from "react";
 import Avatar from "@/shared/Avatar";
 import { PostDataType } from "@/data/types";
 import Link from "next/link";
@@ -55,3 +55,4 @@ const PostCardMeta: FC<PostCardMetaProps> = ({
 };
 
 export default PostCardMeta;
+

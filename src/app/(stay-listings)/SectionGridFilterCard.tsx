@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { FC, useEffect, useMemo, useState } from "react";
 import { StayDataType } from "@/data/types";
@@ -197,3 +197,4 @@ const SectionGridFilterCard: FC<SectionGridFilterCardProps> = ({
 };
 
 export default SectionGridFilterCard;
+

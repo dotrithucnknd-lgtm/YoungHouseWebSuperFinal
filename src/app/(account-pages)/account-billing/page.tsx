@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import ButtonPrimary from "@/shared/ButtonPrimary";
 
 const AccountBilling = () => {
@@ -30,3 +30,4 @@ const AccountBilling = () => {
 };
 
 export default AccountBilling;
+

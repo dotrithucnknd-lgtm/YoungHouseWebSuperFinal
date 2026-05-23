@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { XMarkIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -678,3 +678,4 @@ export default function CreateInvoiceModal({ isOpen, onClose, onSuccess }: Creat
     </div>
   );
 }
+

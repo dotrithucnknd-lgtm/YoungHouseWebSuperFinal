@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import BackgroundSection from "@/components/BackgroundSection";
 import ListingImageGallery from "@/components/listing-image-gallery/ListingImageGallery";
@@ -76,3 +76,4 @@ const DetailtLayout = ({ children }: { children: ReactNode }) => {
 };
 
 export default DetailtLayout;
+

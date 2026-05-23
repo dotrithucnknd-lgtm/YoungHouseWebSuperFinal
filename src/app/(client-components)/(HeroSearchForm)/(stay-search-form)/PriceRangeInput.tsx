@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { FC, useState } from "react";
 import { Popover, Transition } from "@headlessui/react";
@@ -91,5 +91,6 @@ const PriceRangeInput: FC<PriceRangeInputProps> = ({
 };
 
 export default PriceRangeInput;
+
 
 

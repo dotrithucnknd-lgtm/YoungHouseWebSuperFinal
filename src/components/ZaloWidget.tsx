@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import Image from "next/image";
@@ -13,7 +13,7 @@ export default function ZaloWidget() {
       target="_blank"
       rel="noopener noreferrer"
       className="group fixed bottom-24 right-4 z-[1001] flex h-14 w-14 items-center justify-center overflow-visible transition-transform duration-300 ease-out hover:scale-110 active:scale-95 motion-reduce:transition-none motion-reduce:hover:scale-100 md:bottom-6 md:right-6"
-      aria-label="Chat Zalo — Hoà Lạc có trọ xinh"
+      aria-label="Chat Zalo — YoungHouse Hòa Lạc"
     >
       <span
         className="pointer-events-none absolute inset-0 z-0 rounded-full bg-[#0068FF]/25 motion-safe:animate-zalo-widget-ripple motion-reduce:hidden"
@@ -36,3 +36,6 @@ export default function ZaloWidget() {
     </a>
   );
 }
+
+
+

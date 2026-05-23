@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 
@@ -40,4 +40,5 @@ const AdminAnalyticsPage = () => {
 };
 
 export default AdminAnalyticsPage;
+
 

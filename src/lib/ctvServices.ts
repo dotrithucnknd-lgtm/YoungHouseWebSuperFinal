@@ -1,4 +1,4 @@
-import { supabase } from './supabaseClient';
+﻿import { supabase } from './supabaseClient';
 
 // ============================
 // CTV Interfaces
@@ -718,4 +718,5 @@ export async function searchProfiles(query: string): Promise<{
     return { data: [], error: err.message };
   }
 }
+
 

@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+﻿import React, { FC } from "react";
 import SocialsList from "@/shared/SocialsList";
 import Label from "@/components/Label";
 import Input from "@/shared/Input";
@@ -44,7 +44,7 @@ const PageContact: FC<PageContactProps> = ({}) => {
               ))}
               <div>
                 <h3 className="uppercase font-semibold text-sm dark:text-neutral-200 tracking-wider">
-                  Kết nối với Trohoalac.io.vn
+                  Kết nối với YoungHouse Hòa Lạc
                 </h3>
                 <SocialsList className="mt-2" />
               </div>
@@ -91,3 +91,6 @@ const PageContact: FC<PageContactProps> = ({}) => {
 };
 
 export default PageContact;
+
+
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { ClockIcon, MapPinIcon } from "@heroicons/react/24/outline";
 import React, { useState, useRef, useEffect, FC } from "react";
@@ -169,3 +169,4 @@ const LocationInput: FC<LocationInputProps> = ({
 };
 
 export default LocationInput;
+

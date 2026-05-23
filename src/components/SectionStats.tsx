@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { CheckBadgeIcon, UserGroupIcon, HomeModernIcon } from "@heroicons/react/24/outline";
 
 const STATS = [
@@ -46,7 +46,7 @@ export default function SectionStats() {
             Bảo chứng niềm tin
           </span>
           <h2 className="mt-4 text-3xl font-black text-neutral-900 dark:text-white tracking-tight sm:text-4xl">
-            Trọ Hoà Lạc Bằng Những Con Số
+            YoungHouse Hòa Lạc Bằng Những Con Số
           </h2>
           <p className="mt-3 text-neutral-500 dark:text-neutral-400 text-sm sm:text-base">
             Hành trình số hóa trải nghiệm thuê phòng và mang lại sự an tâm tuyệt đối cho cộng đồng sinh viên tại Hoà Lạc.
@@ -89,3 +89,6 @@ export default function SectionStats() {
     </div>
   );
 }
+
+
+

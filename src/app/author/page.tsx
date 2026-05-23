@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Tab } from "@headlessui/react";
 import CommentListing from "@/components/CommentListing";
@@ -41,7 +41,7 @@ const AuthorPage: FC<AuthorPageProps> = ({}) => {
         <div className="relative">
           <Image
             src={logoTroHoaLac}
-            alt="Hoà Lạc Có Trọ Xinh Logo"
+            alt="YoungHouse Hòa Lạc Logo"
             className="w-28 h-28 rounded-full object-cover"
             width={112}
             height={112}
@@ -55,13 +55,13 @@ const AuthorPage: FC<AuthorPageProps> = ({}) => {
 
         {/* ---- */}
         <div className="space-y-3 text-center flex flex-col items-center">
-          <h2 className="text-3xl font-semibold">Hoà Lạc Có Trọ Xinh</h2>
+          <h2 className="text-3xl font-semibold">YoungHouse Hòa Lạc</h2>
           <StartRating className="!text-base" />
         </div>
 
         {/* ---- */}
         <p className="text-neutral-500 dark:text-neutral-400">
-          Hoà Lạc Có Trọ Xinh là trang web cho thuê phòng trọ uy tín tại Hoà Lạc 
+          YoungHouse Hòa Lạc là trang web cho thuê phòng trọ uy tín tại Hoà Lạc 
         </p>
 
         {/* ---- */}
@@ -142,9 +142,9 @@ const AuthorPage: FC<AuthorPageProps> = ({}) => {
     return (
       <div className="listingSection__wrap">
         <div>
-          <h2 className="text-2xl font-semibold">{`Hoà Lạc Có Trọ Xinh`}</h2>
+          <h2 className="text-2xl font-semibold">{`YoungHouse Hòa Lạc`}</h2>
           <span className="block mt-2 text-neutral-500 dark:text-neutral-400">
-            {`Hoà Lạc Có Trọ Xinh là trang web cho thuê phòng trọ uy tín tại Hoà Lạc.`}
+            {`YoungHouse Hòa Lạc là trang web cho thuê phòng trọ uy tín tại Hoà Lạc.`}
           </span>
         </div>
         <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
@@ -210,3 +210,6 @@ const AuthorPage: FC<AuthorPageProps> = ({}) => {
 };
 
 export default AuthorPage;
+
+
+

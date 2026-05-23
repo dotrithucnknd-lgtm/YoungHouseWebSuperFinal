@@ -1,4 +1,4 @@
-import { DEMO_POSTS } from "@/data/posts";
+﻿import { DEMO_POSTS } from "@/data/posts";
 import { PostDataType } from "@/data/types";
 import React, { FC } from "react";
 import Card3Small from "./Card3Small";
@@ -37,3 +37,4 @@ const WidgetPosts: FC<WidgetPostsProps> = ({
 };
 
 export default WidgetPosts;
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { XMarkIcon, PrinterIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
@@ -108,7 +108,7 @@ export default function ViewInvoiceModal({ isOpen, invoice, onClose, onSuccess }
           <div className="grid grid-cols-2 gap-6 text-sm">
             <div className="space-y-1">
               <p className="text-xs font-semibold text-neutral-400 uppercase tracking-wide">Từ (Chủ nhà):</p>
-              <p className="font-bold text-neutral-800 dark:text-neutral-200">Trọ Hòa Lạc Xinh</p>
+              <p className="font-bold text-neutral-800 dark:text-neutral-200">YoungHouse Hòa Lạc Xinh</p>
               <p className="text-neutral-500">Khu công nghệ cao Hòa Lạc, Hà Nội</p>
             </div>
             <div className="space-y-1">
@@ -245,3 +245,6 @@ export default function ViewInvoiceModal({ isOpen, invoice, onClose, onSuccess }
     </div>
   );
 }
+
+
+

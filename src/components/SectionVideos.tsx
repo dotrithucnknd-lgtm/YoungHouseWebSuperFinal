@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Heading from "@/shared/Heading";
 import NcPlayIcon from "@/shared/NcPlayIcon";
@@ -148,3 +148,4 @@ const SectionVideos: FC<SectionVideosProps> = ({
 };
 
 export default SectionVideos;
+

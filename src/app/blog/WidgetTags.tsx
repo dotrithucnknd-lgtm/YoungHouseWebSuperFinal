@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+﻿import React, { FC } from "react";
 import { TaxonomyType } from "@/data/types";
 import WidgetHeading1 from "./WidgetHeading1";
 import Tag from "@/shared/Tag";
@@ -30,3 +30,4 @@ const WidgetTags: FC<WidgetTagsProps> = ({
 };
 
 export default WidgetTags;
+

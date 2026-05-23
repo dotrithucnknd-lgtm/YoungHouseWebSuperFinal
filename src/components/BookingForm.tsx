@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { createBooking } from "@/lib/supabaseServices";
@@ -249,4 +249,5 @@ const BookingForm: React.FC<BookingFormProps> = ({
 };
 
 export default BookingForm;
+
 

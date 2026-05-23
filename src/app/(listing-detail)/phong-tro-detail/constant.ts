@@ -1,4 +1,4 @@
-import { ListingGalleryImage } from "@/components/listing-image-gallery/utils/types";
+﻿import { ListingGalleryImage } from "@/components/listing-image-gallery/utils/types";
 
 export const PHOTOS: string[] = [
   "https://images.pexels.com/photos/6129967/pexels-photo-6129967.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260",
@@ -69,3 +69,4 @@ export const imageGallery: ListingGalleryImage[] = [...PHOTOS].map(
     };
   }
 );
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
@@ -492,3 +492,4 @@ export default function AddTenantModal({ isOpen, onClose, onSuccess }: AddTenant
     </div>
   );
 }
+

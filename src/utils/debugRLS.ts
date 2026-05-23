@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Debug utilities for RLS (Row Level Security) issues
  * Use these functions to troubleshoot permission errors
  */
@@ -210,3 +210,4 @@ export async function getUserRole(): Promise<string | null> {
     return null;
   }
 }
+

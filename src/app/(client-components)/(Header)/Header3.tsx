@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { FC, useEffect, useRef, useState } from "react";
 import Logo from "@/shared/Logo";
@@ -192,3 +192,4 @@ const Header3: FC<Header3Props> = ({ className = "" }) => {
 };
 
 export default Header3;
+

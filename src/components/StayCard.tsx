@@ -1,4 +1,4 @@
-import React, { FC, memo, useMemo } from "react";
+﻿import React, { FC, memo, useMemo } from "react";
 import { DEMO_STAY_LISTINGS } from "@/data/listings";
 import { StayDataType } from "@/data/types";
 import StartRating from "@/components/StartRating";
@@ -138,3 +138,4 @@ const StayCard: FC<StayCardProps> = memo(({
 StayCard.displayName = 'StayCard';
 
 export default StayCard;
+

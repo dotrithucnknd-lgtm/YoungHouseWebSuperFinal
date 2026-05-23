@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { StayDataType } from "@/data/types";
@@ -94,4 +94,5 @@ export function useCompare() {
   }
   return context;
 }
+
 

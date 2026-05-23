@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+﻿import React, { FC } from "react";
 import Heading from "@/shared/Heading";
 import { DEMO_POSTS } from "@/data/posts";
 import { PostDataType } from "@/data/types";
@@ -58,3 +58,4 @@ const SectionLatestPosts: FC<SectionLatestPostsProps> = ({
 };
 
 export default SectionLatestPosts;
+

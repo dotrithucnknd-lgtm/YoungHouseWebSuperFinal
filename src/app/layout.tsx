@@ -1,4 +1,4 @@
-import { Be_Vietnam_Pro } from "next/font/google";
+﻿import { Be_Vietnam_Pro } from "next/font/google";
 import dynamic from "next/dynamic";
 import ClientCommons from "./ClientCommons";
 
@@ -23,7 +23,7 @@ const beVietnamPro = Be_Vietnam_Pro({
 });
 
 export const metadata: Metadata = {
-  title: "Trọ Hoà Lạc - Tìm phòng trọ tại Hoà Lạc",
+  title: "YoungHouse Hòa Lạc - Tìm phòng trọ tại Hoà Lạc",
   description: "Nền tảng tìm kiếm và đặt phòng trọ tại Hoà Lạc uy tín và chất lượng",
   icons: {
     icon: "/favicon.ico",
@@ -55,3 +55,6 @@ export default function RootLayout({
     </html>
   );
 }
+
+
+

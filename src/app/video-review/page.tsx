@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { Fragment, useEffect, useMemo, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
@@ -75,7 +75,7 @@ export default function VideoReviewPage() {
     <div className="nc-VideoReviewPage container pb-24 pt-8 lg:pt-12">
       <div className="max-w-3xl">
         <h1 className="text-3xl md:text-4xl font-semibold text-neutral-900 dark:text-neutral-100">
-          Video review phòng trọ tại Hoà Lạc Có Trọ Xinh
+          Video review phòng trọ tại YoungHouse Hòa Lạc
         </h1>
         <p className="mt-3 text-neutral-600 dark:text-neutral-400 leading-relaxed">
           Khám phá các video trải nghiệm thực tế từ TikTok — mỗi video gắn với một phòng
@@ -271,3 +271,6 @@ export default function VideoReviewPage() {
     </div>
   );
 }
+
+
+

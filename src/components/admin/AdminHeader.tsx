@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import Link from "next/link";
@@ -57,3 +57,4 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ title, subtitle, onMobileMenu
 };
 
 export default AdminHeader;
+
