@@ -1,4 +1,4 @@
-﻿import React, { FC } from "react";
+import React, { FC } from "react";
 import Logo from "@/shared/Logo";
 import MenuBar from "@/shared/MenuBar";
 import LangDropdown from "./LangDropdown";
@@ -19,7 +19,7 @@ const MainNav2: FC<MainNav2Props> = ({ className = "" }) => {
     <div className={`MainNav2 relative z-10 ${className}`}>
       <div className="px-4 h-20 lg:container flex justify-between">
         <div className="hidden md:flex justify-start flex-1 space-x-3 sm:space-x-8 lg:space-x-10">
-          <Logo className="w-25 self-center" />
+          <Logo className="w-32 self-center" />
           <div className="hidden lg:block self-center h-10 border-l border-neutral-300 dark:border-neutral-500"></div>
           <div className="hidden lg:flex ">
             <DropdownTravelers />
@@ -30,7 +30,7 @@ const MainNav2: FC<MainNav2Props> = ({ className = "" }) => {
           <div className="flex items-center justify-between py-2 w-full">
             <div className="flex items-center space-x-2">
               <MenuBar />
-              <Logo className="w-14" />
+              <Logo className="w-20" />
             </div>
             <div className="flex items-center space-x-2">
               <Link href="/login" className="text-sm font-medium">Đăng nhập</Link>

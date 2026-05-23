@@ -69,6 +69,7 @@ const DetailtLayout = ({ children }: { children: ReactNode }) => {
         </div>
       </div>
 
+
       {/* STICKY FOOTER MOBILE */}
       <MobileFooterSticky />
     </div>

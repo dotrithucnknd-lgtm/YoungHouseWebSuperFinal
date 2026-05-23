@@ -7,7 +7,7 @@ import HeroSearchForm2RealEstateMobile from "./HeroSearchForm2RealEstateMobile";
 import { usePathname } from "next/navigation";
 
 const PAGES_REAL_ESTATE: PathName[] = [
-  // "/home-2", // removed
+  "/",
   "/listing-real-estate",
   "/listing-real-estate-map",
 ];

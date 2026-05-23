@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { FC } from "react";
 import Logo from "@/shared/Logo";
@@ -24,7 +24,7 @@ const MainNav1: FC<MainNav1Props> = ({ className = "" }) => {
     <div className={`nc-MainNav1 relative z-10 ${className}`}>
       <div className="px-4 lg:container h-20 relative flex justify-between">
         <div className="hidden md:flex justify-start flex-none space-x-4 sm:space-x-10">
-          <Logo className="w-20 self-center" />
+          <Logo className="w-32 self-center" />
         </div>
 
         <div className="hidden md:flex flex-1 justify-center">
@@ -36,7 +36,7 @@ const MainNav1: FC<MainNav1Props> = ({ className = "" }) => {
             <div className="flex items-center justify-between py-2">
               <div className="flex items-center space-x-2">
                 <MenuBar />
-                <Logo className="w-14" />
+                <Logo className="w-20" />
               </div>
               <div className="flex items-center space-x-2">
                 {user ? (

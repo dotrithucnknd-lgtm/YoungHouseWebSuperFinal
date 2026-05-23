@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { FC, useEffect, useRef, useState } from "react";
 import Logo from "@/shared/Logo";
@@ -165,7 +165,7 @@ const Header3: FC<Header3Props> = ({ className = "" }) => {
               <div className="self-center flex-1 lg:hidden w-full">
                 <div className="flex items-center justify-between py-2">
                   <MenuBar />
-                  <Logo />
+                  <Logo className="w-20" />
                   <div className="flex items-center space-x-2">
                     <Link href="/login" className="text-sm font-medium">Đăng nhập</Link>
                     <ButtonPrimary href="/signup" className="!py-1.5 !px-3">Đăng ký</ButtonPrimary>

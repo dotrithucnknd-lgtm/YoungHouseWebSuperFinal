@@ -8,8 +8,8 @@ const LogoSvgLight = () => {
       src={logoV}
       alt="Logo V"
       className="w-full h-auto hidden dark:block"
-      width={80}
-      height={40}
+      width={160}
+      height={80}
     />
   );
 };
