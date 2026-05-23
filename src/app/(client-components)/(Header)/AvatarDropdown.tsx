@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Popover, Transition } from "@headlessui/react";
 import { Fragment } from "react";
@@ -73,6 +73,25 @@ export default function AvatarDropdown({ className = "" }: Props) {
                     </div>
 
                     <div className="w-full border-b border-neutral-200 dark:border-neutral-700" />
+
+                    {/* ------------------ Tenant portal quicklink --------------------- */}
+                    {user?.role === "tenant" && (
+                      <>
+                        <Link
+                          href={"/tenant"}
+                          className="flex items-center p-2 -m-3 transition duration-150 ease-in-out rounded-lg bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200/30 hover:bg-emerald-100 dark:hover:bg-emerald-950/50 focus:outline-none"
+                          onClick={() => close()}
+                        >
+                          <div className="flex items-center justify-center flex-shrink-0 text-emerald-600 dark:text-emerald-400">
+                            <span className="text-xl">🏠</span>
+                          </div>
+                          <div className="ml-4">
+                            <p className="text-sm font-bold">{"Trang Cư Dân (Tenant)"}</p>
+                          </div>
+                        </Link>
+                        <div className="w-full border-b border-neutral-200 dark:border-neutral-700" />
+                      </>
+                    )}
 
                     {/* ------------------ 1 --------------------- */}
                     <Link

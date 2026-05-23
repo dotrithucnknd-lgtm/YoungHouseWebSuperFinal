@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
@@ -21,7 +21,7 @@ export default function DebugTenantsPage() {
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select('*')
-        .eq('role', 'renter');
+        .eq('role', 'tenant');
 
       if (profilesError) {
         console.error('Profiles error:', profilesError);
@@ -41,7 +41,7 @@ export default function DebugTenantsPage() {
             id,
             name,
             phone,
-            DoB,
+            dob,
             role
           )
         `);

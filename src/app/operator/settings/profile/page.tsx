@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -60,7 +60,7 @@ export default function ProfileSettingsPage() {
         setFormData({
           name: data.name || "",
           phone: data.phone || "",
-          DoB: data.DoB || "",
+          DoB: data.dob || "",
           gender: data.gender || "",
           address: data.address || "",
           province: data.province || "",
@@ -118,7 +118,7 @@ export default function ProfileSettingsPage() {
         .update({
           name: formData.name,
           phone: formData.phone,
-          DoB: formData.DoB || null,
+          dob: formData.DoB || null,
           gender: formData.gender || null,
           address: formData.address || null,
           province: formData.province || null,

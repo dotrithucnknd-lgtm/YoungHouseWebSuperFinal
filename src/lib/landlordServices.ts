@@ -1,4 +1,4 @@
-﻿import { supabase } from './supabaseClient';
+import { supabase } from './supabaseClient';
 
 // ==================== INTERFACES ====================
 
@@ -1087,7 +1087,7 @@ export async function fetchOwnerTenants(ownerId: string): Promise<TenantWithDeta
         phone: profile.phone || 'N/A',
         email: tenantProfile.metadata?.email || undefined,
         role: profile.role,
-        DoB: profile.DoB,
+        DoB: profile.dob,
         avatar: profile.avatar,
         tenant_profile: tenantProfile,
         current_contract: currentContract ? {
@@ -1131,15 +1131,24 @@ export async function createTenant(data: {
   emergency_contact_phone?: string;
 }): Promise<{ success: boolean; error?: string; tenantId?: string }> {
   try {
+    const profileId = typeof crypto !== 'undefined' && crypto.randomUUID 
+      ? crypto.randomUUID() 
+      : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+          const r = (Math.random() * 16) | 0;
+          const v = c === 'x' ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        });
+
     // First, create a profile
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .insert({
+        id: profileId,
         name: data.name,
         phone: data.phone,
         email: data.email,
-        DoB: data.DoB,
-        role: 'renter',
+        dob: data.DoB || null,
+        role: 'tenant',
       })
       .select()
       .single();

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { MagnifyingGlassIcon, PlusIcon, ArrowPathIcon, ChevronDownIcon, ChevronUpIcon, LightBulbIcon, TrashIcon, UserIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
@@ -73,7 +73,7 @@ export default function RoomsPage() {
       return;
     }
 
-    const { error } = await createRoomUnit({
+    const { data, error } = await createRoomUnit({
       room_id: propertyId,
       name: newRoomName,
       status: 'available',
@@ -84,6 +84,36 @@ export default function RoomsPage() {
     } else {
       setNewRoomName("");
       setShowAddModal(false);
+
+      if (data) {
+        const house = properties.find(p => p.id === propertyId);
+        const houseTitle = house?.title || "";
+
+        try {
+          const response = await fetch('/api/rooms/create-account', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              roomUnitId: data.id,
+              roomName: data.name,
+              houseTitle: houseTitle,
+            })
+          });
+          const result = await response.json();
+          if (response.ok && result.success) {
+            alert(`Thêm phòng thành công!\n\nTài khoản: ${result.username}\nMật khẩu: ${result.password}`);
+          } else {
+            console.error("Auto account creation failed:", result.error);
+            alert("Thêm phòng thành công! (Lưu ý: Không thể tự động tạo tài khoản, hãy click nút Tạo TK sau)");
+          }
+        } catch (err: any) {
+          console.error("Auto account creation failed:", err);
+          alert("Thêm phòng thành công! (Lưu ý: Lỗi kết nối tạo tài khoản, hãy click nút Tạo TK sau)");
+        }
+      } else {
+        alert('Thêm phòng thành công!');
+      }
+
       loadData();
     }
   };
@@ -96,6 +126,30 @@ export default function RoomsPage() {
       alert('Có lỗi xảy ra: ' + error);
     } else {
       loadData();
+    }
+  };
+
+  const handleCreateAccount = async (unit: any) => {
+    if (!confirm(`Bạn có muốn tạo tài khoản phòng cho ${unit.name} không?`)) return;
+    try {
+      const response = await fetch('/api/rooms/create-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          roomUnitId: unit.id,
+          roomName: unit.name,
+          houseTitle: unit.rooms?.title || "",
+        })
+      });
+      const result = await response.json();
+      if (response.ok && result.success) {
+        alert(`Tạo tài khoản thành công!\nTài khoản: ${result.username}\nMật khẩu: ${result.password}`);
+        loadData();
+      } else {
+        alert("Lỗi: " + (result.error || "Không thể tạo tài khoản"));
+      }
+    } catch (err: any) {
+      alert("Lỗi kết nối: " + err.message);
     }
   };
 
@@ -311,6 +365,21 @@ export default function RoomsPage() {
                                   📞 {unit.current_renter.phone}
                                 </p>
                               )}
+                              <div className="mt-2">
+                                {unit.account_id ? (
+                                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/20 dark:text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-200/40">
+                                    🔑 Đã có TK
+                                  </span>
+                                ) : (
+                                  <button
+                                    onClick={() => handleCreateAccount(unit)}
+                                    className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-950/20 dark:text-indigo-400 px-2 py-0.5 rounded-md border border-indigo-200/40 hover:bg-indigo-100 transition-colors"
+                                    title="Tạo tài khoản phòng cho cư dân đăng nhập"
+                                  >
+                                    🔑 Tạo TK Phòng
+                                  </button>
+                                )}
+                              </div>
                             </div>
                             <span className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
                               unit.status === 'available' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
