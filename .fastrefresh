@@ -1,0 +1,24 @@
+# Fast Refresh Configuration
+# This file contains Fast Refresh specific settings
+
+# Enable Fast Refresh for all components
+enabled=true
+
+# Preserve state during hot reloads
+preserveState=true
+
+# Enable error overlay
+errorOverlay=true
+
+# Optimize for development
+development=true
+
+# Enable source maps
+sourceMaps=true
+
+# Watch options for better file detection
+watchOptions={
+  "poll": 1000,
+  "aggregateTimeout": 300,
+  "ignored": ["node_modules", ".next", ".git"]
+}

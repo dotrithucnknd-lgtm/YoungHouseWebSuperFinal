@@ -1,0 +1,7 @@
+.nc-header-bg {
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(2rem);
+}
+.dark .nc-header-bg {
+  background-color: rgba(17, 24, 39, 0.6);
+}

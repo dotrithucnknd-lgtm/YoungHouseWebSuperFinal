@@ -1,0 +1,76 @@
+[
+  {
+    "id": 1,
+    "author": "Mai Anh",
+    "date": "Oct 15, 2025",
+    "content": "Bài viết quá hữu ích! Nhờ phần gợi ý lập ngân sách mà mình mới nhận ra tiền điện nước giờ tăng khá nhiều ở khu Cầu Giấy. Mọi người có thêm tips nào để thương lượng với chủ nhà không?",
+    "parentId": null,
+    "like": { "count": 132, "isLiked": true },
+    "childrens": null
+  },
+
+  {
+    "id": 3,
+    "author": "Minh Nhật",
+    "date": "Oct 15, 2025",
+    "content": "@Mai Anh Nếu bạn thanh toán 3-6 tháng một lần thường sẽ giảm được 200-300k/tháng đó. Mình cũng áp dụng đúng như bài blog gợi ý: kiểm tra hợp đồng rồi đề xuất hỗ trợ lau dọn cầu thang mỗi tuần, chủ nhà ok ngay!",
+    "parentId": 1,
+    "like": { "count": 54, "isLiked": true },
+    "childrens": null
+  },
+  {
+    "id": 4,
+    "author": "Hà Linh",
+    "date": "Oct 15, 2025",
+    "content": "Mình đang tìm phòng quanh khu Đại học Quốc gia mà bị hét cọc 2 tháng, khá chát. Theo bài blog thì nên kiểm tra gì khi đặt cọc?",
+    "parentId": 1,
+    "like": { "count": 61, "isLiked": false },
+    "childrens": null
+  },
+
+  {
+    "id": 6,
+    "author": "Admin HoaLacHome",
+    "date": "Oct 16, 2025",
+    "content": "Chào các bạn, nhớ chụp lại hiện trạng phòng và yêu cầu chủ nhà ghi rõ điều khoản hoàn cọc vào hợp đồng nhé. Nếu cần mẫu hợp đồng, tụi mình có đính kèm ở cuối bài. Đọc kỹ phần \"Đừng quên bảo vệ quyền lợi\" để tránh tranh chấp sau này nha!",
+    "parentId": null,
+    "like": { "count": 88, "isLiked": true },
+    "childrens": null
+  },
+  {
+    "id": 7,
+    "author": "Quốc Huy",
+    "date": "Oct 16, 2025",
+    "content": "Phần so sánh giữa các phòng trọ rất chuẩn. Mình dùng bảng Excel như bài hướng dẫn, sau 2 ngày lọc ra được phòng 3,2 triệu đầy đủ nội thất ở Nam Từ Liêm. Cảm ơn tác giả Lan Chi!",
+    "parentId": null,
+    "like": { "count": 47, "isLiked": true },
+    "childrens": null
+  },
+  {
+    "id": 8,
+    "author": "Lan Chi",
+    "date": "Oct 16, 2025",
+    "content": "Rất vui khi bài viết giúp được mọi người. Nếu các bạn cần danh sách hội nhóm thuê trọ uy tín từng quận, cứ để lại email nhé, mình sẽ gửi file tổng hợp cập nhật đến tháng 10/2025.",
+    "parentId": null,
+    "like": { "count": 120, "isLiked": false },
+    "childrens": null
+  },
+  {
+    "id": 9,
+    "author": "Thuỷ Tiên",
+    "date": "Oct 16, 2025",
+    "content": "@Minh Nhật bạn có thể share mẫu hợp đồng bạn dùng không? Mình sợ điều khoản phạt nếu trả phòng sớm quá. Bài viết có nhắc nhưng mình muốn có ví dụ cụ thể hơn.",
+    "parentId": 3,
+    "like": { "count": 35, "isLiked": false },
+    "childrens": null
+  },
+  {
+    "id": 10,
+    "author": "Minh Nhật",
+    "date": "Oct 16, 2025",
+    "content": "@Thuỷ Tiên Mình sẽ gửi file qua email cho bạn nhé. Bạn nhớ bổ sung điều khoản báo trước 30 ngày và ghi rõ bên chịu phí sửa chữa hỏng hóc như blog đã lưu ý, tránh bị đổ lỗi oan.",
+    "parentId": 4,
+    "like": { "count": 42, "isLiked": true },
+    "childrens": null
+  }
+]
