@@ -1,7 +1,18 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
-import { MagnifyingGlassIcon, WrenchScrewdriverIcon, CheckCircleIcon, XCircleIcon, ClockIcon } from "@heroicons/react/24/outline";
+import { 
+  MagnifyingGlassIcon, 
+  WrenchScrewdriverIcon, 
+  CheckCircleIcon, 
+  XCircleIcon, 
+  ClockIcon,
+  PhoneIcon,
+  MapPinIcon,
+  UserIcon,
+  BanknotesIcon,
+  DocumentTextIcon
+} from "@heroicons/react/24/outline";
 import { useAuth } from "@/contexts/AuthContext";
 import { fetchOwnerMaintenanceRequests, updateMaintenanceRequestStatus, type MaintenanceRequestWithDetails } from "@/lib/landlordServices";
 
@@ -257,45 +268,129 @@ export default function MaintenancePage() {
               </button>
             </div>
 
-            <div className="space-y-4 mb-6">
+            <div className="space-y-5 mb-6 text-sm">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-neutral-50 dark:bg-neutral-900/50 p-3 rounded-xl border border-neutral-100 dark:border-neutral-800">
+                  <span className="block text-[10px] uppercase font-bold text-neutral-400 tracking-wider mb-1">Địa điểm / Phòng</span>
+                  <div className="flex gap-2">
+                    <MapPinIcon className="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" />
+                    <div>
+                      <p className="font-extrabold text-neutral-900 dark:text-white">{selectedRequest.room_units?.name}</p>
+                      <p className="text-neutral-500 text-xs mt-0.5">{selectedRequest.room_units?.rooms?.title}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-neutral-50 dark:bg-neutral-900/50 p-3 rounded-xl border border-neutral-100 dark:border-neutral-800">
+                  <span className="block text-[10px] uppercase font-bold text-neutral-400 tracking-wider mb-1">Người báo cáo (Tenant)</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <UserIcon className="w-4 h-4 text-neutral-400" />
+                      <div>
+                        <p className="font-extrabold text-neutral-900 dark:text-white">{selectedRequest.renter?.name}</p>
+                        <p className="text-neutral-500 text-xs mt-0.5">{selectedRequest.renter?.phone}</p>
+                      </div>
+                    </div>
+                    {selectedRequest.renter?.phone && (
+                      <a
+                        href={`tel:${selectedRequest.renter.phone}`}
+                        className="p-1.5 rounded-lg bg-primary-50 dark:bg-primary-950/20 text-primary-6000 dark:text-primary-400 border border-primary-200/30"
+                      >
+                        <PhoneIcon className="w-4 h-4" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {selectedRequest.assigned && (
+                <div className="bg-neutral-50 dark:bg-neutral-900/50 p-3 rounded-xl border border-neutral-100 dark:border-neutral-800">
+                  <span className="block text-[10px] uppercase font-bold text-neutral-400 tracking-wider mb-1">Kỹ thuật viên phụ trách</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <WrenchScrewdriverIcon className="w-4 h-4 text-neutral-400" />
+                      <div>
+                        <p className="font-extrabold text-neutral-900 dark:text-white">{selectedRequest.assigned.name}</p>
+                        <p className="text-neutral-500 text-xs mt-0.5">{selectedRequest.assigned.phone || "Không có số điện thoại"}</p>
+                      </div>
+                    </div>
+                    {selectedRequest.assigned.phone && (
+                      <a
+                        href={`tel:${selectedRequest.assigned.phone}`}
+                        className="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 border border-blue-200/30"
+                      >
+                        <PhoneIcon className="w-4 h-4" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+
               <div>
-                <label className="text-sm font-medium text-neutral-500">Phòng</label>
-                <p className="text-neutral-900 dark:text-white font-medium">
-                  {selectedRequest.room_units?.name} - {selectedRequest.room_units?.rooms?.title}
+                <span className="block text-[10px] uppercase font-bold text-neutral-400 tracking-wider mb-1">Mô tả sự cố</span>
+                <p className="text-neutral-600 dark:text-neutral-400 text-xs bg-neutral-50 dark:bg-neutral-950/50 border border-neutral-100 dark:border-neutral-800 rounded-xl p-3 leading-relaxed">
+                  {selectedRequest.description || "Không có mô tả chi tiết."}
                 </p>
               </div>
+
               <div>
-                <label className="text-sm font-medium text-neutral-500">Khách thuê</label>
-                <p className="text-neutral-900 dark:text-white font-medium">
-                  {selectedRequest.renter?.name} - {selectedRequest.renter?.phone}
-                </p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-neutral-500">Mô tả chi tiết</label>
-                <p className="text-neutral-900 dark:text-white">
-                  {selectedRequest.description}
-                </p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-neutral-500">Thời gian báo cáo</label>
-                <p className="text-neutral-900 dark:text-white">
+                <span className="block text-[10px] uppercase font-bold text-neutral-400 tracking-wider mb-1">Thời gian báo cáo</span>
+                <p className="text-neutral-700 dark:text-neutral-300 text-xs font-semibold">
                   {formatDate(selectedRequest.created_at)}
                 </p>
               </div>
 
               {selectedRequest.image_urls && selectedRequest.image_urls.length > 0 && (
                 <div>
-                  <label className="text-sm font-medium text-neutral-500 mb-2 block">Hình ảnh</label>
+                  <span className="block text-[10px] uppercase font-bold text-neutral-400 tracking-wider mb-2">Hình ảnh sự cố</span>
                   <div className="grid grid-cols-3 gap-3">
                     {selectedRequest.image_urls.map((url, idx) => (
                       <img 
                         key={idx}
                         src={url} 
                         alt={`Ảnh ${idx + 1}`}
-                        className="w-full h-32 rounded-lg object-cover"
+                        className="w-full h-32 rounded-lg object-cover border border-neutral-200 dark:border-neutral-700"
                       />
                     ))}
                   </div>
+                </div>
+              )}
+
+              {/* Completed info panel */}
+              {selectedRequest.status === 'resolved' && (
+                <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900/30 rounded-xl p-4 space-y-3 text-xs font-semibold">
+                  <div className="flex items-center gap-2 text-green-700 dark:text-green-400 font-extrabold text-sm">
+                    <CheckCircleIcon className="w-5 h-5 shrink-0" />
+                    Sự cố đã được khắc phục xong
+                  </div>
+                  
+                  {selectedRequest.notes && (
+                    <div className="space-y-0.5">
+                      <span className="text-xxs uppercase font-bold text-neutral-400 flex items-center gap-1">
+                        <DocumentTextIcon className="w-3.5 h-3.5" />
+                        Báo cáo sửa chữa:
+                      </span>
+                      <p className="text-neutral-700 dark:text-neutral-300 italic">
+                        "{selectedRequest.notes}"
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="space-y-0.5">
+                    <span className="text-xxs uppercase font-bold text-neutral-400 flex items-center gap-1">
+                      <BanknotesIcon className="w-3.5 h-3.5" />
+                      Chi phí vật tư phát sinh:
+                    </span>
+                    <p className="text-neutral-900 dark:text-white font-extrabold">
+                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(selectedRequest.cost || 0)}
+                    </p>
+                  </div>
+                  
+                  {selectedRequest.completed_at && (
+                    <p className="text-[10px] text-neutral-400">
+                      Thời gian hoàn thành: {new Date(selectedRequest.completed_at).toLocaleString("vi-VN")}
+                    </p>
+                  )}
                 </div>
               )}
             </div>

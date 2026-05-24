@@ -8,6 +8,7 @@ export interface RoomUnit {
   name: string;
   status: 'available' | 'rented' | 'maintenance';
   current_renter_id?: string;
+  account_id?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -166,6 +167,15 @@ export interface MaintenanceRequestWithDetails extends MaintenanceRequest {
     name: string;
     phone: string;
   };
+  assigned_to?: string | null;
+  assigned?: {
+    id: string;
+    name: string;
+    phone: string | null;
+  } | null;
+  notes?: string | null;
+  cost?: number;
+  completed_at?: string | null;
 }
 
 // ==================== ROOM UNITS ====================
@@ -740,32 +750,35 @@ export async function fetchOwnerMaintenanceRequests(
     status?: string;
     priority?: string;
   }
-): Promise<MaintenanceRequestWithDetails[]> {
+): Promise<any[]> {
   try {
     let query = supabase
-      .from('maintenance_requests')
+      .from('maintenance_tickets')
       .select(`
         *,
-        room_units:room_unit_id (
+        rooms!inner (
+          id,
+          title,
+          address,
+          owner_id
+        ),
+        renter:tenant_id (
           id,
           name,
-          rooms!inner (
-            id,
-            title,
-            owner_id
-          )
+          phone
         ),
-        renter:renter_id (
+        assigned:assigned_to (
           id,
           name,
           phone
         )
       `)
-      .eq('room_units.rooms.owner_id', ownerId)
+      .eq('rooms.owner_id', ownerId)
       .order('created_at', { ascending: false });
 
     if (filters?.status) {
-      query = query.eq('status', filters.status);
+      const dbStatus = filters.status === 'resolved' ? 'completed' : filters.status;
+      query = query.eq('status', dbStatus);
     }
     if (filters?.priority) {
       query = query.eq('priority', filters.priority);
@@ -778,7 +791,21 @@ export async function fetchOwnerMaintenanceRequests(
       return [];
     }
 
-    return data || [];
+    return (data || []).map((row: any) => {
+      // Map database completed status back to resolved for frontend compatibility
+      const mappedStatus = row.status === 'completed' ? 'resolved' : 
+                           row.status === 'assigned' ? 'in_progress' : row.status;
+      return {
+        ...row,
+        status: mappedStatus,
+        room_units: {
+          id: row.room_id,
+          name: row.rooms?.title || 'Tòa nhà',
+          rooms: row.rooms
+        },
+        renter: row.renter
+      };
+    });
   } catch (error) {
     console.error('Error in fetchOwnerMaintenanceRequests:', error);
     return [];
@@ -788,20 +815,21 @@ export async function fetchOwnerMaintenanceRequests(
 // Update maintenance request status
 export async function updateMaintenanceRequestStatus(
   id: string,
-  status: 'pending' | 'in_progress' | 'resolved' | 'rejected'
+  status: 'pending' | 'in_progress' | 'resolved' | 'rejected' | 'completed' | 'assigned' | 'cancelled'
 ): Promise<{ error: string | null }> {
   try {
+    const dbStatus = status === 'resolved' ? 'completed' : status;
     const updates: any = {
-      status,
+      status: dbStatus,
       updated_at: new Date().toISOString()
     };
 
-    if (status === 'resolved') {
-      updates.resolved_at = new Date().toISOString();
+    if (dbStatus === 'completed') {
+      updates.completed_at = new Date().toISOString();
     }
 
     const { error } = await supabase
-      .from('maintenance_requests')
+      .from('maintenance_tickets')
       .update(updates)
       .eq('id', id);
 

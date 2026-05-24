@@ -57,6 +57,21 @@ export default function TenantMaintenancePage() {
 
       if (error) throw error;
 
+      // Trigger system notification for Operators and Staff
+      const tenantName = user?.name || "Khách thuê";
+      const roomName = roomUnit.name || "Phòng trọ";
+      const houseTitle = roomUnit.rooms?.title || "";
+      const locationInfo = houseTitle ? `${roomName} - ${houseTitle}` : roomName;
+      
+      await supabase.from("notifications").insert({
+        title: `🔧 Sự cố mới: ${form.title.trim()}`,
+        content: `Khách thuê ${tenantName} (${locationInfo}) vừa báo cáo sự cố: "${form.title.trim()}". Vui lòng kiểm tra và phân công xử lý.`,
+        type: "warning",
+        target_audience: "owners",
+        is_active: true,
+        created_by: user?.id,
+      });
+
       setSuccess(true);
       setForm({ title: "", description: "" });
       await fetchTickets();
@@ -73,10 +88,11 @@ export default function TenantMaintenancePage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "resolved":
+      case "completed":
         return (
           <span className="inline-flex items-center gap-1 text-xs font-bold bg-green-50 text-green-700 px-2.5 py-0.5 rounded-full border border-green-200 dark:bg-green-950/20 dark:text-green-300 dark:border-green-900/30">
             <CheckCircleIcon className="w-3.5 h-3.5" />
-            Đã xử lý
+            Đã hoàn thành
           </span>
         );
       case "in_progress":
