@@ -130,11 +130,11 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isMobileOpen = false, onMob
           <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <img
               src="/images/logo_trohoalac.png"
-              alt="Hòa Lạc Có Trọ Xinh"
+              alt="YoungHouse"
               className="h-14 w-auto object-contain"
             />
             <div className="flex flex-col">
-              <span className="text-sm font-bold text-blue-600 dark:text-blue-400">Trọ Xinh</span>
+              <span className="text-sm font-bold text-blue-600 dark:text-blue-400">YoungHouse</span>
               <span className="text-xs font-semibold text-neutral-600 dark:text-neutral-400">Hoà Lạc</span>
             </div>
           </Link>
@@ -143,7 +143,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isMobileOpen = false, onMob
           <Link href="/" className="flex justify-center hover:opacity-80 transition-opacity mx-auto">
             <img
               src="/images/logo_trohoalac.png"
-              alt="Hòa Lạc Có Trọ Xinh"
+              alt="YoungHouse"
               className="h-10 w-auto object-contain"
             />
           </Link>
@@ -187,19 +187,17 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isMobileOpen = false, onMob
               key={item.name}
               href={item.href}
               onClick={onMobileClose}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group ${
-                active
-                  ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium"
-                  : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
-              }`}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group ${active
+                ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium"
+                : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                }`}
               title={isCollapsed ? item.name : undefined}
             >
               <span
-                className={`flex-shrink-0 ${
-                  active
-                    ? "text-blue-600 dark:text-blue-400"
-                    : "text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-700 dark:group-hover:text-neutral-300"
-                }`}
+                className={`flex-shrink-0 ${active
+                  ? "text-blue-600 dark:text-blue-400"
+                  : "text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-700 dark:group-hover:text-neutral-300"
+                  }`}
               >
                 {item.icon}
               </span>
@@ -224,9 +222,8 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isMobileOpen = false, onMob
     <>
       {/* Desktop Sidebar */}
       <div
-        className={`hidden lg:flex bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 flex-col h-screen transition-all duration-300 ${
-          isCollapsed ? "w-20" : "w-64"
-        }`}
+        className={`hidden lg:flex bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 flex-col h-screen transition-all duration-300 ${isCollapsed ? "w-20" : "w-64"
+          }`}
       >
         {sidebarContent}
       </div>
@@ -241,9 +238,8 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isMobileOpen = false, onMob
 
       {/* Mobile Sidebar */}
       <div
-        className={`lg:hidden fixed top-0 left-0 h-full w-72 bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 flex flex-col z-50 transition-transform duration-300 ${
-          isMobileOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`lg:hidden fixed top-0 left-0 h-full w-72 bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 flex flex-col z-50 transition-transform duration-300 ${isMobileOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         {sidebarContent}
       </div>

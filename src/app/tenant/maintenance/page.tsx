@@ -62,7 +62,7 @@ export default function TenantMaintenancePage() {
       const roomName = roomUnit.name || "Phòng trọ";
       const houseTitle = roomUnit.rooms?.title || "";
       const locationInfo = houseTitle ? `${roomName} - ${houseTitle}` : roomName;
-      
+
       await supabase.from("notifications").insert({
         title: `🔧 Sự cố mới: ${form.title.trim()}`,
         content: `Khách thuê ${tenantName} (${locationInfo}) vừa báo cáo sự cố: "${form.title.trim()}". Vui lòng kiểm tra và phân công xử lý.`,
@@ -124,7 +124,7 @@ export default function TenantMaintenancePage() {
             <h3 className="text-lg font-bold text-neutral-900 dark:text-white">Báo sự cố phòng</h3>
           </div>
           <p className="text-xs text-neutral-500 mb-6">
-            Bóng đèn hỏng, vòi nước rò rỉ, thiết bị hư hao... Hãy chụp/mô tả sự cố để kỹ thuật Trọ Xinh hỗ trợ bạn nhanh nhất.
+            Bóng đèn hỏng, vòi nước rò rỉ, thiết bị hư hao... Hãy chụp/mô tả sự cố để kỹ thuật YoungHouse hỗ trợ bạn nhanh nhất.
           </p>
 
           {success ? (
@@ -196,11 +196,11 @@ export default function TenantMaintenancePage() {
                     <h4 className="font-bold text-neutral-900 dark:text-white text-base">{ticket.title}</h4>
                     {getStatusBadge(ticket.status)}
                   </div>
-                  
+
                   {ticket.description && (
                     <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-3">{ticket.description}</p>
                   )}
-                  
+
                   <div className="flex items-center justify-between text-xs text-neutral-400 font-medium">
                     <span>Mã sự cố: #{ticket.id.slice(0, 8).toUpperCase()}</span>
                     <span>Ngày báo: {new Date(ticket.created_at).toLocaleDateString("vi-VN")}</span>

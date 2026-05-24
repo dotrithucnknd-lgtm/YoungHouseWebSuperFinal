@@ -107,7 +107,7 @@ export default function CTVLayout({ children }: { children: React.ReactNode }) {
           </div>
           <div className="flex flex-col">
             <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">CTV Dashboard</span>
-            <span className="text-xs text-neutral-500">Hoa Lạc Có Trọ Xinh</span>
+            <span className="text-xs text-neutral-500">YoungHouse</span>
           </div>
         </Link>
         {isMobileMenuOpen && (
@@ -124,11 +124,10 @@ export default function CTVLayout({ children }: { children: React.ReactNode }) {
             <Link
               key={item.name}
               href={item.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
-                active
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${active
                   ? "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-medium"
                   : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
-              }`}
+                }`}
             >
               <span className={active ? "text-emerald-600 dark:text-emerald-400" : "text-neutral-500"}>{item.icon}</span>
               <span>{item.name}</span>
