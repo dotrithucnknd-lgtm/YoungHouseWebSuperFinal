@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React from "react";
 import Link from "next/link";
@@ -14,7 +14,7 @@ interface AdminHeaderProps {
 
 const AdminHeader: React.FC<AdminHeaderProps> = ({ title, subtitle, onMobileMenuClick }) => {
   return (
-    <div className="bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 px-4 sm:px-6 py-4">
+    <div className="relative z-30 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 px-4 sm:px-6 py-4">
       <div className="flex items-center justify-between gap-2 sm:gap-4">
         <div className="flex items-start gap-2 sm:gap-3 min-w-0 flex-1">
           {/* Mobile hamburger button */}

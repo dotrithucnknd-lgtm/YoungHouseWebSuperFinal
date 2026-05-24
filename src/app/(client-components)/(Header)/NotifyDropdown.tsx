@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Popover, Transition } from "@headlessui/react";
 import { FC, Fragment, useEffect, useState } from "react";
@@ -149,8 +149,8 @@ const NotifyDropdown: FC<Props> = ({ className = "" }) => {
             >
               <Popover.Panel className="absolute z-10 w-screen max-w-[320px] sm:max-w-sm px-2 sm:px-4 top-full -right-6 sm:-right-28 sm:right-0">
                 <div className="overflow-hidden rounded-2xl shadow-lg ring-1 ring-black ring-opacity-5">
-                  <div className="relative bg-white dark:bg-neutral-800 max-h-96 overflow-y-auto">
-                    <div className="sticky top-0 bg-white dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700 px-4 sm:px-6 py-3 sm:py-4 z-10">
+                  <div className="relative !bg-white dark:!bg-neutral-900 max-h-96 overflow-y-auto">
+                    <div className="sticky top-0 !bg-white dark:!bg-neutral-900 border-b border-neutral-200 dark:border-neutral-700 px-4 sm:px-6 py-3 sm:py-4 z-10">
                       <div className="flex items-center justify-between">
                         <h3 className="text-base sm:text-lg font-semibold">Thông báo</h3>
                         {unreadCount > 0 && (

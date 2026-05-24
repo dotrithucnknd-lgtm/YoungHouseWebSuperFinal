@@ -3,7 +3,11 @@ import { createClient } from "@supabase/supabase-js";
 
 export async function POST(req: NextRequest) {
   try {
-    const { roomUnitId, roomName, houseTitle } = await req.json();
+    const { roomUnitId, roomName, houseTitle } = (await req.json()) as {
+      roomUnitId: string;
+      roomName: string;
+      houseTitle: string;
+    };
 
     if (!roomUnitId || !roomName || !houseTitle) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -33,7 +37,7 @@ export async function POST(req: NextRequest) {
     // e.g. roomName: "P101", houseTitle: "YoungHouse 1" -> P101Yh1
     const words = houseTitle.trim().split(/(?=[A-Z])|\s+/);
     let houseAbbreviation = "";
-    words.forEach((word, index) => {
+    words.forEach((word: string, index: number) => {
       const cleanWord = word
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")

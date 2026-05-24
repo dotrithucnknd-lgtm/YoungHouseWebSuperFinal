@@ -22,8 +22,9 @@ export default function ConditionalLayout({
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith('/admin');
   const isOperatorRoute = pathname?.startsWith('/operator');
+  const isTenantRoute = pathname?.startsWith('/tenant');
 
-  if (isAdminRoute || isOperatorRoute) {
+  if (isAdminRoute || isOperatorRoute || isTenantRoute) {
     return <>{children}</>;
   }
 
