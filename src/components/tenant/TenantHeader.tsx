@@ -6,13 +6,13 @@ import { ArrowLeftIcon, Bars3Icon } from "@heroicons/react/24/outline";
 import AvatarDropdown from "@/app/(client-components)/(Header)/AvatarDropdown";
 import NotifyDropdown from "@/app/(client-components)/(Header)/NotifyDropdown";
 
-interface OperatorHeaderProps {
+interface TenantHeaderProps {
   title?: string;
   subtitle?: string;
   onMobileMenuClick?: () => void;
 }
 
-const OperatorHeader: React.FC<OperatorHeaderProps> = ({ title, subtitle, onMobileMenuClick }) => {
+const TenantHeader: React.FC<TenantHeaderProps> = ({ title, subtitle, onMobileMenuClick }) => {
   return (
     <div className="relative z-30 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 px-4 sm:px-6 py-4">
       <div className="flex items-center justify-between gap-2 sm:gap-4">
@@ -56,5 +56,4 @@ const OperatorHeader: React.FC<OperatorHeaderProps> = ({ title, subtitle, onMobi
   );
 };
 
-export default OperatorHeader;
-
+export default TenantHeader;

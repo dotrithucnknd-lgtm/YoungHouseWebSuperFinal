@@ -48,7 +48,7 @@ export default function AvatarDropdown({ className = "" }: Props) {
             >
               <Popover.Panel className="absolute z-10 w-screen max-w-[280px] sm:max-w-[260px] px-2 sm:px-4 top-full -right-4 sm:-right-10 sm:right-0">
                 <div className="overflow-hidden rounded-3xl shadow-lg ring-1 ring-black ring-opacity-5">
-                  <div className="relative grid grid-cols-1 gap-4 sm:gap-6 bg-white dark:bg-neutral-800 py-4 sm:py-7 px-4 sm:px-6">
+                  <div className="relative grid grid-cols-1 gap-4 sm:gap-6 !bg-white dark:!bg-neutral-900 py-4 sm:py-7 px-4 sm:px-6">
                     <div className="flex items-center space-x-3">
                       {user?.avatar ? (
                         <img
