@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -78,11 +78,11 @@ export default function RoomDetailPage() {
 
       if (contractsData) setContracts(contractsData);
 
-      // Fetch Maintenance Requests
+      // Fetch Maintenance Tickets
       const { data: maintenanceData } = await supabase
-        .from('maintenance_requests')
+        .from('maintenance_tickets')
         .select('*')
-        .eq('room_unit_id', roomUnitId)
+        .eq('room_id', data.room_id)
         .order('created_at', { ascending: false });
 
       if (maintenanceData) setMaintenanceRequests(maintenanceData);
@@ -308,11 +308,16 @@ export default function RoomDetailPage() {
                       <p className="text-xxs text-neutral-400">Ngày yêu cầu: {new Date(r.created_at).toLocaleDateString('vi-VN')}</p>
                     </div>
                     <span className={`px-2 py-0.5 rounded text-xxs font-bold uppercase tracking-wider ${
-                      r.status === 'pending' ? 'bg-orange-100 text-orange-700 dark:bg-orange-950/30 dark:text-orange-400' :
-                      r.status === 'processing' ? 'bg-blue-100 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400' :
-                      'bg-green-100 text-green-700 dark:bg-green-950/30 dark:text-green-400'
+                      r.status === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-950/30 dark:text-green-400' :
+                      r.status === 'in_progress' ? 'bg-blue-100 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400' :
+                      r.status === 'assigned' ? 'bg-cyan-100 text-cyan-700 dark:bg-cyan-950/30 dark:text-cyan-400' :
+                      r.status === 'cancelled' ? 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400' :
+                      'bg-orange-100 text-orange-700 dark:bg-orange-950/30 dark:text-orange-400'
                     }`}>
-                      {r.status === 'pending' ? 'Chờ xử lý' : r.status === 'processing' ? 'Đang xử lý' : 'Đã sửa'}
+                      {r.status === 'completed' ? 'Đã xong' :
+                       r.status === 'in_progress' ? 'Đang xử lý' :
+                       r.status === 'assigned' ? 'Đã giao việc' :
+                       r.status === 'cancelled' ? 'Đã hủy' : 'Chờ xử lý'}
                     </span>
                   </div>
                 ))}

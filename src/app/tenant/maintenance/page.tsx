@@ -57,6 +57,21 @@ export default function TenantMaintenancePage() {
 
       if (error) throw error;
 
+      // Trigger system notification for Operators and Staff
+      const tenantName = user?.name || "Khách thuê";
+      const roomName = roomUnit.name || "Phòng trọ";
+      const houseTitle = roomUnit.rooms?.title || "";
+      const locationInfo = houseTitle ? `${roomName} - ${houseTitle}` : roomName;
+
+      await supabase.from("notifications").insert({
+        title: `🔧 Sự cố mới: ${form.title.trim()}`,
+        content: `Khách thuê ${tenantName} (${locationInfo}) vừa báo cáo sự cố: "${form.title.trim()}". Vui lòng kiểm tra và phân công xử lý.`,
+        type: "warning",
+        target_audience: "owners",
+        is_active: true,
+        created_by: user?.id,
+      });
+
       setSuccess(true);
       setForm({ title: "", description: "" });
       await fetchTickets();
@@ -73,10 +88,11 @@ export default function TenantMaintenancePage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "resolved":
+      case "completed":
         return (
           <span className="inline-flex items-center gap-1 text-xs font-bold bg-green-50 text-green-700 px-2.5 py-0.5 rounded-full border border-green-200 dark:bg-green-950/20 dark:text-green-300 dark:border-green-900/30">
             <CheckCircleIcon className="w-3.5 h-3.5" />
-            Đã xử lý
+            Đã hoàn thành
           </span>
         );
       case "in_progress":
@@ -108,7 +124,7 @@ export default function TenantMaintenancePage() {
             <h3 className="text-lg font-bold text-neutral-900 dark:text-white">Báo sự cố phòng</h3>
           </div>
           <p className="text-xs text-neutral-500 mb-6">
-            Bóng đèn hỏng, vòi nước rò rỉ, thiết bị hư hao... Hãy chụp/mô tả sự cố để kỹ thuật Trọ Xinh hỗ trợ bạn nhanh nhất.
+            Bóng đèn hỏng, vòi nước rò rỉ, thiết bị hư hao... Hãy chụp/mô tả sự cố để kỹ thuật YoungHouse hỗ trợ bạn nhanh nhất.
           </p>
 
           {success ? (
@@ -180,11 +196,11 @@ export default function TenantMaintenancePage() {
                     <h4 className="font-bold text-neutral-900 dark:text-white text-base">{ticket.title}</h4>
                     {getStatusBadge(ticket.status)}
                   </div>
-                  
+
                   {ticket.description && (
                     <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-3">{ticket.description}</p>
                   )}
-                  
+
                   <div className="flex items-center justify-between text-xs text-neutral-400 font-medium">
                     <span>Mã sự cố: #{ticket.id.slice(0, 8).toUpperCase()}</span>
                     <span>Ngày báo: {new Date(ticket.created_at).toLocaleDateString("vi-VN")}</span>

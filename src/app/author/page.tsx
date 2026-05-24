@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Tab } from "@headlessui/react";
 import CommentListing from "@/components/CommentListing";
@@ -14,7 +14,7 @@ import Avatar from "@/shared/Avatar";
 import ButtonSecondary from "@/shared/ButtonSecondary";
 import SocialsList from "@/shared/SocialsList";
 import Image from "next/image";
-import logoTroHoaLac from "@/images/logo_trohoalac.jpg";
+import logoTroHoaLac from "@/images/logo_trohoalac.png";
 
 export interface AuthorPageProps {}
 

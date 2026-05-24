@@ -23,8 +23,8 @@ interface TenantSidebarProps {
   unpaidCount?: number;
 }
 
-const TenantSidebar: React.FC<TenantSidebarProps> = ({ 
-  isMobileOpen = false, 
+const TenantSidebar: React.FC<TenantSidebarProps> = ({
+  isMobileOpen = false,
   onMobileClose,
   unpaidCount = 0
 }) => {
@@ -120,12 +120,11 @@ const TenantSidebar: React.FC<TenantSidebarProps> = ({
         <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
           <img
             src="/images/logo_trohoalac.png"
-            alt="Hòa Lạc Có Trọ Xinh"
+            alt="YoungHouse"
             className="h-14 w-auto object-contain"
           />
           <div className="flex flex-col">
-            <span className="text-sm font-bold text-primary-6000">Trọ Xinh</span>
-            <span className="text-xs font-semibold text-neutral-600 dark:text-neutral-400">Thành viên</span>
+            <span className="text-xs font-semibold text-neutral-600 dark:text-neutral-400">Quản lý thuê phòng</span>
           </div>
         </Link>
         {/* Mobile close button */}
@@ -156,29 +155,26 @@ const TenantSidebar: React.FC<TenantSidebarProps> = ({
                     key={item.name}
                     href={item.href}
                     onClick={onMobileClose}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group ${
-                      active
-                        ? "bg-primary-6000 text-white font-medium shadow-sm"
-                        : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                    }`}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group ${active
+                      ? "bg-primary-6000 text-white font-medium shadow-sm"
+                      : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                      }`}
                   >
                     <span
-                      className={`flex-shrink-0 ${
-                        active
-                          ? "text-white"
-                          : "text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-700 dark:group-hover:text-neutral-300"
-                      }`}
+                      className={`flex-shrink-0 ${active
+                        ? "text-white"
+                        : "text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-700 dark:group-hover:text-neutral-300"
+                        }`}
                     >
                       {item.icon}
                     </span>
                     <span className="flex-1">{item.name}</span>
                     {item.badge && (
                       <span
-                        className={`px-2 py-0.5 text-xs font-medium rounded-full ${
-                          active
-                            ? "bg-white/20 text-white"
-                            : "bg-red-500 text-white"
-                        }`}
+                        className={`px-2 py-0.5 text-xs font-medium rounded-full ${active
+                          ? "bg-white/20 text-white"
+                          : "bg-red-500 text-white"
+                          }`}
                       >
                         {item.badge}
                       </span>
@@ -241,9 +237,8 @@ const TenantSidebar: React.FC<TenantSidebarProps> = ({
 
       {/* Mobile Sidebar */}
       <div
-        className={`lg:hidden fixed top-0 left-0 h-full w-72 bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 z-50 transition-transform duration-300 ${
-          isMobileOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`lg:hidden fixed top-0 left-0 h-full w-72 bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 z-50 transition-transform duration-300 ${isMobileOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         {sidebarContent}
       </div>

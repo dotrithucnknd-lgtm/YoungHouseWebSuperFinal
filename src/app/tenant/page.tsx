@@ -82,7 +82,7 @@ export default function TenantOverviewPage() {
               Chào {user?.name || "bạn"},
             </h2>
             <p className="text-white/80 text-sm max-w-xl">
-              Hôm nay của bạn tại Trọ Xinh thế nào? Hãy theo dõi các thông tin dịch vụ, thanh toán hóa đơn và quản lý tiện ích phòng của bạn tại đây.
+              Hôm nay của bạn tại YoungHouse thế nào? Hãy theo dõi các thông tin dịch vụ, thanh toán hóa đơn và quản lý tiện ích phòng của bạn tại đây.
             </p>
           </div>
           {roomUnit ? (

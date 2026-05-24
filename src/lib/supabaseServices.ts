@@ -1,4 +1,4 @@
-﻿import { supabase } from './supabaseClient';
+import { supabase } from './supabaseClient';
 import { buildRoomDetailHref } from '@/utils/roomDetailUrl';
 // NOTE: compressImage uses browser-only library. Import dynamically where used.
 import { StayDataType, AuthorType, TaxonomyType } from '@/data/types';
@@ -23,7 +23,7 @@ export interface AuthUser {
   email: string;
   name?: string;
   phone?: string;
-  role?: 'admin' | 'manager' | 'sales' | 'operator' | 'tenant' | 'user';
+  role?: 'admin' | 'manager' | 'sales' | 'operator' | 'staff' | 'tenant' | 'user';
   avatar?: string;
 }
 
@@ -55,7 +55,7 @@ export interface DatabaseProfile {
   id: string;
   name: string;
   phone: string;
-  role: 'admin' | 'manager' | 'sales' | 'operator' | 'tenant' | 'user';
+  role: 'admin' | 'manager' | 'sales' | 'operator' | 'staff' | 'tenant' | 'user';
   created_at: string;
   DoB: string;
 }
@@ -100,7 +100,7 @@ export interface DatabaseFeedback {
 export interface FeedbackWithUser extends DatabaseFeedback {
   profiles: {
     name: string;
-    role: 'admin' | 'manager' | 'sales' | 'operator' | 'tenant' | 'user';
+    role: 'admin' | 'manager' | 'sales' | 'operator' | 'staff' | 'tenant' | 'user';
   };
 }
 
@@ -1507,13 +1507,14 @@ export async function fetchAllNotifications(): Promise<{ notifications: Database
 }
 
 // Fetch active notifications for user based on their role
-export async function fetchActiveNotifications(userRole: 'admin' | 'manager' | 'sales' | 'operator' | 'tenant' | 'user'): Promise<{ notifications: DatabaseNotification[]; error: string | null }> {
+export async function fetchActiveNotifications(userRole: 'admin' | 'manager' | 'sales' | 'operator' | 'staff' | 'tenant' | 'user'): Promise<{ notifications: DatabaseNotification[]; error: string | null }> {
   try {
     const audienceMap: Record<string, string> = {
       admin: 'admins',
       manager: 'admins',
       sales: 'owners',
       operator: 'owners',
+      staff: 'owners',
       tenant: 'renters',
       user: 'renters'
     };
