@@ -12,7 +12,7 @@ export interface Heading2Props {
 
 const Heading2: React.FC<Heading2Props> = ({
   className = "",
-  heading = "Nhà trọ, phòng trọ",
+  heading = "phòng trọ",
   subHeading,
 }) => {
   const [totalRooms, setTotalRooms] = useState<number | null>(null);

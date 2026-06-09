@@ -83,7 +83,7 @@ const CustomHero = () => {
                   }`}
                   onClick={() => setActiveTab("room")}
                 >
-                  Nhà trọ, phòng trọ
+                  Hệ thống phòng trọ
                 </button>
               </div>
 

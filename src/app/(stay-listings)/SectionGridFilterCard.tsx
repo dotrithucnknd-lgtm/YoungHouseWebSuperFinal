@@ -7,7 +7,6 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Pagination from "@/shared/Pagination";
 import NextPrev from "@/shared/NextPrev";
 import TabFilters from "./TabFilters";
-import Heading2 from "@/shared/Heading2";
 import StayCard2 from "@/components/StayCard2";
 
 export interface SectionGridFilterCardProps {
@@ -122,8 +121,6 @@ const SectionGridFilterCard: FC<SectionGridFilterCardProps> = ({
       className={`nc-SectionGridFilterCard ${className}`}
       data-nc-id="SectionGridFilterCard"
     >
-      <Heading2 />
-
       <div className="mb-8 lg:mb-11">
         <TabFilters />
       </div>

@@ -30,7 +30,20 @@ const PropertyCardH: FC<PropertyCardHProps> = ({
     reviewStart,
     reviewCount,
     id,
+    district,
+    ward,
+    area,
+    bedrooms,
+    bathrooms,
+    roomStatus,
+    address,
   } = data;
+
+  const statusLabel: Record<string, { label: string; color: "yellow" | "red" | "green" | "pink" | "indigo" | "blue" | "purple" | "gray" }> = {
+    available:  { label: "Còn phòng",    color: "green" },
+    reserved:   { label: "Đã đặt trước", color: "yellow" },
+    sold_out:   { label: "Hết phòng",    color: "red" },
+  };
 
   const renderSliderGallery = () => {
     return (
@@ -53,34 +66,36 @@ const PropertyCardH: FC<PropertyCardHProps> = ({
   const renderTienIch = () => {
     return (
       <div className="inline-grid grid-cols-3 gap-2">
-        <div className="flex items-center space-x-2">
-          <span className="hidden sm:inline-block">
-            <i className="las la-bed text-lg"></i>
-          </span>
-          <span className="text-xs text-neutral-500 dark:text-neutral-400">
-            6 beds
-          </span>
-        </div>
-
-        {/* ---- */}
-        <div className="flex items-center space-x-2">
-          <span className="hidden sm:inline-block">
-            <i className="las la-bath text-lg"></i>
-          </span>
-          <span className="text-xs text-neutral-500 dark:text-neutral-400">
-            3 baths
-          </span>
-        </div>
-
-        {/* ---- */}
-        <div className="flex items-center space-x-2">
-          <span className="hidden sm:inline-block">
-            <i className="las la-expand-arrows-alt text-lg"></i>
-          </span>
-          <span className="text-xs text-neutral-500 dark:text-neutral-400">
-            1200 Sq. Fit
-          </span>
-        </div>
+        {bedrooms != null && (
+          <div className="flex items-center space-x-2">
+            <span className="hidden sm:inline-block">
+              <i className="las la-bed text-lg"></i>
+            </span>
+            <span className="text-xs text-neutral-500 dark:text-neutral-400">
+              {bedrooms} phòng ngủ
+            </span>
+          </div>
+        )}
+        {bathrooms != null && (
+          <div className="flex items-center space-x-2">
+            <span className="hidden sm:inline-block">
+              <i className="las la-bath text-lg"></i>
+            </span>
+            <span className="text-xs text-neutral-500 dark:text-neutral-400">
+              {bathrooms} WC
+            </span>
+          </div>
+        )}
+        {area != null && (
+          <div className="flex items-center space-x-2">
+            <span className="hidden sm:inline-block">
+              <i className="las la-expand-arrows-alt text-lg"></i>
+            </span>
+            <span className="text-xs text-neutral-500 dark:text-neutral-400">
+              {area} m²
+            </span>
+          </div>
+        )}
       </div>
     );
   };
@@ -89,24 +104,23 @@ const PropertyCardH: FC<PropertyCardHProps> = ({
     return (
       <div className="flex-grow p-3 sm:pr-6 flex flex-col items-start">
         <div className="space-y-4 w-full">
-          <div className="inline-flex space-x-3">
-            <Badge
-              name={
-                <div className="flex items-center">
-                  <i className="text-sm las la-share-alt"></i>
-                  <span className="ml-1">4 Network</span>
-                </div>
-              }
-            />
-            <Badge
-              name={
-                <div className="flex items-center">
-                  <i className="text-sm las la-user-friends"></i>
-                  <span className="ml-1">Family</span>
-                </div>
-              }
-              color="yellow"
-            />
+          <div className="inline-flex space-x-3 flex-wrap gap-y-2">
+            {(district || ward) && (
+              <Badge
+                name={
+                  <div className="flex items-center">
+                    <i className="text-sm las la-map-marker"></i>
+                    <span className="ml-1">{ward ? `${ward}, ${district}` : district}</span>
+                  </div>
+                }
+              />
+            )}
+            {roomStatus && statusLabel[roomStatus] && (
+              <Badge
+                name={statusLabel[roomStatus].label}
+                color={statusLabel[roomStatus].color}
+              />
+            )}
           </div>
           <div className="flex items-center space-x-2">
             {isAds && <Badge name="ADS" color="green" />}
@@ -114,12 +128,18 @@ const PropertyCardH: FC<PropertyCardHProps> = ({
               <span className="line-clamp-2">{title}</span>
             </h2>
           </div>
+          {address && (
+            <p className="text-xs text-neutral-400 dark:text-neutral-500 flex items-center gap-1 -mt-2">
+              <i className="las la-map-marker-alt text-sm" />
+              <span className="line-clamp-1">{address}</span>
+            </p>
+          )}
           {renderTienIch()}
           <div className="w-14 border-b border-neutral-200/80 dark:border-neutral-700 "></div>
           <div className="flex w-full justify-between items-end">
             <StartRating reviewCount={reviewCount} point={reviewStart} />
             <span className="flex items-center justify-center px-2.5 py-1.5 border-2 border-secondary-500 rounded-lg leading-none text-sm font-medium text-secondary-500">
-              {`${price},000`}
+              {`${price}`}
             </span>
           </div>
         </div>

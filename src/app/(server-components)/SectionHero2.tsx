@@ -94,7 +94,7 @@ const SectionHero2: FC<SectionHero2Props> = ({ className = "", children }) => {
                       }`}
                     onClick={() => setActiveTab("room")}
                   >
-                    Nhà trọ, phòng trọ
+                    Hệ thống nhà trọ
                   </button>
                 </div>
 

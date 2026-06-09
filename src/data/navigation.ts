@@ -104,7 +104,7 @@ export const NAVIGATION_DEMO: NavItemType[] = [
   {
     id: "nav-phong-tro",
     href: "/phong-tro",
-    name: "Nhà trọ, phòng trọ",
+    name: "Hệ thống nhà trọ",
 
   },
   {
