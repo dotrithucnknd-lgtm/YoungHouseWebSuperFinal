@@ -366,7 +366,7 @@ export default function RoomsPage() {
                                 </p>
                               )}
                               <div className="mt-2">
-                                {unit.account_id ? (
+                                {unit.current_renter_id ? (
                                   <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/20 dark:text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-200/40">
                                     🔑 Đã có TK
                                   </span>

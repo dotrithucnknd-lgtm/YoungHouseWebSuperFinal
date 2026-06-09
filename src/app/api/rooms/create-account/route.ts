@@ -81,9 +81,11 @@ export async function POST(req: NextRequest) {
       // If user already exists, we might get an error, check if it's already there
       if (authError.message.includes("already registered") || authError.status === 422) {
         return NextResponse.json({
+          success: true,
           message: "Tài khoản đã tồn tại trước đó",
           username,
           email,
+          password: "YoungHouse2026",
         });
       }
       console.error("Auth Admin Error:", authError);
@@ -92,32 +94,32 @@ export async function POST(req: NextRequest) {
 
     const userId = authData.user.id;
 
-    // 3. Create profile in public.profiles table (bypassing RLS)
+    // 3. Create/update profile in public.profiles table (bypassing RLS)
     const { error: profileError } = await supabaseAdmin
       .from("profiles")
-      .insert({
+      .upsert({
         id: userId,
         name: `Phòng ${roomName} (${houseTitle})`,
         phone: username, // Use username as key identifier
         role: "tenant",
         dob: null,
-      });
+      }, { onConflict: 'id' });
 
     if (profileError) {
       console.error("Profile creation failed:", profileError);
     }
 
-    // 4. Create tenant profile in public.tenant_profiles (bypassing RLS)
+    // 4. Create/update tenant profile in public.tenant_profiles (bypassing RLS)
     const { error: tenantProfileError } = await supabaseAdmin
       .from("tenant_profiles")
-      .insert({
+      .upsert({
         profile_id: userId,
         metadata: {
           username: username,
           room_unit_id: roomUnitId,
           notes: `Tài khoản tự động tạo cho phòng ${roomName} - ${houseTitle}`,
         },
-      });
+      }, { onConflict: 'profile_id' });
 
     if (tenantProfileError) {
       console.error("Tenant Profile creation failed:", tenantProfileError);

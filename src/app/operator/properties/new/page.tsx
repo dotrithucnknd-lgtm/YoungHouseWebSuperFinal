@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -6,7 +6,7 @@ import { ArrowLeftIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
-import { uploadImage, uploadMultipleImages, DatabaseNearbyPlace, addRoomUniversities } from "@/lib/supabaseServices";
+import { uploadImage, uploadMultipleImages, DatabaseNearbyPlace } from "@/lib/supabaseServices";
 import UniversitySelector from "@/components/UniversitySelector";
 import { canUserCreateRooms, printRLSDebugInfo } from "@/utils/debugRLS";
 
@@ -294,107 +294,65 @@ export default function NewPropertyPage() {
         uploadedImageUrls = urls;
       }
 
-      // Create property (room)
-      const { data: roomData, error } = await supabase
-        .from('rooms')
-        .insert({
-          owner_id: user.id,
-          title: formData.title.trim(),
-          description: formData.description.trim() || null,
-          address: formData.address.trim(),
-          city: formData.city.trim() || null,
-          district: formData.district.trim() || null,
-          ward: formData.ward.trim() || null,
-          price: parseFloat(formData.price),
-          area: parseFloat(formData.area),
-          status: formData.status,
-          banner: bannerUrl || null,
-          maps: formData.maps.trim() || null,
-        })
-        .select()
-        .single();
+      // Get session token for server API
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Phiên đăng nhập hết hạn, vui lòng đăng nhập lại');
 
-      if (error) {
-        console.error('Error creating property:', error);
-        console.error('Error details:', {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-          hint: error.hint
-        });
-        await printRLSDebugInfo();
-        alert(`Có lỗi xảy ra: ${error.message}\n\nVui lòng kiểm tra console và xem file FIX_RLS_ERROR_GUIDE.md để biết cách fix.`);
-        return;
-      }
-
-      // Add amenities
-      if (selectedAmenities.size > 0 && roomData) {
-        const amenityInserts = Array.from(selectedAmenities).map(amenityId => ({
-          room_id: roomData.id,
-          amenity_id: amenityId
-        }));
-
-        await supabase
-          .from('room_amenities')
-          .insert(amenityInserts);
-      }
-
-      // Add images (combine uploaded files and URLs)
-      const validImageUrls = imageUrls.map(u => u.trim()).filter(Boolean);
+      // Combine image URLs
+      const validImageUrls = imageUrls.map((u: string) => u.trim()).filter(Boolean);
       const allImageUrls = [...uploadedImageUrls, ...validImageUrls];
-      
-      if (allImageUrls.length > 0 && roomData) {
-        const imageInserts = allImageUrls.map(url => ({
-          room_id: roomData.id,
-          image_url: url
-        }));
 
-        await supabase
-          .from('room_images')
-          .insert(imageInserts);
-      }
-
-      // Add nearby places
-      const validNearbyPlaces = nearbyPlaces.filter(place => 
-        place.name.trim() && place.distance_km
-      );
-
-      if (validNearbyPlaces.length > 0 && roomData) {
-        const nearbyPlaceInserts = validNearbyPlaces.map(place => ({
-          room_id: roomData.id,
+      // Nearby places
+      const validNearbyPlaces = nearbyPlaces
+        .filter((place: any) => place.name.trim() && place.distance_km)
+        .map((place: any) => ({
           name: place.name.trim(),
           category: place.category,
           distance_km: parseFloat(place.distance_km),
-          description: place.description.trim() || null
+          description: place.description.trim() || null,
         }));
 
-        await supabase
-          .from('nearby_places')
-          .insert(nearbyPlaceInserts);
-      }
-
-      // Add university associations
-      if (selectedUniversities.length > 0 && roomData) {
-        const { error: universityError } = await addRoomUniversities(roomData.id, selectedUniversities);
-        if (universityError) console.error('Error adding university associations:', universityError);
-      }
-
-      // Add video reviews
-      const validVideoReviews = videoReviews.filter(video => 
-        video.source_url.trim()
-      );
-
-      if (validVideoReviews.length > 0 && roomData) {
-        const videoInserts = validVideoReviews.map(video => ({
-          room_id: roomData.id,
+      // Video reviews
+      const validVideoReviews = videoReviews
+        .filter((video: any) => video.source_url.trim())
+        .map((video: any) => ({
           source_url: video.source_url.trim(),
           display_title: video.display_title.trim() || null,
-          sort_order: video.sort_order
+          sort_order: video.sort_order,
         }));
 
-        await supabase
-          .from('room_video_reviews')
-          .insert(videoInserts);
+      const response = await fetch('/api/rooms/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          phone: formData.phone,
+          room: {
+            title: formData.title.trim(),
+            description: formData.description.trim() || null,
+            address: formData.address.trim(),
+            city: formData.city.trim() || null,
+            district: formData.district.trim() || null,
+            ward: formData.ward.trim() || null,
+            price: parseFloat(formData.price),
+            area: parseFloat(formData.area),
+            status: formData.status,
+            banner: bannerUrl || null,
+            maps: formData.maps.trim() || null,
+          },
+          amenities: Array.from(selectedAmenities),
+          imageUrls: allImageUrls,
+          nearbyPlaces: validNearbyPlaces,
+          universities: selectedUniversities,
+          videoReviews: validVideoReviews,
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || 'Có lỗi xảy ra khi tạo nhà trọ');
       }
 
       alert('Tạo nhà trọ thành công!');

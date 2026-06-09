@@ -497,6 +497,23 @@ export async function fetchRoomById(roomId: string): Promise<StayDataType | null
   }
 }
 
+// Fetch a single room by ID via server API (bypasses RLS for image visibility)
+export async function fetchRoomByIdAdmin(roomId: string): Promise<StayDataType | null> {
+  try {
+    const response = await fetch(`/api/rooms/${roomId}`);
+    if (!response.ok) return null;
+    const { room } = await response.json();
+    if (!room) return null;
+    const reservedSet = await fetchReservedRoomIdSet([String(room.id)]);
+    return transformRoomToStayData(room as RoomWithRelations, {
+      reserved: reservedSet.has(String(room.id)),
+    });
+  } catch (error) {
+    console.error('Error in fetchRoomByIdAdmin:', error);
+    return null;
+  }
+}
+
 // Fetch amenities (names) for a room
 export async function fetchRoomAmenities(roomId: string): Promise<string[]> {
   try {
@@ -1266,10 +1283,10 @@ export async function loginWithTwitter(): Promise<{ user: AuthUser | null; error
 
 // ==================== FILE UPLOAD FUNCTIONS ====================
 
-// Upload single image to Supabase Storage
+// Upload single image to Supabase Storage (via server API to bypass RLS)
 export async function uploadImage(file: File, bucket: string = 'room-images'): Promise<{ url: string | null; error: string | null }> {
   try {
-    // Dynamic import to avoid bundling browser-only lib on server build
+    // Compress before sending
     const { compressImage } = await import('@/utils/imageCompression');
     const optimized = await compressImage(file, {
       maxWidthOrHeight: 1024,
@@ -1277,27 +1294,22 @@ export async function uploadImage(file: File, bucket: string = 'room-images'): P
       quality: 0.8,
     });
 
-    const fileExt = optimized.name.split('.').pop();
-    const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
-    const filePath = `${fileName}`;
+    const formData = new FormData();
+    formData.append('file', optimized);
+    formData.append('bucket', bucket);
 
-    const { data, error } = await supabase.storage
-      .from(bucket)
-      .upload(filePath, optimized, {
-        cacheControl: '3600',
-        upsert: false
-      });
+    const response = await fetch('/api/storage/upload', {
+      method: 'POST',
+      body: formData,
+    });
 
-    if (error) {
-      return { url: null, error: error.message };
+    const result = await response.json();
+
+    if (!response.ok || result.error) {
+      return { url: null, error: result.error || 'Upload thất bại' };
     }
 
-    // Get public URL
-    const { data: { publicUrl } } = supabase.storage
-      .from(bucket)
-      .getPublicUrl(filePath);
-
-    return { url: publicUrl, error: null };
+    return { url: result.url, error: null };
   } catch (error) {
     console.error('Error in uploadImage:', error);
     return { url: null, error: 'Có lỗi xảy ra khi upload ảnh' };

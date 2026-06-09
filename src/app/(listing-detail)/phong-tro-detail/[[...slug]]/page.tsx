@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { FC, Fragment, useState, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
@@ -31,7 +31,8 @@ import {
 import StayDatesRangeInput from "../StayDatesRangeInput";
 import GuestsInput from "../GuestsInput";
 import { 
-  fetchRoomById, 
+  fetchRoomById,
+  fetchRoomByIdAdmin, 
   fetchRooms, 
   fetchRoomAmenities,
   fetchRoomFeedbacks,
@@ -85,7 +86,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, ''); // remove accents for robust matching
     if (n.includes("wifi") || n.includes("internet")) return "la-wifi";
-    if (n.includes("parking") || n.includes("dau xe") || n.includes("cho de xe")) return "la-parking";
+    if (n.includes("parking") || n.includes("dau xe") || n.includes("cho de xe") || n.includes("bai de xe") || n.includes("xe rieng")) return "la-motorcycle";
     if (n.includes("kitchen") || n.includes("bep")) return "la-utensils";
     // Air conditioner (explicit checks)
     if (
@@ -99,13 +100,13 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
       n.includes("may lanh") ||
       n.includes("may dieu hoa")
     ) return "la-snowflake";
-    if (n.includes("heater") || n.includes("nóng")) return "la-fire";
+    if (n.includes("heater") || n.includes("nong") || n.includes("binh nong")) return "la-fire";
     if (n.includes("tv") || n.includes("tivi")) return "la-tv";
-    if (n.includes("pool") || n.includes("hồ bơi")) return "la-swimming-pool";
-    if (n.includes("balcony") || n.includes("ban công")) return "la-door-open";
-    if (n.includes("pet") || n.includes("thú cưng")) return "la-paw";
-    if (n.includes("elevator") || n.includes("thang máy")) return "la-elevator";
-    if (n.includes("security") || n.includes("bảo vệ")) return "la-shield-alt";
+    if (n.includes("pool") || n.includes("ho boi")) return "la-swimming-pool";
+    if (n.includes("balcony") || n.includes("ban cong") || n.includes("san thuong")) return "la-door-open";
+    if (n.includes("pet") || n.includes("thu cung")) return "la-paw";
+    if (n.includes("elevator") || n.includes("thang may")) return "la-elevator";
+    if (n.includes("security") || n.includes("bao ve") || n.includes("camera") || n.includes("an ninh")) return "la-video";
     // Washing machine / laundry
     if (
       n.includes("may giat") ||
@@ -126,7 +127,17 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
       n.includes("tam rieng") ||
       n.includes("tam")
     ) return "la-shower";
+    // Toilet/ve sinh
+    if (n.includes("ve sinh") || n.includes("toilet") || n.includes("restroom")) return "la-restroom";
     if (n.includes("fridge") || n.includes("refrigerator") || n.includes("tu lanh")) return "la-ice-cream";
+    // Bed/nem
+    if (n.includes("giuong") || n.includes("bed") || n.includes("nem")) return "la-bed";
+    // Wardrobe/tu ao quan
+    if (n.includes("tu ao") || n.includes("wardrobe") || n.includes("tu quan ao")) return "la-columns";
+    // Mezzanine/gac lung
+    if (n.includes("gac lung") || n.includes("mezzanine") || n.includes("gac")) return "la-layer-group";
+    // Garden/san vuon
+    if (n.includes("san vuon") || n.includes("garden") || n.includes("leaf") || n.includes("vuon")) return "la-leaf";
     // fallback icon
     return "la-check-circle";
   };
@@ -148,7 +159,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
     if (!idFromQuery || idFromPath) return;
     let cancelled = false;
     (async () => {
-      const room = await fetchRoomById(idFromQuery);
+      const room = await fetchRoomByIdAdmin(idFromQuery);
       if (cancelled || !room?.id) return;
       const qs = new URLSearchParams();
       const modal = searchParams?.get("modal");
@@ -182,7 +193,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
           return;
         }
         if (roomId) {
-          const room = await fetchRoomById(roomId);
+          const room = await fetchRoomByIdAdmin(roomId);
           setRoomData(room);
           if (room?.id) {
             const names = await fetchRoomAmenities(String(room.id));

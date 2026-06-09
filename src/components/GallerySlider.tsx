@@ -77,7 +77,7 @@ export default function GallerySlider({
         <div className={`w-full overflow-hidden ${galleryClass}`}>
           <Link
             href={href}
-            className={`relative block w-full h-full ${ratioClass}`}
+            className={`relative block w-full ${ratioClass}`}
           >
             <AnimatePresence initial={false} custom={direction}>
               <motion.div
@@ -95,7 +95,7 @@ export default function GallerySlider({
                   alt="listing card gallery"
                   className={`object-cover ${imageClass}`}
                   onLoadingComplete={() => setLoaded(true)}
-                  sizes="(max-width: 1025px) 100vw, 300px"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
                 />
               </motion.div>
             </AnimatePresence>

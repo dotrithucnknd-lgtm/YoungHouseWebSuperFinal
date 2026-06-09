@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -6,7 +6,7 @@ import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
-import { uploadImage, uploadMultipleImages, DatabaseNearbyPlace, addRoomUniversities } from "@/lib/supabaseServices";
+import { uploadImage, uploadMultipleImages } from "@/lib/supabaseServices";
 import UniversitySelector from "@/components/UniversitySelector";
 
 export default function EditPropertyPage() {
@@ -37,8 +37,7 @@ export default function EditPropertyPage() {
   const [imageUrls, setImageUrls] = useState<string[]>(['']);
   const [selectedUniversities, setSelectedUniversities] = useState<string[]>([]);
   const [nearbyPlaces, setNearbyPlaces] = useState<Array<{
-    id?: string; name: string; category: DatabaseNearbyPlace['category'];
-    distance_km: string; description: string;
+    id?: string; name: string; category: string; distance_km: string; description: string;
   }>>([]);
   const [videoReviews, setVideoReviews] = useState<Array<{
     id?: string; source_url: string; display_title: string; sort_order: number;
@@ -53,14 +52,22 @@ export default function EditPropertyPage() {
   const loadData = async () => {
     setPageLoading(true);
     try {
-      // Fetch room
-      const { data: room, error } = await supabase
-        .from("rooms").select("*").eq("id", propertyId).single();
-      if (error || !room || (room.owner_id !== user?.id && user?.role !== 'admin' && user?.role !== 'manager')) {
-        alert("Không tìm thấy nhà trọ hoặc bạn không có quyền.");
+      // Fetch room data via admin API (bypasses RLS)
+      const res = await fetch(`/api/rooms/${propertyId}`);
+      if (!res.ok) {
+        alert("Không tìm thấy nhà trọ.");
         router.push("/operator/properties");
         return;
       }
+      const { room } = await res.json();
+
+      // Permission check
+      if (room.owner_id !== user?.id && user?.role !== 'admin' && user?.role !== 'manager') {
+        alert("Bạn không có quyền chỉnh sửa nhà trọ này.");
+        router.push("/operator/properties");
+        return;
+      }
+
       setFormData({
         title: room.title || "", description: room.description || "",
         address: room.address || "", city: room.city || "",
@@ -74,49 +81,42 @@ export default function EditPropertyPage() {
         editorRef.current.innerHTML = room.description;
       }
 
-      // Fetch images
-      const { data: imgs } = await supabase
-        .from("room_images").select("id, image_url").eq("room_id", propertyId);
-      setExistingImages(imgs || []);
+      // Images from admin API
+      setExistingImages(room.room_images || []);
 
-      // Fetch amenities
+      // Amenities list (publicly readable)
       const { data: allAmenities } = await supabase.from("amenities").select("*").order("name");
       setAmenities(allAmenities || []);
-      const { data: roomAmenities } = await supabase
-        .from("room_amenities").select("amenity_id").eq("room_id", propertyId);
-      if (roomAmenities) {
-        setSelectedAmenities(new Set(roomAmenities.map((ra: any) => ra.amenity_id)));
-      }
 
-      // Fetch universities
-      const { data: unis } = await supabase
-        .from("room_universities").select("university_id").eq("room_id", propertyId);
-      if (unis) setSelectedUniversities(unis.map((u: any) => u.university_id));
+      // Selected amenities from admin API response
+      const selectedIds = (room.room_amenities || []).map((ra: any) => ra.amenity_id).filter(Boolean);
+      setSelectedAmenities(new Set(selectedIds));
 
-      // Fetch nearby places
-      const { data: places } = await supabase
-        .from("nearby_places").select("*").eq("room_id", propertyId);
-      if (places && places.length > 0) {
-        setNearbyPlaces(places.map((p: any) => ({
-          id: p.id, name: p.name, category: p.category,
-          distance_km: String(p.distance_km), description: p.description || ""
+      // Universities from admin API response
+      const uniIds = (room.room_universities || []).map((u: any) => u.university_id).filter(Boolean);
+      setSelectedUniversities(uniIds);
+
+      // Nearby places from admin API response
+      if (room.nearby_places?.length > 0) {
+        setNearbyPlaces(room.nearby_places.map((p: any) => ({
+          id: p.id, name: p.name, category: p.category || 'other',
+          distance_km: String(p.distance_km || ''), description: p.description || '',
         })));
       }
 
-      // Fetch video reviews
-      const { data: videos } = await supabase
-        .from("room_video_reviews").select("*").eq("room_id", propertyId).order("sort_order");
-      if (videos && videos.length > 0) {
-        setVideoReviews(videos.map((v: any) => ({
+      // Video reviews from admin API response
+      if (room.room_video_reviews?.length > 0) {
+        setVideoReviews(room.room_video_reviews.map((v: any) => ({
           id: v.id, source_url: v.source_url,
-          display_title: v.display_title || "", sort_order: v.sort_order
+          display_title: v.display_title || "", sort_order: v.sort_order,
         })));
       }
 
-      // Fetch owner phone
+      // Owner phone
       const { data: profile } = await supabase
         .from("profiles").select("phone").eq("id", user!.id).single();
       if (profile?.phone) setFormData(prev => ({ ...prev, phone: profile.phone }));
+
     } catch (err) {
       console.error("Error loading data:", err);
     } finally {
@@ -133,7 +133,7 @@ export default function EditPropertyPage() {
     const { name, value } = e.target;
     if (name === 'maps') {
       const srcMatch = value.match(/<iframe.*?src=["'](.*?)["']/);
-      if (srcMatch && srcMatch[1]) {
+      if (srcMatch?.[1]) {
         setFormData(prev => ({ ...prev, [name]: srcMatch[1] }));
         return;
       }
@@ -194,7 +194,7 @@ export default function EditPropertyPage() {
   const removeImageField = (idx: number) => setImageUrls(prev => prev.filter((_, i) => i !== idx));
 
   const addNearbyPlaceField = () => {
-    setNearbyPlaces(prev => [...prev, { name: '', category: 'university', distance_km: '', description: '' }]);
+    setNearbyPlaces(prev => [...prev, { name: '', category: 'other', distance_km: '', description: '' }]);
   };
   const removeNearbyPlaceField = (idx: number) => {
     setNearbyPlaces(prev => prev.filter((_, i) => i !== idx));
@@ -222,39 +222,15 @@ export default function EditPropertyPage() {
 
     setLoading(true);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Phiên đăng nhập hết hạn, vui lòng đăng nhập lại');
+
       // Upload new banner if changed
       let bannerUrl = currentBanner;
       if (bannerFile) {
         const { url, error: uploadError } = await uploadImage(bannerFile, 'room-images');
         if (uploadError) throw new Error('Upload banner thất bại: ' + uploadError);
         if (url) bannerUrl = url;
-      }
-
-      // Update room
-      const { error } = await supabase.from('rooms').update({
-        title: formData.title.trim(),
-        description: formData.description.trim() || null,
-        address: formData.address.trim(),
-        city: formData.city.trim() || null,
-        district: formData.district.trim() || null,
-        ward: formData.ward.trim() || null,
-        price: parseFloat(formData.price),
-        area: parseFloat(formData.area) || null,
-        status: formData.status,
-        banner: bannerUrl || null,
-        maps: formData.maps.trim() || null,
-      }).eq('id', propertyId);
-
-      if (error) throw new Error('Lỗi cập nhật: ' + error.message);
-
-      // Update phone
-      if (formData.phone.trim()) {
-        await supabase.from('profiles').update({ phone: formData.phone.trim() }).eq('id', user.id);
-      }
-
-      // Delete removed images
-      if (imagesToDelete.length > 0) {
-        await supabase.from('room_images').delete().in('id', imagesToDelete);
       }
 
       // Upload new image files
@@ -265,52 +241,57 @@ export default function EditPropertyPage() {
         uploadedImageUrls = urls;
       }
 
-      // Add new images (uploaded + URLs)
+      // Combine new image URLs
       const validImageUrls = imageUrls.map(u => u.trim()).filter(Boolean);
       const allNewImages = [...uploadedImageUrls, ...validImageUrls];
-      if (allNewImages.length > 0) {
-        await supabase.from('room_images').insert(
-          allNewImages.map(url => ({ room_id: propertyId, image_url: url }))
-        );
-      }
 
-      // Update amenities - delete old, insert new
-      await supabase.from('room_amenities').delete().eq('room_id', propertyId);
-      if (selectedAmenities.size > 0) {
-        await supabase.from('room_amenities').insert(
-          Array.from(selectedAmenities).map(amenityId => ({ room_id: propertyId, amenity_id: amenityId }))
-        );
-      }
+      // Valid nearby places
+      const validNearbyPlaces = nearbyPlaces
+        .filter(p => p.name.trim() && p.distance_km)
+        .map(({ id: _id, ...p }) => ({
+          name: p.name.trim(),
+          category: p.category,
+          distance_km: parseFloat(p.distance_km),
+          description: p.description.trim() || null,
+        }));
 
-      // Update universities
-      await supabase.from('room_universities').delete().eq('room_id', propertyId);
-      if (selectedUniversities.length > 0) {
-        await addRoomUniversities(propertyId, selectedUniversities);
-      }
+      // Valid video reviews
+      const validVideos = videoReviews
+        .filter(v => v.source_url.trim())
+        .map(({ id: _id, ...v }) => v); // strip client-side ids
 
-      // Update nearby places
-      await supabase.from('nearby_places').delete().eq('room_id', propertyId);
-      const validPlaces = nearbyPlaces.filter(p => p.name.trim() && p.distance_km);
-      if (validPlaces.length > 0) {
-        await supabase.from('nearby_places').insert(
-          validPlaces.map(p => ({
-            room_id: propertyId, name: p.name.trim(), category: p.category,
-            distance_km: parseFloat(p.distance_km), description: p.description.trim() || null
-          }))
-        );
-      }
+      const response = await fetch(`/api/rooms/${propertyId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          phone: formData.phone,
+          room: {
+            title: formData.title.trim(),
+            description: formData.description.trim() || null,
+            address: formData.address.trim(),
+            city: formData.city.trim() || null,
+            district: formData.district.trim() || null,
+            ward: formData.ward.trim() || null,
+            price: parseFloat(formData.price),
+            area: parseFloat(formData.area) || null,
+            status: formData.status,
+            banner: bannerUrl || null,
+            maps: formData.maps.trim() || null,
+          },
+          amenities: Array.from(selectedAmenities),
+          newImageUrls: allNewImages,
+          imagesToDelete,
+          universities: selectedUniversities,
+          nearbyPlaces: validNearbyPlaces,
+          videoReviews: validVideos,
+        }),
+      });
 
-      // Update video reviews
-      await supabase.from('room_video_reviews').delete().eq('room_id', propertyId);
-      const validVideos = videoReviews.filter(v => v.source_url.trim());
-      if (validVideos.length > 0) {
-        await supabase.from('room_video_reviews').insert(
-          validVideos.map(v => ({
-            room_id: propertyId, source_url: v.source_url.trim(),
-            display_title: v.display_title.trim() || null, sort_order: v.sort_order
-          }))
-        );
-      }
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Có lỗi xảy ra khi cập nhật');
 
       alert('Cập nhật nhà trọ thành công!');
       router.push(`/operator/properties/${propertyId}`);
@@ -424,7 +405,6 @@ export default function EditPropertyPage() {
                   className="w-full px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus:ring-2 focus:ring-green-500 focus:border-transparent" />
               </div>
             </div>
-
             <div>
               <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">Link Google Maps</label>
               <input type="text" name="maps" value={formData.maps} onChange={handleInputChange} placeholder="URL hoặc dán mã iframe"
@@ -450,7 +430,6 @@ export default function EditPropertyPage() {
           {/* Images */}
           <div className="bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 space-y-4">
             <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">Ảnh phòng</h3>
-            {/* Existing images */}
             {existingImages.length > 0 && (
               <div className="grid grid-cols-3 gap-3">
                 {existingImages.map(img => (
@@ -462,7 +441,6 @@ export default function EditPropertyPage() {
                 ))}
               </div>
             )}
-
             <div>
               <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">Upload ảnh mới</label>
               <input type="file" accept="image/*" multiple onChange={handleImageFilesChange}
@@ -488,20 +466,26 @@ export default function EditPropertyPage() {
             <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">Khu vực xung quanh</h3>
             {nearbyPlaces.map((place, idx) => (
               <div key={idx} className="grid grid-cols-4 gap-2 items-end">
-                <input type="text" value={place.name} onChange={(e) => handleNearbyPlaceChange(idx, 'name', e.target.value)} placeholder="Tên"
+                <input type="text" value={place.name} onChange={(e) => handleNearbyPlaceChange(idx, 'name', e.target.value)} placeholder="Tên địa điểm"
                   className="px-3 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm" />
                 <select value={place.category} onChange={(e) => handleNearbyPlaceChange(idx, 'category', e.target.value)}
                   className="px-3 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm">
-                  <option value="university">Trường ĐH</option><option value="hospital">Bệnh viện</option>
-                  <option value="supermarket">Siêu thị</option><option value="bus_stop">Bến xe</option>
-                  <option value="restaurant">Nhà hàng</option><option value="other">Khác</option>
+                  <option value="university">Trường ĐH</option>
+                  <option value="hospital">Bệnh viện</option>
+                  <option value="supermarket">Siêu thị</option>
+                  <option value="bus_stop">Bến xe</option>
+                  <option value="restaurant">Nhà hàng</option>
+                  <option value="other">Khác</option>
                 </select>
-                <input type="number" value={place.distance_km} onChange={(e) => handleNearbyPlaceChange(idx, 'distance_km', e.target.value)} placeholder="km" step="0.1"
+                <input type="number" value={place.distance_km} onChange={(e) => handleNearbyPlaceChange(idx, 'distance_km', e.target.value)}
+                  placeholder="km" step="0.1" min="0"
                   className="px-3 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm" />
-                <button type="button" onClick={() => removeNearbyPlaceField(idx)} className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg text-sm">Xóa</button>
+                <button type="button" onClick={() => removeNearbyPlaceField(idx)}
+                  className="px-3 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-sm">Xóa</button>
               </div>
             ))}
-            <button type="button" onClick={addNearbyPlaceField} className="text-sm text-green-600 hover:text-green-700 font-medium">+ Thêm địa điểm</button>
+            <button type="button" onClick={addNearbyPlaceField}
+              className="text-sm text-green-600 hover:text-green-700 font-medium">+ Thêm địa điểm</button>
           </div>
 
           {/* Video Reviews */}
@@ -567,4 +551,3 @@ export default function EditPropertyPage() {
     </div>
   );
 }
-

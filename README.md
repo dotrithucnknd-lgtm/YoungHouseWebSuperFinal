@@ -45,6 +45,16 @@ sequenceDiagram
 | **5** | **Tenant** (Khách thuê trọ) | `tenant@younghouse.vn` | `TenantPassword123` | Tra cứu hợp đồng cá nhân, xem hóa đơn hàng tháng, gửi phiếu yêu cầu sửa chữa hỏng hóc. |
 | **6** | **User** (Khách vãng lai) | `user@younghouse.vn` | `UserPassword123` | Xem danh sách phòng trống công khai, gửi lịch hẹn xem phòng. |
 
+```
+- email: admin@younghouse.vn | password: [PASSWORD] | role: admin
+- email: nhuong.manager@younghouse.vn | password: [PASSWORD] | role: manager
+- email: operator@younghouse.vn | password: [PASSWORD] | role: operator
+- email: sales@younghouse.vn | password: [PASSWORD] | role: sales
+- email: tenant@younghouse.vn | password: [PASSWORD] | role: tenant
+- email: user@younghouse.vn | password: [PASSWORD] | role: user
+- email: staff_yh@gmail.com | password: [123456] | role: staff
+```
+
 ---
 
 ## 3. Kịch bản SQL Khởi tạo tự động các Tài khoản (Seed SQL)

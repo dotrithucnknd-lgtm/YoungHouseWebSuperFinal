@@ -19,25 +19,71 @@ export async function GET(req: NextRequest) {
       }
     );
 
-    // 1. Update room unit
-    const { error: updateError } = await supabaseAdmin
+    // 1. Fetch all room units with a tenant linked
+    const { data: roomUnits, error: roomError } = await supabaseAdmin
       .from("room_units")
-      .update({ current_renter_id: "a7205502-9ca9-418a-834a-cc0c7ad6fcb7" })
-      .eq("id", "0bc2a9cc-a1b5-4cba-9826-9a7e69984cea");
+      .select("id, name, current_renter_id")
+      .not("current_renter_id", "is", null);
 
-    if (updateError) {
-      return NextResponse.json({ error: "Update failed: " + updateError.message }, { status: 500 });
+    if (roomError) {
+      return NextResponse.json({ error: "Failed to fetch room units: " + roomError.message }, { status: 500 });
     }
 
-    // 2. Also ensure that the profile has the role 'tenant' so RLS policies check role correctly
-    const { error: profileError } = await supabaseAdmin
-      .from("profiles")
-      .update({ role: "tenant" })
-      .eq("id", "a7205502-9ca9-418a-834a-cc0c7ad6fcb7");
+    // 2. Fetch all active contracts to ensure contract renters are also updated
+    const { data: contracts, error: contractError } = await supabaseAdmin
+      .from("contracts")
+      .select("id, renter_id")
+      .not("renter_id", "is", null);
+
+    if (contractError) {
+      return NextResponse.json({ error: "Failed to fetch contracts: " + contractError.message }, { status: 500 });
+    }
+
+    // Combine all tenant IDs that need promoting
+    const tenantIds = new Set<string>();
+    for (const unit of roomUnits || []) {
+      if (unit.current_renter_id) tenantIds.add(unit.current_renter_id);
+    }
+    for (const contract of contracts || []) {
+      if (contract.renter_id) tenantIds.add(contract.renter_id);
+    }
+
+    const repairedProfiles: string[] = [];
+    const skippedProfiles: string[] = [];
+
+    // 3. Promote all found profile IDs to 'tenant' if they are currently 'user'
+    for (const profileId of tenantIds) {
+      const { data: profile, error: fetchError } = await supabaseAdmin
+        .from("profiles")
+        .select("id, name, role")
+        .eq("id", profileId)
+        .single();
+
+      if (fetchError || !profile) {
+        continue;
+      }
+
+      // Only promote if it is currently 'user' to avoid modifying admins/operators by accident
+      if (profile.role === "user") {
+        const { error: updateError } = await supabaseAdmin
+          .from("profiles")
+          .update({ role: "tenant" })
+          .eq("id", profileId);
+
+        if (!updateError) {
+          repairedProfiles.push(`${profile.name || "Unknown"} (${profileId})`);
+        }
+      } else {
+        skippedProfiles.push(`${profile.name || "Unknown"} (Role is already '${profile.role}')`);
+      }
+    }
 
     return NextResponse.json({
       success: true,
-      message: "Room P101 successfully linked to P101Yh1 and profile role updated to tenant!",
+      summary: `Scanned ${tenantIds.size} tenant profile IDs.`,
+      repaired_count: repairedProfiles.length,
+      repaired: repairedProfiles,
+      skipped: skippedProfiles,
     });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });

@@ -18,6 +18,9 @@ function customColors(cssVar) {
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
   darkMode: "class",
+  corePlugins: {
+    aspectRatio: false,
+  },
   theme: {
     container: {
       center: true,
