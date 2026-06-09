@@ -68,6 +68,8 @@ const PageLogin: FC<PageLoginProps> = ({}) => {
             router.push('/tenant');
           } else if (user.role === 'staff') {
             router.push('/staff');
+          } else if (user.role === 'sales') {
+            router.push('/ctv');
           } else {
             router.push('/');
           }

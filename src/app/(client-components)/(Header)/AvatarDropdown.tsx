@@ -150,6 +150,25 @@ export default function AvatarDropdown({ className = "" }: Props) {
                       </>
                     )}
 
+                    {/* ------------------ Sales portal quicklink --------------------- */}
+                    {user?.role === "sales" && (
+                      <>
+                        <Link
+                          href={"/ctv"}
+                          className="flex items-center p-2 -m-3 transition duration-150 ease-in-out rounded-lg bg-teal-50 dark:bg-teal-950/30 text-teal-600 dark:text-teal-400 border border-teal-200/30 hover:bg-teal-100 dark:hover:bg-teal-950/50 focus:outline-none"
+                          onClick={() => close()}
+                        >
+                          <div className="flex items-center justify-center flex-shrink-0 text-teal-600 dark:text-teal-400">
+                            <span className="text-xl">💼</span>
+                          </div>
+                          <div className="ml-4">
+                            <p className="text-sm font-bold">{"Dashboard Sales (/ctv)"}</p>
+                          </div>
+                        </Link>
+                        <div className="w-full border-b border-neutral-200 dark:border-neutral-700" />
+                      </>
+                    )}
+
                     {/* ------------------ Tenant portal quicklink --------------------- */}
                     {user?.role === "tenant" && (
                       <>

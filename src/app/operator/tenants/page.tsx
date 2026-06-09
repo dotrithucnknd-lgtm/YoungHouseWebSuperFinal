@@ -5,6 +5,8 @@ import { MagnifyingGlassIcon, PlusIcon, PencilSquareIcon, TrashIcon } from "@her
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { fetchOwnerTenants, deleteTenant, type TenantWithDetails } from "@/lib/landlordServices";
+import { fetchRooms } from "@/lib/supabaseServices";
+import { sortByTitle } from "@/utils/sortProperties";
 
 export default function TenantsPage() {
   const { user } = useAuth();
@@ -13,12 +15,34 @@ export default function TenantsPage() {
   const [loading, setLoading] = useState(true);
   const [stayStatusFilter, setStayStatusFilter] = useState<string>("all");
   const [tempResidenceFilter, setTempResidenceFilter] = useState<string>("all");
+  const [filterProperty, setFilterProperty] = useState("all");
+  const [properties, setProperties] = useState<{ id: string; title: string }[]>([]);
 
   useEffect(() => {
     if (user?.id) {
       loadTenants();
+      loadProperties();
     }
   }, [user]);
+
+  const loadProperties = async () => {
+    if (!user?.id) return;
+    try {
+      const rooms = await fetchRooms();
+      const ownerProperties = rooms.filter(
+        (p) =>
+          p.author.id === user.id ||
+          user.role === "admin" ||
+          user.role === "manager" ||
+          user.role === "operator"
+      );
+      setProperties(
+        sortByTitle(ownerProperties.map((p) => ({ id: String(p.id), title: p.title })))
+      );
+    } catch (error) {
+      console.error("Error loading properties:", error);
+    }
+  };
 
   const loadTenants = async () => {
     if (!user?.id) return;
@@ -47,7 +71,12 @@ export default function TenantsPage() {
   };
 
   // Filter tenants
-  const filteredTenants = tenants.filter(tenant => {
+  const propertyFilteredTenants = tenants.filter(
+    (tenant) =>
+      filterProperty === "all" || tenant.property_ids?.includes(filterProperty)
+  );
+
+  const filteredTenants = propertyFilteredTenants.filter(tenant => {
     const matchesSearch = 
       tenant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       tenant.phone.includes(searchTerm) ||
@@ -107,7 +136,7 @@ export default function TenantsPage() {
       {/* Filter Section */}
       <div className="bg-white dark:bg-neutral-800 p-5 rounded-xl border border-neutral-200 dark:border-neutral-700 shadow-sm">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-          <div className="md:col-span-6">
+          <div className="md:col-span-4">
             <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1 uppercase tracking-wider">Tìm kiếm</label>
             <div className="relative">
               <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
@@ -119,6 +148,19 @@ export default function TenantsPage() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1 uppercase tracking-wider">Nhà trọ</label>
+            <select
+              className="w-full px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900"
+              value={filterProperty}
+              onChange={(e) => setFilterProperty(e.target.value)}
+            >
+              <option value="all">Tất cả nhà trọ</option>
+              {properties.map((p) => (
+                <option key={p.id} value={p.id}>{p.title}</option>
+              ))}
+            </select>
           </div>
           <div className="md:col-span-2">
             <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1 uppercase tracking-wider">Lưu trú</label>
@@ -160,24 +202,24 @@ export default function TenantsPage() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white dark:bg-neutral-800 p-4 rounded-xl border border-neutral-200 dark:border-neutral-700">
           <p className="text-sm text-neutral-500 dark:text-neutral-400">Tổng khách thuê</p>
-          <p className="text-2xl font-bold text-neutral-900 dark:text-white mt-1">{tenants.length}</p>
+          <p className="text-2xl font-bold text-neutral-900 dark:text-white mt-1">{propertyFilteredTenants.length}</p>
         </div>
         <div className="bg-white dark:bg-neutral-800 p-4 rounded-xl border border-neutral-200 dark:border-neutral-700">
           <p className="text-sm text-neutral-500 dark:text-neutral-400">Đang thuê</p>
           <p className="text-2xl font-bold text-primary-6000 mt-1">
-            {tenants.filter(t => t.stay_status === 'renting').length}
+            {propertyFilteredTenants.filter(t => t.stay_status === 'renting').length}
           </p>
         </div>
         <div className="bg-white dark:bg-neutral-800 p-4 rounded-xl border border-neutral-200 dark:border-neutral-700">
           <p className="text-sm text-neutral-500 dark:text-neutral-400">Đã đăng ký tạm trú</p>
           <p className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
-            {tenants.filter(t => t.has_temporary_residence).length}
+            {propertyFilteredTenants.filter(t => t.has_temporary_residence).length}
           </p>
         </div>
         <div className="bg-white dark:bg-neutral-800 p-4 rounded-xl border border-neutral-200 dark:border-neutral-700">
           <p className="text-sm text-neutral-500 dark:text-neutral-400">Chưa đăng ký</p>
           <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400 mt-1">
-            {tenants.filter(t => !t.has_temporary_residence).length}
+            {propertyFilteredTenants.filter(t => !t.has_temporary_residence).length}
           </p>
         </div>
       </div>

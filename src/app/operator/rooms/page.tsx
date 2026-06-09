@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { fetchOwnerRoomUnits, fetchAllRoomUnits, createRoomUnit, deleteRoomUnit, type RoomUnitWithDetails } from "@/lib/landlordServices";
 import { fetchRooms } from "@/lib/supabaseServices";
+import { sortByTitle } from "@/utils/sortProperties";
 
 export default function RoomsPage() {
   const { user } = useAuth();
@@ -32,12 +33,12 @@ export default function RoomsPage() {
     try {
       // Load properties (rooms table - acting as buildings)
       const propertiesData = await fetchRooms();
-      const ownerProperties = propertiesData.filter(p => 
+      const ownerProperties = sortByTitle(propertiesData.filter(p => 
         p.author.id === user.id || 
         user.role === 'admin' || 
         user.role === 'manager' ||
         user.role === 'operator'
-      );
+      ));
       setProperties(ownerProperties);
       
       // Auto-expand first property

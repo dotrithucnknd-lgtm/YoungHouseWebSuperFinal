@@ -283,6 +283,39 @@ export async function fetchAllRoomUnits(): Promise<RoomUnitWithDetails[]> {
   }
 }
 
+/** Sync building price range from all room unit rent prices */
+export async function syncPropertyPriceRange(roomId: string): Promise<{ error: string | null }> {
+  try {
+    const { data: units, error } = await supabase
+      .from('room_units')
+      .select('rent_price')
+      .eq('room_id', roomId)
+      .not('rent_price', 'is', null);
+
+    if (error) return { error: error.message };
+    if (!units?.length) return { error: null };
+
+    const prices = units
+      .map((u) => Number(u.rent_price))
+      .filter((p) => p > 0);
+
+    if (!prices.length) return { error: null };
+
+    const min = Math.min(...prices);
+    const max = Math.max(...prices);
+
+    const { error: updateError } = await supabase
+      .from('rooms')
+      .update({ price: min, min_price: min, max_price: max })
+      .eq('id', roomId);
+
+    return { error: updateError?.message ?? null };
+  } catch (error) {
+    console.error('Error in syncPropertyPriceRange:', error);
+    return { error: 'Có lỗi khi cập nhật khoảng giá nhà trọ' };
+  }
+}
+
 // Create a new room unit
 export async function createRoomUnit(roomUnit: Omit<RoomUnit, 'id' | 'created_at' | 'updated_at'>): Promise<{ data: RoomUnit | null; error: string | null }> {
   try {
@@ -294,6 +327,10 @@ export async function createRoomUnit(roomUnit: Omit<RoomUnit, 'id' | 'created_at
 
     if (error) {
       return { data: null, error: error.message };
+    }
+
+    if (data?.room_id) {
+      await syncPropertyPriceRange(data.room_id);
     }
 
     return { data, error: null };
@@ -313,6 +350,16 @@ export async function updateRoomUnit(id: string, updates: Partial<RoomUnit>): Pr
 
     if (error) {
       return { error: error.message };
+    }
+
+    const { data: unit } = await supabase
+      .from('room_units')
+      .select('room_id')
+      .eq('id', id)
+      .single();
+
+    if (unit?.room_id) {
+      await syncPropertyPriceRange(unit.room_id);
     }
 
     return { error: null };
@@ -486,6 +533,7 @@ export async function terminateContract(id: string): Promise<{ error: string | n
       .from('contracts')
       .update({ 
         status: 'terminated',
+        actual_end_date: new Date().toISOString().split('T')[0],
         updated_at: new Date().toISOString()
       })
       .eq('id', id);
@@ -1017,6 +1065,7 @@ export interface TenantWithDetails {
   };
   has_temporary_residence: boolean;
   stay_status: 'not_rented' | 'renting' | 'moved_out';
+  property_ids?: string[];
 }
 
 /**
@@ -1109,6 +1158,13 @@ export async function fetchOwnerTenants(ownerId: string): Promise<TenantWithDeta
       // Check temporary residence from metadata
       const hasTemporaryResidence = tenantProfile.metadata?.has_temporary_residence || false;
 
+      const renterContracts = contracts?.filter(c => c.renter_id === tenantProfile.profile_id) || [];
+      const propertyIds = [...new Set(
+        renterContracts
+          .map(c => (c.room_units as { rooms?: { id: string } })?.rooms?.id)
+          .filter(Boolean) as string[]
+      )];
+
       return {
         id: profile.id,
         name: profile.name || 'N/A',
@@ -1135,6 +1191,7 @@ export async function fetchOwnerTenants(ownerId: string): Promise<TenantWithDeta
         } : undefined,
         has_temporary_residence: hasTemporaryResidence,
         stay_status: stayStatus,
+        property_ids: propertyIds,
       };
     }).filter(t => t !== null) as TenantWithDetails[];
 

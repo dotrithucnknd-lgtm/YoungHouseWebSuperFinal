@@ -13,6 +13,7 @@ import {
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { fetchRooms } from "@/lib/supabaseServices";
+import { sortByTitle } from "@/utils/sortProperties";
 import type { StayDataType } from "@/data/types";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -49,12 +50,12 @@ export default function PropertiesPage() {
     try {
       const allRooms = await fetchRooms();
       // Filter properties owned by current user OR if admin/manager/operator role see all
-      const ownerProperties = allRooms.filter(room => 
+      const ownerProperties = sortByTitle(allRooms.filter(room => 
         room.author.id === user.id || 
         user.role === 'admin' || 
         user.role === 'manager' ||
         user.role === 'operator'
-      );
+      ));
       setProperties(ownerProperties);
       setFilteredProperties(ownerProperties);
     } catch (error) {

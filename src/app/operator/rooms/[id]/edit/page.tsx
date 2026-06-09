@@ -6,7 +6,9 @@ import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
+import { syncPropertyPriceRange } from "@/lib/landlordServices";
 import { fetchRooms } from "@/lib/supabaseServices";
+import { sortByTitle } from "@/utils/sortProperties";
 
 export default function EditRoomUnitPage() {
   const { user } = useAuth();
@@ -45,7 +47,7 @@ export default function EditRoomUnitPage() {
     try {
       // 1. Fetch properties
       const data = await fetchRooms();
-      const ownerProps = data.filter(p => p.author.id === user!.id);
+      const ownerProps = sortByTitle(data.filter(p => p.author.id === user!.id));
       setProperties(ownerProps);
 
       // 2. Fetch all services of the owner
@@ -180,6 +182,10 @@ export default function EditRoomUnitPage() {
         .eq("id", roomUnitId);
 
       if (updateError) throw updateError;
+
+      if (form.room_id) {
+        await syncPropertyPriceRange(form.room_id);
+      }
 
       // 2. Refresh room unit services (delete current and insert new ones)
       await supabase

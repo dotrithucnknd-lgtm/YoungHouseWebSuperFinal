@@ -1,5 +1,6 @@
 import { supabase } from './supabaseClient';
 import { buildRoomDetailHref } from '@/utils/roomDetailUrl';
+import { formatPriceRangeLabel } from '@/utils/formatPriceRange';
 // NOTE: compressImage uses browser-only library. Import dynamically where used.
 import { StayDataType, AuthorType, TaxonomyType } from '@/data/types';
 import { Route } from '@/routers/types';
@@ -33,6 +34,8 @@ export interface DatabaseRoom {
   title: string;
   description: string;
   price: number;
+  min_price?: number | null;
+  max_price?: number | null;
   area: number;
   address: string;
   city: string;
@@ -597,12 +600,8 @@ function transformRoomToStayData(room: RoomWithRelations, opts?: { reserved?: bo
     galleryImgs.push('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop');
   }
 
-  // Format price in Vietnamese Dong
-  const priceLabel = new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-    maximumFractionDigits: 0,
-  }).format(room.price);
+  // Format price in Vietnamese Dong (supports min-max range)
+  const priceLabel = formatPriceRangeLabel(room.min_price, room.max_price, room.price);
 
   // Calculate bedrooms based on area (rough estimate)
   const bedrooms = Math.max(1, Math.round((room.area || 20) / 15));

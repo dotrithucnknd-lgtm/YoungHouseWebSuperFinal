@@ -14,13 +14,13 @@ const FAQ_ITEMS: FaqItem[] = [
     id: "branches",
     question: "Young House có những chi nhánh nào và ở đâu?",
     answer:
-      "Young House có 15 cơ sở tại khu vực Hoà Lạc, phân bố tại Tân Xã, Phú Hữu, Bình Yên, Thạch Hoà và các khu lân cận. Bạn có thể xem bản đồ và lọc theo khu vực trên trang Tìm phòng trọ.",
+      "Young House có 14 cơ sở tại khu vực Hoà Lạc, phân bố tại Tân Xã, Phú Hữu, Bình Yên. Bạn có thể xem bản đồ và lọc theo khu vực trên trang Tìm phòng trọ.",
   },
   {
     id: "price",
     question: "Giá phòng trọ Young House là bao nhiêu?",
     answer:
-      "Giá phòng dao động theo loại phòng, diện tích và cơ sở, thường từ 1,5–3,5 triệu/tháng. Mỗi tin đăng hiển thị giá rõ ràng; bạn có thể lọc theo mức giá phù hợp ngân sách.",
+      "Giá phòng dao động theo loại phòng, diện tích và cơ sở, thường từ 1,5–5triệu/tháng. Mỗi tin đăng hiển thị giá rõ ràng; bạn có thể lọc theo mức giá phù hợp ngân sách.",
   },
   {
     id: "amenities",
@@ -44,7 +44,7 @@ const FAQ_ITEMS: FaqItem[] = [
     id: "promo",
     question: "Young House có chính sách ưu đãi gì cho khách hàng mới?",
     answer:
-      "Ưu đãi thay đổi theo thời điểm và từng cơ sở (giảm cọc, tặng tháng đầu...). Liên hệ tư vấn hoặc theo dõi fanpage/Zalo để cập nhật chương trình mới nhất.",
+      "Ưu đãi thay đổi theo thời điểm. Liên hệ tư vấn hoặc theo dõi fanpage/Zalo để cập nhật chương trình mới nhất.",
   },
   {
     id: "security",
@@ -56,19 +56,19 @@ const FAQ_ITEMS: FaqItem[] = [
     id: "cooking",
     question: "Có thể nấu ăn trong phòng không?",
     answer:
-      "Một số phòng cho phép nấu ăn nhẹ hoặc có bếp riêng; nhiều cơ sở có khu bếp chung. Vui lòng xem mô tả tiện ích hoặc hỏi chủ phòng khi đặt lịch xem.",
+      "Tất cả phòng trọ Young House đều cho phép nấu ăn . Vui lòng xem mô tả tiện ích hoặc nhắn tin hỏi quản lý khi đặt lịch xem.",
   },
   {
     id: "contract",
     question: "Hợp đồng thuê phòng tối thiểu bao lâu?",
     answer:
-      "Thời hạn thuê tối thiểu thường từ 3–6 tháng tùy cơ sở và loại phòng. Điều khoản cụ thể được thỏa thuận khi ký hợp đồng với chủ phòng.",
+      "Thời hạn thuê 1 tháng. Điều khoản cụ thể được thỏa thuận khi ký hợp đồng.",
   },
   {
     id: "fpt-distance",
     question: "Khoảng cách từ Young House đến trường FPT là bao xa?",
     answer:
-      "Tùy cơ sở, khoảng cách đến FPT University Hoà Lạc khoảng 5–15 phút xe máy. Trang chi tiết phòng và mục địa điểm lân cận giúp bạn ước lượng quãng đường cụ thể.",
+      "Tùy cơ sở, khoảng cách đến FPT University Hoà Lạc khoảng 5–10 phút xe máy. Trang chi tiết phòng và mục địa điểm lân cận giúp bạn ước lượng quãng đường cụ thể.",
   },
 ];
 

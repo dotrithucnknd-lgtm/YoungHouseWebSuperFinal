@@ -33,6 +33,10 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
     title: "Cài đặt tài khoản",
     subtitle: "Quản lý thông tin cá nhân và mật khẩu của bạn",
   },
+  "/tenant/surveys": {
+    title: "Khảo sát dịch vụ",
+    subtitle: "Góp ý để Young House cải thiện chất lượng phục vụ",
+  },
 };
 
 function TenantDashboardLayoutContent({
@@ -52,7 +56,11 @@ function TenantDashboardLayoutContent({
     }
   }, [user, authLoading, router]);
 
-  const pageInfo = pageTitles[pathname] || { title: "", subtitle: "" };
+  const pageInfo =
+    pageTitles[pathname] ||
+    (pathname.startsWith("/tenant/surveys")
+      ? pageTitles["/tenant/surveys"]
+      : { title: "", subtitle: "" });
   const unpaidCount = invoices.filter((i) => i.status === "unpaid").length;
 
   if (authLoading || (tenantLoading && !user)) {

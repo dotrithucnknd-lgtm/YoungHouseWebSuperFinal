@@ -6,7 +6,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
+import { syncPropertyPriceRange } from "@/lib/landlordServices";
 import { fetchRooms } from "@/lib/supabaseServices";
+import { sortByTitle } from "@/utils/sortProperties";
 
 export default function NewRoomUnitPage() {
   const { user } = useAuth();
@@ -35,7 +37,7 @@ export default function NewRoomUnitPage() {
 
   const loadProperties = async () => {
     const data = await fetchRooms();
-    const ownerProps = data.filter(p => p.author.id === user!.id);
+    const ownerProps = sortByTitle(data.filter(p => p.author.id === user!.id));
     setProperties(ownerProps);
   };
 
@@ -119,6 +121,10 @@ export default function NewRoomUnitPage() {
       }).select().single();
 
       if (error) throw error;
+
+      if (form.room_id) {
+        await syncPropertyPriceRange(form.room_id);
+      }
 
       // Add services to room unit
       if (selectedServices.length > 0 && data) {
@@ -204,9 +210,10 @@ export default function NewRoomUnitPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">Giá thuê</label>
+              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">Giá thuê (VNĐ/tháng)</label>
               <input type="number" value={form.rent_price} onChange={(e) => setForm({ ...form, rent_price: e.target.value })} placeholder="Nhập giá thuê"
                 className="w-full px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus:ring-2 focus:ring-green-500 focus:border-transparent" />
+              <p className="text-xs text-neutral-400 mt-1">Giá này sẽ được tính vào khoảng giá hiển thị của nhà trọ</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">Giá cọc</label>

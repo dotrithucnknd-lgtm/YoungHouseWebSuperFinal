@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { uploadImage, uploadMultipleImages, DatabaseNearbyPlace } from "@/lib/supabaseServices";
 import UniversitySelector from "@/components/UniversitySelector";
 import { canUserCreateRooms, printRLSDebugInfo } from "@/utils/debugRLS";
+import { formatPriceInput, parsePriceInput } from "@/utils/formatPriceRange";
 
 export default function NewPropertyPage() {
   const router = useRouter();
@@ -26,14 +27,16 @@ export default function NewPropertyPage() {
     city: "",
     district: "",
     ward: "",
-    price: "",
+    min_price: "",
+    max_price: "",
     area: "",
     maps: "",
     phone: "",
     status: "available",
   });
 
-  const [displayPrice, setDisplayPrice] = useState("");
+  const [displayMinPrice, setDisplayMinPrice] = useState("");
+  const [displayMaxPrice, setDisplayMaxPrice] = useState("");
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string>("");
   const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -131,16 +134,21 @@ export default function NewPropertyPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const formatPrice = (value: string) => {
-    if (!value) return '';
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  const formatPrice = formatPriceInput;
+
+  const handleMinPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parsePriceInput(e.target.value);
+    if (value === "" || /^\d+$/.test(value)) {
+      setFormData((prev) => ({ ...prev, min_price: value }));
+      setDisplayMinPrice(formatPrice(value));
+    }
   };
 
-  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\./g, '');
-    if (value === '' || /^\d+$/.test(value)) {
-      setFormData(prev => ({ ...prev, price: value }));
-      setDisplayPrice(formatPrice(value));
+  const handleMaxPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parsePriceInput(e.target.value);
+    if (value === "" || /^\d+$/.test(value)) {
+      setFormData((prev) => ({ ...prev, max_price: value }));
+      setDisplayMaxPrice(formatPrice(value));
     }
   };
 
@@ -255,8 +263,15 @@ export default function NewPropertyPage() {
       alert('Vui lòng nhập địa chỉ');
       return;
     }
-    if (!formData.price || parseFloat(formData.price) <= 0) {
-      alert('Vui lòng nhập giá thuê hợp lệ');
+    const minPrice = parseFloat(formData.min_price);
+    const maxPrice = parseFloat(formData.max_price) || minPrice;
+
+    if (!minPrice || minPrice <= 0) {
+      alert('Vui lòng nhập giá thuê tối thiểu hợp lệ');
+      return;
+    }
+    if (maxPrice < minPrice) {
+      alert('Giá tối đa phải lớn hơn hoặc bằng giá tối thiểu');
       return;
     }
     if (!formData.area || parseFloat(formData.area) <= 0) {
@@ -336,7 +351,9 @@ export default function NewPropertyPage() {
             city: formData.city.trim() || null,
             district: formData.district.trim() || null,
             ward: formData.ward.trim() || null,
-            price: parseFloat(formData.price),
+            price: minPrice,
+            min_price: minPrice,
+            max_price: maxPrice,
             area: parseFloat(formData.area),
             status: formData.status,
             banner: bannerUrl || null,
@@ -483,25 +500,44 @@ export default function NewPropertyPage() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                  Giá thuê (VNĐ/tháng) <span className="text-red-500">*</span>
+                  Giá từ (VNĐ/tháng) <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
-                  name="price"
-                  value={displayPrice || formData.price}
-                  onChange={handlePriceChange}
-                  placeholder="1500000"
+                  name="min_price"
+                  value={displayMinPrice || formData.min_price}
+                  onChange={handleMinPriceChange}
+                  placeholder="1.500.000"
                   className="w-full px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   required
                 />
-                {formData.price && (
+                {formData.min_price && (
                   <p className="text-xs text-neutral-500 mt-1">
-                    {Number(formData.price).toLocaleString('vi-VN')} VNĐ
+                    {Number(formData.min_price).toLocaleString('vi-VN')} VNĐ
                   </p>
                 )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                  Giá đến (VNĐ/tháng)
+                </label>
+                <input
+                  type="text"
+                  name="max_price"
+                  value={displayMaxPrice || formData.max_price}
+                  onChange={handleMaxPriceChange}
+                  placeholder="3.000.000"
+                  className="w-full px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                />
+                {formData.max_price && (
+                  <p className="text-xs text-neutral-500 mt-1">
+                    {Number(formData.max_price).toLocaleString('vi-VN')} VNĐ
+                  </p>
+                )}
+                <p className="text-xs text-neutral-400 mt-1">Để trống nếu chỉ có một mức giá</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">

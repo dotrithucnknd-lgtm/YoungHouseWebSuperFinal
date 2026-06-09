@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { MagnifyingGlassIcon, PlusIcon, DocumentIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "@/contexts/AuthContext";
 import { fetchOwnerInvoices, updateInvoiceStatus, type InvoiceWithDetails } from "@/lib/landlordServices";
+import { fetchRooms } from "@/lib/supabaseServices";
+import { sortByTitle } from "@/utils/sortProperties";
 import ViewInvoiceModal from "./ViewInvoiceModal";
 
 export default function InvoicesPage() {
@@ -12,6 +14,8 @@ export default function InvoicesPage() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("all");
+  const [filterProperty, setFilterProperty] = useState("all");
+  const [properties, setProperties] = useState<{ id: string; title: string }[]>([]);
   const [invoices, setInvoices] = useState<InvoiceWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedInvoice, setSelectedInvoice] = useState<InvoiceWithDetails | null>(null);
@@ -20,8 +24,28 @@ export default function InvoicesPage() {
   useEffect(() => {
     if (user?.id) {
       loadInvoices();
+      loadProperties();
     }
   }, [user, activeTab]);
+
+  const loadProperties = async () => {
+    if (!user?.id) return;
+    try {
+      const rooms = await fetchRooms();
+      const ownerProperties = rooms.filter(
+        (p) =>
+          p.author.id === user.id ||
+          user.role === "admin" ||
+          user.role === "manager" ||
+          user.role === "operator"
+      );
+      setProperties(
+        sortByTitle(ownerProperties.map((p) => ({ id: String(p.id), title: p.title })))
+      );
+    } catch (error) {
+      console.error("Error loading properties:", error);
+    }
+  };
 
   const loadInvoices = async () => {
     if (!user?.id) return;
@@ -68,20 +92,27 @@ export default function InvoicesPage() {
     return new Date(dateString).toLocaleDateString('vi-VN');
   };
 
+  const propertyFilteredInvoices = invoices.filter(
+    (invoice) =>
+      filterProperty === "all" || invoice.room_units?.rooms?.id === filterProperty
+  );
+
   const tabs = [
-    { id: "all", label: "Tất cả", count: invoices.length },
-    { id: "unpaid", label: "Chưa thanh toán", count: invoices.filter(i => i.status === 'unpaid').length },
-    { id: "paid", label: "Đã thanh toán", count: invoices.filter(i => i.status === 'paid').length },
-    { id: "overdue", label: "Quá hạn", count: invoices.filter(i => i.status === 'overdue').length },
+    { id: "all", label: "Tất cả", count: propertyFilteredInvoices.length },
+    { id: "unpaid", label: "Chưa thanh toán", count: propertyFilteredInvoices.filter(i => i.status === 'unpaid').length },
+    { id: "paid", label: "Đã thanh toán", count: propertyFilteredInvoices.filter(i => i.status === 'paid').length },
+    { id: "overdue", label: "Quá hạn", count: propertyFilteredInvoices.filter(i => i.status === 'overdue').length },
   ];
 
-  const filteredInvoices = invoices.filter(invoice => {
+  const filteredInvoices = propertyFilteredInvoices.filter(invoice => {
     if (!searchTerm) return true;
     
     const roomName = invoice.room_units?.name || '';
+    const propertyTitle = invoice.room_units?.rooms?.title || '';
     const renterName = invoice.contracts?.renter?.name || '';
     
     return roomName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           propertyTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
            renterName.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
@@ -108,17 +139,27 @@ export default function InvoicesPage() {
 
       {/* Filter Section */}
       <div className="bg-white dark:bg-neutral-800 p-5 rounded-xl border border-neutral-200 dark:border-neutral-700 shadow-sm space-y-5">
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
           <div className="relative flex-1">
             <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
             <input 
               type="text" 
-              placeholder="Tìm theo tên phòng hoặc tên khách thuê..." 
+              placeholder="Tìm theo tên phòng, nhà trọ hoặc tên khách thuê..." 
               className="w-full pl-10 pr-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
+          <select
+            className="px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm font-medium focus:ring-2 focus:ring-primary-500 sm:min-w-[200px]"
+            value={filterProperty}
+            onChange={(e) => setFilterProperty(e.target.value)}
+          >
+            <option value="all">Tất cả nhà trọ</option>
+            {properties.map((p) => (
+              <option key={p.id} value={p.id}>{p.title}</option>
+            ))}
+          </select>
         </div>
 
         <div className="flex flex-wrap gap-3">

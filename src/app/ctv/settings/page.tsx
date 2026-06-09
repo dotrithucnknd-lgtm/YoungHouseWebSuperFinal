@@ -1,17 +1,11 @@
 ﻿"use client";
 
 import React, { useEffect, useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import {
-  fetchCTVProfileByUserId,
-  updateCTVBankInfo,
-  CTVProfileWithUser,
-} from "@/lib/ctvServices";
+import { useSalesProfile } from "@/hooks/useSalesProfile";
+import { updateCTVBankInfo } from "@/lib/ctvServices";
 
 export default function CTVSettingsPage() {
-  const { user } = useAuth();
-  const [ctvProfile, setCTVProfile] = useState<CTVProfileWithUser | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { profile: ctvProfile, loading, reload } = useSalesProfile();
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState({
@@ -21,22 +15,14 @@ export default function CTVSettingsPage() {
   });
 
   useEffect(() => {
-    if (user?.id) loadProfile();
-  }, [user]);
-
-  const loadProfile = async () => {
-    setLoading(true);
-    const { data } = await fetchCTVProfileByUserId(user!.id);
-    if (data) {
-      setCTVProfile(data);
+    if (ctvProfile) {
       setFormData({
-        bank_name: data.bank_name || "",
-        bank_account: data.bank_account || "",
-        bank_owner: data.bank_owner || "",
+        bank_name: ctvProfile.bank_name || "",
+        bank_account: ctvProfile.bank_account || "",
+        bank_owner: ctvProfile.bank_owner || "",
       });
     }
-    setLoading(false);
-  };
+  }, [ctvProfile]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,6 +34,7 @@ export default function CTVSettingsPage() {
       alert("Lỗi: " + error);
     } else {
       setSuccess(true);
+      reload();
       setTimeout(() => setSuccess(false), 3000);
     }
     setSaving(false);

@@ -44,6 +44,10 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
     title: "Bảo trì",
     subtitle: "Tiếp nhận và xử lý yêu cầu sửa chữa từ khách thuê",
   },
+  "/operator/accounts": {
+    title: "Tài khoản phòng",
+    subtitle: "Quản lý tài khoản và mật khẩu đăng nhập của tenant",
+  },
   "/operator/settings/account": {
     title: "Thông tin tài khoản",
     subtitle: "Quản lý thông tin đăng nhập và bảo mật",

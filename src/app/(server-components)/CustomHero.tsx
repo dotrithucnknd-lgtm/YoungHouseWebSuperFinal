@@ -95,11 +95,10 @@ const CustomHero = () => {
                   }
                   className="w-full"
                 >
-                  <option value="">Chọn khu vực tìm trọ</option>
-                  <option value="Thach Hoa">Thạch Hòa</option>
-                  <option value="Tan Xa">Tân Xã</option>
+                  <option value="">Chọn khu vực tìm phòng trọ</option>
+                  <option value="Tan Xa">Tân Xã</option>        
                   <option value="Binh Yen">Bình Yên</option>
-                  <option value="Bac Phu Cat">Bắc Phú Cát</option>
+                  <option value="Phu Huu">Phú Hữu</option>
                 </Select>
 
                 <div className="grid grid-cols-2 gap-3">

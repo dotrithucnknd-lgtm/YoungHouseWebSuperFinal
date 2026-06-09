@@ -16,6 +16,13 @@ ALTER TABLE public.room_units ADD COLUMN IF NOT EXISTS beds INTEGER DEFAULT 1;
 ALTER TABLE public.room_units ADD COLUMN IF NOT EXISTS payment_cycle TEXT DEFAULT '1_month';
 ALTER TABLE public.room_units ADD COLUMN IF NOT EXISTS account_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL;
 
+-- Price range for buildings with multiple room types
+ALTER TABLE public.rooms ADD COLUMN IF NOT EXISTS min_price NUMERIC;
+ALTER TABLE public.rooms ADD COLUMN IF NOT EXISTS max_price NUMERIC;
+UPDATE public.rooms
+SET min_price = COALESCE(min_price, price), max_price = COALESCE(max_price, price)
+WHERE min_price IS NULL OR max_price IS NULL;
+
 -- ---------------------------------------------------------
 -- 2. ENSURE CONTRACTS HAS ALL MODERN COLUMNS
 -- ---------------------------------------------------------

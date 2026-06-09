@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadImage, uploadMultipleImages } from "@/lib/supabaseServices";
 import UniversitySelector from "@/components/UniversitySelector";
+import { formatPriceInput, parsePriceInput } from "@/utils/formatPriceRange";
 
 export default function EditPropertyPage() {
   const params = useParams();
@@ -23,11 +24,12 @@ export default function EditPropertyPage() {
 
   const [formData, setFormData] = useState({
     title: "", description: "", address: "", city: "",
-    district: "", ward: "", price: "", area: "",
+    district: "", ward: "", min_price: "", max_price: "", area: "",
     maps: "", phone: "", status: "available",
   });
 
-  const [displayPrice, setDisplayPrice] = useState("");
+  const [displayMinPrice, setDisplayMinPrice] = useState("");
+  const [displayMaxPrice, setDisplayMaxPrice] = useState("");
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string>("");
   const [currentBanner, setCurrentBanner] = useState<string>("");
@@ -68,14 +70,19 @@ export default function EditPropertyPage() {
         return;
       }
 
+      const minPrice = room.min_price ?? room.price;
+      const maxPrice = room.max_price ?? room.price;
+
       setFormData({
         title: room.title || "", description: room.description || "",
         address: room.address || "", city: room.city || "",
         district: room.district || "", ward: room.ward || "",
-        price: String(room.price || ""), area: String(room.area || ""),
+        min_price: String(minPrice || ""), max_price: String(maxPrice || ""),
+        area: String(room.area || ""),
         maps: room.maps || "", phone: "", status: room.status || "available",
       });
-      setDisplayPrice(formatPrice(String(room.price || "")));
+      setDisplayMinPrice(formatPrice(String(minPrice || "")));
+      setDisplayMaxPrice(formatPrice(String(maxPrice || "")));
       setCurrentBanner(room.banner || "");
       if (room.description && editorRef.current) {
         editorRef.current.innerHTML = room.description;
@@ -124,9 +131,22 @@ export default function EditPropertyPage() {
     }
   };
 
-  const formatPrice = (value: string) => {
-    if (!value) return '';
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  const formatPrice = formatPriceInput;
+
+  const handleMinPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parsePriceInput(e.target.value);
+    if (value === "" || /^\d+$/.test(value)) {
+      setFormData((prev) => ({ ...prev, min_price: value }));
+      setDisplayMinPrice(formatPrice(value));
+    }
+  };
+
+  const handleMaxPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parsePriceInput(e.target.value);
+    if (value === "" || /^\d+$/.test(value)) {
+      setFormData((prev) => ({ ...prev, max_price: value }));
+      setDisplayMaxPrice(formatPrice(value));
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -139,14 +159,6 @@ export default function EditPropertyPage() {
       }
     }
     setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\./g, '');
-    if (value === '' || /^\d+$/.test(value)) {
-      setFormData(prev => ({ ...prev, price: value }));
-      setDisplayPrice(formatPrice(value));
-    }
   };
 
   const handleDescriptionChange = () => {
@@ -218,7 +230,11 @@ export default function EditPropertyPage() {
     if (!user?.id) { alert('Vui lòng đăng nhập'); return; }
     if (!formData.title.trim()) { alert('Vui lòng nhập tên nhà trọ'); return; }
     if (!formData.address.trim()) { alert('Vui lòng nhập địa chỉ'); return; }
-    if (!formData.price || parseFloat(formData.price) <= 0) { alert('Vui lòng nhập giá thuê hợp lệ'); return; }
+
+    const minPrice = parseFloat(formData.min_price);
+    const maxPrice = parseFloat(formData.max_price) || minPrice;
+    if (!minPrice || minPrice <= 0) { alert('Vui lòng nhập giá thuê tối thiểu hợp lệ'); return; }
+    if (maxPrice < minPrice) { alert('Giá tối đa phải lớn hơn hoặc bằng giá tối thiểu'); return; }
 
     setLoading(true);
     try {
@@ -275,7 +291,9 @@ export default function EditPropertyPage() {
             city: formData.city.trim() || null,
             district: formData.district.trim() || null,
             ward: formData.ward.trim() || null,
-            price: parseFloat(formData.price),
+            price: minPrice,
+            min_price: minPrice,
+            max_price: maxPrice,
             area: parseFloat(formData.area) || null,
             status: formData.status,
             banner: bannerUrl || null,
@@ -365,12 +383,18 @@ export default function EditPropertyPage() {
             </div>
 
             {/* Price & Area */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">Giá thuê (VNĐ/tháng) <span className="text-red-500">*</span></label>
-                <input type="text" value={displayPrice || formData.price} onChange={handlePriceChange}
+                <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">Giá từ (VNĐ/tháng) <span className="text-red-500">*</span></label>
+                <input type="text" value={displayMinPrice || formData.min_price} onChange={handleMinPriceChange}
                   className="w-full px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus:ring-2 focus:ring-green-500 focus:border-transparent" required />
-                {formData.price && <p className="text-xs text-neutral-500 mt-1">{Number(formData.price).toLocaleString('vi-VN')} VNĐ</p>}
+                {formData.min_price && <p className="text-xs text-neutral-500 mt-1">{Number(formData.min_price).toLocaleString('vi-VN')} VNĐ</p>}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">Giá đến (VNĐ/tháng)</label>
+                <input type="text" value={displayMaxPrice || formData.max_price} onChange={handleMaxPriceChange}
+                  className="w-full px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus:ring-2 focus:ring-green-500 focus:border-transparent" />
+                {formData.max_price && <p className="text-xs text-neutral-500 mt-1">{Number(formData.max_price).toLocaleString('vi-VN')} VNĐ</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">Diện tích (m²)</label>

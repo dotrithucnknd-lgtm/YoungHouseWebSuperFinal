@@ -5,6 +5,9 @@ import { MagnifyingGlassIcon, PlusIcon, DocumentIcon, EyeIcon, PencilSquareIcon,
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
+import { terminateContract } from "@/lib/landlordServices";
+import { fetchRooms } from "@/lib/supabaseServices";
+import { sortByTitle } from "@/utils/sortProperties";
 
 interface Contract {
   id: string;
@@ -31,10 +34,34 @@ export default function ContractsPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("all");
+  const [filterProperty, setFilterProperty] = useState("all");
+  const [properties, setProperties] = useState<{ id: string; title: string }[]>([]);
 
   useEffect(() => {
-    if (user?.id) loadContracts();
+    if (user?.id) {
+      loadContracts();
+      loadProperties();
+    }
   }, [user]);
+
+  const loadProperties = async () => {
+    if (!user?.id) return;
+    try {
+      const rooms = await fetchRooms();
+      const ownerProperties = rooms.filter(
+        (p) =>
+          p.author.id === user.id ||
+          user.role === "admin" ||
+          user.role === "manager" ||
+          user.role === "operator"
+      );
+      setProperties(
+        sortByTitle(ownerProperties.map((p) => ({ id: String(p.id), title: p.title })))
+      );
+    } catch (err) {
+      console.error("Error loading properties:", err);
+    }
+  };
 
   const loadContracts = async () => {
     if (!user?.id) return;
@@ -65,14 +92,20 @@ export default function ContractsPage() {
       case "active": return { text: "Đang hiệu lực", color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" };
       case "expiring": return { text: "Sắp hết hạn", color: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400" };
       case "expired": return { text: "Đã quá hạn", color: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" };
-      case "ended": return { text: "Đã kết thúc", color: "bg-neutral-100 text-neutral-700 dark:bg-neutral-700 dark:text-neutral-300" };
+      case "terminated": return { text: "Đã kết thúc", color: "bg-neutral-100 text-neutral-700 dark:bg-neutral-700 dark:text-neutral-300" };
+      case "pending": return { text: "Chờ ký", color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" };
       default: return { text: status, color: "bg-neutral-100 text-neutral-700" };
     }
   };
 
-  const filteredContracts = contracts.filter(c => {
+  const propertyFilteredContracts = contracts.filter(
+    (c) => filterProperty === "all" || c.room_id === filterProperty
+  );
+
+  const filteredContracts = propertyFilteredContracts.filter((c) => {
     const matchTab = activeTab === "all" || c.status === activeTab;
-    const matchSearch = !searchTerm.trim() || 
+    const matchSearch =
+      !searchTerm.trim() ||
       c.contract_code?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.rooms?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.room_units?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -81,11 +114,11 @@ export default function ContractsPage() {
   });
 
   const tabCounts = {
-    all: contracts.length,
-    active: contracts.filter(c => c.status === "active").length,
-    expiring: contracts.filter(c => c.status === "expiring").length,
-    expired: contracts.filter(c => c.status === "expired").length,
-    ended: contracts.filter(c => c.status === "ended").length,
+    all: propertyFilteredContracts.length,
+    active: propertyFilteredContracts.filter((c) => c.status === "active").length,
+    expiring: propertyFilteredContracts.filter((c) => c.status === "expiring").length,
+    expired: propertyFilteredContracts.filter((c) => c.status === "expired").length,
+    terminated: propertyFilteredContracts.filter((c) => c.status === "terminated").length,
   };
 
   const tabs = [
@@ -93,13 +126,13 @@ export default function ContractsPage() {
     { id: "active", label: "Đang hiệu lực", count: tabCounts.active, color: "bg-green-500" },
     { id: "expiring", label: "Sắp hết hạn", count: tabCounts.expiring, color: "bg-yellow-500" },
     { id: "expired", label: "Đã quá hạn", count: tabCounts.expired, color: "bg-red-500" },
-    { id: "ended", label: "Đã kết thúc", count: tabCounts.ended, color: "bg-neutral-500" },
+    { id: "terminated", label: "Đã kết thúc", count: tabCounts.terminated, color: "bg-neutral-500" },
   ];
 
   const handleEndContract = async (contractId: string) => {
     if (!confirm("Bạn có chắc muốn kết thúc hợp đồng này?")) return;
-    const { error } = await supabase.from("contracts").update({ status: "ended", actual_end_date: new Date().toISOString().split("T")[0] }).eq("id", contractId);
-    if (error) alert("Lỗi: " + error.message);
+    const { error } = await terminateContract(contractId);
+    if (error) alert("Lỗi: " + error);
     else loadContracts();
   };
 
@@ -128,13 +161,23 @@ export default function ContractsPage() {
 
       {/* Filter */}
       <div className="bg-white dark:bg-neutral-800 p-5 rounded-xl border border-neutral-200 dark:border-neutral-700 shadow-sm space-y-5">
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
           <div className="relative flex-1">
             <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
             <input type="text" placeholder="Tìm mã HĐ, tên khách, tên phòng..."
               className="w-full pl-10 pr-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 focus:ring-2 focus:ring-green-500 focus:border-transparent"
               value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
           </div>
+          <select
+            className="px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm font-medium focus:ring-2 focus:ring-primary-500 sm:min-w-[200px]"
+            value={filterProperty}
+            onChange={(e) => setFilterProperty(e.target.value)}
+          >
+            <option value="all">Tất cả nhà trọ</option>
+            {properties.map((p) => (
+              <option key={p.id} value={p.id}>{p.title}</option>
+            ))}
+          </select>
         </div>
         <div className="flex flex-wrap gap-3">
           {tabs.map((tab) => (

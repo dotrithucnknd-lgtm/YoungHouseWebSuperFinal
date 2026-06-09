@@ -20,6 +20,10 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
     title: "Duyệt hoa hồng CTV",
     subtitle: "Xem danh sách giao dịch giới thiệu và phê duyệt chi trả hoa hồng cho CTV",
   },
+  "/manager/surveys": {
+    title: "Khảo sát khách hàng",
+    subtitle: "Tạo phiếu khảo sát và xem phản hồi từ khách thuê",
+  },
 };
 
 export default function ManagerLayout({
@@ -39,7 +43,11 @@ export default function ManagerLayout({
     }
   }, [user, loading, router]);
 
-  const pageInfo = pageTitles[pathname] || { title: "Giám sát vận hành", subtitle: "" };
+  const pageInfo =
+    pageTitles[pathname] ||
+    (pathname.startsWith("/manager/surveys")
+      ? pageTitles["/manager/surveys"]
+      : { title: "Giám sát vận hành", subtitle: "" });
 
   if (loading) {
     return (

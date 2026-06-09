@@ -174,6 +174,40 @@ function generateReferralCode(name: string): string {
   return `CTV-${cleanName}-${randomSuffix}`;
 }
 
+/** Auto-create active CTV profile for internal sales staff */
+export async function ensureSalesCTVProfile(
+  userId: string,
+  userName: string
+): Promise<{ data: CTVProfileWithUser | null; error: string | null }> {
+  const existing = await fetchCTVProfileByUserId(userId);
+  if (existing.data) return existing;
+  if (existing.error && !existing.error.includes('0 rows')) {
+    return { data: null, error: existing.error };
+  }
+
+  try {
+    const referralCode = generateReferralCode(userName);
+    const { data, error } = await supabase
+      .from('ctv_profiles')
+      .insert({
+        profile_id: userId,
+        referral_code: referralCode,
+        status: 'active',
+        commission_rate: 10,
+      })
+      .select(`
+        *,
+        profiles:profile_id ( id, name, phone, role )
+      `)
+      .single();
+
+    if (error) return { data: null, error: error.message };
+    return { data: data as CTVProfileWithUser, error: null };
+  } catch (err: any) {
+    return { data: null, error: err.message };
+  }
+}
+
 /** Register as CTV */
 export async function registerAsCTV(
   userId: string,
