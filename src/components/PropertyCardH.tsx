@@ -47,11 +47,11 @@ const PropertyCardH: FC<PropertyCardHProps> = ({
 
   const renderSliderGallery = () => {
     return (
-      <div className="flex-shrink-0 p-3 w-32 sm:w-52 md:w-64 ">
+      <div className="w-full sm:flex-shrink-0 sm:w-56 sm:h-56 p-3">
         <GallerySlider
-          ratioClass="aspect-w-1 aspect-h-1"
+          ratioClass="aspect-w-4 aspect-h-3 sm:aspect-w-1 sm:aspect-h-1"
           galleryImgs={galleryImgs}
-          className="w-full h-full rounded-2xl overflow-hidden"
+          className="w-full rounded-2xl overflow-hidden"
           uniqueID={`PropertyCardH_${id}`}
           href={href}
         />
@@ -152,7 +152,7 @@ const PropertyCardH: FC<PropertyCardHProps> = ({
       className={`nc-PropertyCardH group relative bg-white dark:bg-neutral-900 border border-neutral-200/80 dark:border-neutral-700 rounded-3xl overflow-hidden ${className}`}
     >
       <Link href={href} className="absolute inset-0"></Link>
-      <div className="h-full w-full flex flex-row items-stretch">
+      <div className="w-full flex flex-col sm:flex-row sm:items-center">
         {renderSliderGallery()}
         {renderContent()}
       </div>

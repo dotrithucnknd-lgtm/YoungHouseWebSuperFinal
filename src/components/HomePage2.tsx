@@ -1,133 +1,38 @@
-import SectionSliderNewCategories from "@/components/SectionSliderNewCategories";
 import React from "react";
-import SectionSubscribe2 from "@/components/SectionSubscribe2";
-import SectionOurFeatures from "@/components/SectionOurFeatures";
-import SectionHowItWork from "@/components/SectionHowItWork";
 import BackgroundSection from "@/components/BackgroundSection";
-import { TaxonomyType } from "@/data/types";
-import SectionGridAuthorBox from "@/components/SectionGridAuthorBox";
-import logo1 from "@/images/logos/nomal/1.png";
-import logo1Dark from "@/images/logos/dark/1.png";
-import logo2 from "@/images/logos/nomal/2.png";
-import logo2Dark from "@/images/logos/dark/2.png";
-import logo3 from "@/images/logos/nomal/3.png";
-import logo3Dark from "@/images/logos/dark/3.png";
-import logo4 from "@/images/logos/nomal/4.png";
-import logo4Dark from "@/images/logos/dark/4.png";
-import logo5 from "@/images/logos/nomal/5.png";
-import logo5Dark from "@/images/logos/dark/5.png";
-import HIW1img from "@/images/HIW2-1.png";
-import HIW2img from "@/images/HIW2-2.png";
-import HIW3img from "@/images/HIW2-3.png";
-import HIW1imgDark from "@/images/HIW2-1-dark.png";
-import HIW2imgDark from "@/images/HIW2-2-dark.png";
-import HIW3imgDark from "@/images/HIW2-3-dark.png";
-import rightImgPng from "@/images/our-features-2.png";
 import SectionGridFeatureProperty from "@/app/(home)/SectionGridFeatureProperty";
-import SectionDowloadApp from "@/app/(home)/SectionDowloadApp";
 import SectionHero2 from "@/app/(server-components)/SectionHero2";
 import SectionWhyChooseYoungHouse from "@/components/SectionWhyChooseYoungHouse";
 import SectionHomeFAQ from "@/components/SectionHomeFAQ";
-import Image from "next/image";
-
-const DEMO_CATS_2: TaxonomyType[] = [
-  {
-    id: "1",
-    href: "/phong-tro-detail",
-    name: "Enjoy the great cold",
-    taxonomy: "category",
-    count: 188288,
-    thumbnail:
-      "https://images.pexels.com/photos/5764100/pexels-photo-5764100.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260",
-  },
-  {
-    id: "2",
-    href: "/phong-tro-detail",
-    name: "Sleep in a floating way",
-    taxonomy: "category",
-    count: 188288,
-    thumbnail:
-      "https://images.pexels.com/photos/2869499/pexels-photo-2869499.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  },
-  {
-    id: "3",
-    href: "/phong-tro-detail",
-    name: "In the billionaire's house",
-    taxonomy: "category",
-    count: 188288,
-    thumbnail:
-      "https://images.pexels.com/photos/7031413/pexels-photo-7031413.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  },
-  {
-    id: "4",
-    href: "/phong-tro-detail",
-    name: "Cool in the deep forest",
-    taxonomy: "category",
-    count: 188288,
-    thumbnail:
-      "https://images.pexels.com/photos/247532/pexels-photo-247532.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  },
-  {
-    id: "5",
-    href: "/phong-tro-detail",
-    name: "In the billionaire's house",
-    taxonomy: "category",
-    count: 188288,
-    thumbnail:
-      "https://images.pexels.com/photos/7031413/pexels-photo-7031413.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  },
-  {
-    id: "6",
-    href: "/phong-tro-detail",
-    name: "Sleep in a floating way",
-    taxonomy: "category",
-    count: 188288,
-    thumbnail:
-      "https://images.pexels.com/photos/2869499/pexels-photo-2869499.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  },
-  {
-    id: "7",
-    href: "/phong-tro-detail",
-    name: "In the billionaire's house",
-    taxonomy: "category",
-    count: 188288,
-    thumbnail:
-      "https://images.pexels.com/photos/7031413/pexels-photo-7031413.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  },
-];
+import SectionStats from "@/components/SectionStats";
+import SectionProcess from "@/components/SectionProcess";
 
 export default function HomePage2() {
   return (
     <main className="nc-PageHome2 relative overflow-hidden">
-      <div className="container relative space-y-24 mb-24 lg:space-y-28 lg:mb-28">
-        <SectionHero2 className="" />
+      {/* 1. Hero + Search */}
+      <SectionHero2 />
 
+      <div className="container relative space-y-24 mb-24 lg:space-y-28 lg:mb-28 pt-12 lg:pt-16">
 
+        {/* 2. Stats — trust signals */}
+        <SectionStats />
+
+        {/* 3. Featured rooms list */}
         <div className="relative py-16">
           <BackgroundSection />
           <SectionGridFeatureProperty />
         </div>
 
+        {/* 4. How it works — 3 bước */}
+        <SectionProcess />
 
-
-
+        {/* 5. Why choose YoungHouse */}
         <SectionWhyChooseYoungHouse />
 
-
-
-
-
-
-
-
+        {/* 6. FAQ */}
         <SectionHomeFAQ />
 
-        <SectionSliderNewCategories
-          heading="Explore by types of stays"
-          subHeading="Explore houses based on 10 types of stays"
-          categoryCardType="card5"
-          itemPerRow={5}
-        />
       </div>
     </main>
   );

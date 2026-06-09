@@ -30,7 +30,7 @@ const SectionHero2: FC<SectionHero2Props> = ({ className = "", children }) => {
   return (
     <section className={`relative overflow-hidden pt-12 pb-40 lg:pt-20 lg:pb-64 w-screen left-1/2 -translate-x-1/2 ${className}`}>
       {/* Background gradient extended way downwards */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 bottom-[-200px] lg:bottom-[-300px] -z-10 bg-gradient-to-br from-sky-100 via-white to-pink-100 dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-800" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 bottom-0 -z-10 bg-gradient-to-br from-sky-100 via-white to-pink-100 dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-800" />
       <div className="pointer-events-none absolute -top-32 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-secondary-300/35 blur-3xl dark:bg-secondary-700/20" />
       <div className="pointer-events-none absolute -bottom-36 -left-16 h-96 w-96 rounded-full bg-primary-300/30 blur-3xl dark:bg-primary-700/20" />
 
@@ -43,7 +43,7 @@ const SectionHero2: FC<SectionHero2Props> = ({ className = "", children }) => {
               YoungHouse - Hòa Lạc
             </div>
 
-            <p className="mb-2 text-sm font-semibold text-primary-500 dark:text-primary-400 tracking-wide">Nhà trọ</p>
+            <p className="mb-2 text-sm font-semibold text-primary-500 dark:text-primary-400 tracking-wide">Hệ thống nhà trọ </p>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-black uppercase leading-[0.92]">
               <span className="block text-primary-500 dark:text-primary-400">
