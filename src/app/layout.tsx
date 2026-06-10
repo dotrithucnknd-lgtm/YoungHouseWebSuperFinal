@@ -1,10 +1,6 @@
-﻿import { Be_Vietnam_Pro } from "next/font/google";
+import { Be_Vietnam_Pro } from "next/font/google";
 import dynamic from "next/dynamic";
 import ClientCommons from "./ClientCommons";
-
-const PerformanceMonitor = dynamic(() => import("@/components/PerformanceMonitor"), {
-  ssr: false,
-});
 import ConditionalLayout from "@/components/ConditionalLayout";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CompareProvider } from "@/contexts/CompareContext";
@@ -13,6 +9,10 @@ import "@/fonts/line-awesome-1.3.0/css/line-awesome.css";
 import "@/styles/index.css";
 import "rc-slider/assets/index.css";
 import { Metadata } from "next";
+
+const PerformanceMonitor = dynamic(() => import("@/components/PerformanceMonitor"), {
+  ssr: false,
+});
 
 const beVietnamPro = Be_Vietnam_Pro({
   subsets: ["vietnamese", "latin"],
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
   title: "YoungHouse Hòa Lạc - Tìm phòng trọ tại Hoà Lạc",
   description: "Nền tảng tìm kiếm và đặt phòng trọ tại Hoà Lạc uy tín và chất lượng",
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/favicon.ico",
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
   },
 };
 

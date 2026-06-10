@@ -1,24 +1,29 @@
-﻿import React, { FC } from "react";
+import React, { FC } from "react";
 import SocialsList from "@/shared/SocialsList";
 import Label from "@/components/Label";
 import Input from "@/shared/Input";
 import Textarea from "@/shared/Textarea";
 import ButtonPrimary from "@/shared/ButtonPrimary";
+import { YOUNGHOUSE_COMPANY } from "@/constants/companyInfo";
 
 export interface PageContactProps {}
 
 const info = [
   {
-    title: "Địa chỉ Văn phòng ",
-    desc: "64 Phú Hữu, Tân Xã, Thạch Thất, Hà Nội",
+    title: "Văn phòng",
+    desc: YOUNGHOUSE_COMPANY.officeAddress,
+  },
+  {
+    title: "Mã số thuế",
+    desc: YOUNGHOUSE_COMPANY.taxId,
   },
   {
     title: "Email",
-    desc: "bachqxhe180125@fpt.edu.vn",
+    desc: YOUNGHOUSE_COMPANY.email,
   },
   {
     title: "Số điện thoại",
-    desc: "0372858098",
+    desc: YOUNGHOUSE_COMPANY.phone,
   },
 ];
 

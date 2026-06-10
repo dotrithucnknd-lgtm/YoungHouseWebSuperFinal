@@ -97,7 +97,7 @@ export default function TuyenDungPage() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 pt-2 justify-center lg:justify-start">
               <a
-                href="https://zalo.me/0372858098"
+                href="https://zalo.me/0962888797"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-7 py-3 rounded-xl transition-all shadow-md hover:shadow-lg inline-flex items-center justify-center gap-2 text-sm"
@@ -167,8 +167,8 @@ export default function TuyenDungPage() {
               hr@younghouse.vn
             </a>{" "}
             hoặc nhắn Zalo{" "}
-            <a href="https://zalo.me/0372858098" className="text-primary-500 font-semibold hover:underline" target="_blank" rel="noopener noreferrer">
-              0372 858 098
+            <a href="https://zalo.me/0962888797" className="text-primary-500 font-semibold hover:underline" target="_blank" rel="noopener noreferrer">
+              0962 888 797
             </a>
           </p>
           <Link href="/" className="text-xs text-neutral-400 hover:text-primary-500 transition-colors">

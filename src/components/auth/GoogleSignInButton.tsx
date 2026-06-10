@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React from "react";
 import Image from "next/image";
@@ -10,6 +10,7 @@ export type GoogleSignInButtonProps = {
   onError?: (message: string) => void;
   className?: string;
   disabled?: boolean;
+  redirectTo?: string | null;
 };
 
 export default function GoogleSignInButton({
@@ -17,6 +18,7 @@ export default function GoogleSignInButton({
   onError,
   className,
   disabled,
+  redirectTo,
 }: GoogleSignInButtonProps) {
   const [loading, setLoading] = React.useState(false);
 
@@ -25,7 +27,7 @@ export default function GoogleSignInButton({
     setLoading(true);
 
     try {
-      const { error } = await loginWithGoogle();
+      const { error } = await loginWithGoogle(redirectTo || undefined);
       if (error) {
         onError?.(error);
         return;

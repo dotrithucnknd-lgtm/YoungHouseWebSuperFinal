@@ -1,6 +1,7 @@
-﻿import React from "react";
+import React from "react";
 import BgGlassmorphism from "@/components/BgGlassmorphism";
 import { Metadata } from "next";
+import { YOUNGHOUSE_COMPANY } from "@/constants/companyInfo";
 
 export const metadata: Metadata = {
   title: "Điều khoản sử dụng - YoungHouse Hòa Lạc",
@@ -108,8 +109,11 @@ export default function TermPage() {
               Mọi thắc mắc, tranh chấp hoặc báo cáo vi phạm liên quan đến hoạt động của website và các tin đăng, vui lòng gửi phản hồi cho chúng tôi để được hỗ trợ kịp thời:
             </p>
             <div className="p-5 rounded-2xl border border-neutral-100 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/30 space-y-2">
+              <p>🏢 <strong>Đơn vị vận hành:</strong> {YOUNGHOUSE_COMPANY.name}</p>
+              <p>📋 <strong>Mã số thuế:</strong> {YOUNGHOUSE_COMPANY.taxId}</p>
+              <p>📍 <strong>Văn phòng:</strong> {YOUNGHOUSE_COMPANY.officeAddress}</p>
               <p>🌐 <strong>Website chính thức:</strong> <a href="https://trohoalac.com" className="text-primary-600 hover:underline">trohoalac.com</a></p>
-              <p>💬 <strong>Kênh hỗ trợ trực tiếp Zalo:</strong> <a href="https://zalo.me/0372858098" className="text-primary-600 hover:underline">0372858098</a></p>
+              <p>💬 <strong>Kênh hỗ trợ trực tiếp Zalo:</strong> <a href={`https://zalo.me/${YOUNGHOUSE_COMPANY.phoneTel}`} className="text-primary-600 hover:underline">{YOUNGHOUSE_COMPANY.phone}</a></p>
               <p>📍 <strong>Hỗ trợ cộng đồng:</strong> Khu vực Đại học FPT Hoà Lạc, Đại học Quốc Gia, Hà Nội</p>
             </div>
           </section>

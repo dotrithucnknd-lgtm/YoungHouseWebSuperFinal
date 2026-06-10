@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Route } from "@/routers/types";
 import Link from "next/link";
@@ -20,7 +20,7 @@ export const Nav = () => {
     const labelMap: Record<string, string> = {
       "/account": "Tài khoản",
       "/account-savelists": "Danh sách đã lưu",
-      "/account-bookings": "Đặt phòng",
+      "/account-bookings": "Lịch xem phòng",
       "/pass-phong": "Đăng phòng",
     };
     return labelMap[path] || path.replace("-", " ").replace("/", " ");

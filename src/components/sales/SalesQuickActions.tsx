@@ -160,7 +160,7 @@ export default function SalesQuickActions({
       type: "link",
       title: "Liên hệ hỗ trợ",
       description: "Hotline IT Young House",
-      href: "tel:0372858098",
+      href: "tel:0962888797",
       color: "bg-rose-500 hover:bg-rose-600",
       icon: <PhoneIcon className="w-6 h-6" />,
     },

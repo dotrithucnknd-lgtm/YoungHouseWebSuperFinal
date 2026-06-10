@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -294,7 +294,7 @@ export default function AdminNewRoomPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">SĐT liên hệ</label>
-              <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="VD: 0372858098"
+              <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="VD: 0962 888 797"
                 className="w-full px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
             </div>
             <div className="grid grid-cols-2 gap-4">

@@ -647,7 +647,7 @@ export default function NewPropertyPage() {
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
-                placeholder="VD: 0372858098"
+                placeholder="VD: 0962 888 797"
                 className="w-full px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus:ring-2 focus:ring-green-500 focus:border-transparent"
               />
               <p className="text-xs text-neutral-500 mt-1">

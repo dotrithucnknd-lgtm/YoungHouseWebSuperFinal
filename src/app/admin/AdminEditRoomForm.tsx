@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
@@ -623,7 +623,7 @@ const AdminEditRoomForm: React.FC<AdminEditRoomFormProps> = ({ show, onHide, roo
                         name="phone"
                         value={form.phone}
                         onChange={handleChange}
-                        placeholder="VD: 0372858098"
+                        placeholder="VD: 0962 888 797"
                         inputMode="tel"
                         className="mt-1.5"
                       />

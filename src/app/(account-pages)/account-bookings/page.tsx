@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -44,7 +44,7 @@ const AccountBookingsPage = () => {
   };
 
   const handleCancel = async (bookingId: string) => {
-    if (!confirm("Bạn có chắc chắn muốn hủy đơn đặt phòng này?")) {
+    if (!confirm("Bạn có chắc chắn muốn hủy lịch xem phòng này?")) {
       return;
     }
 
@@ -53,7 +53,7 @@ const AccountBookingsPage = () => {
       const { success, error } = await cancelBooking(bookingId);
 
       if (success) {
-        alert("Đã hủy đơn đặt phòng thành công!");
+        alert("Đã hủy lịch xem phòng thành công!");
         loadBookings();
       } else {
         alert(`Lỗi: ${error}`);
@@ -99,9 +99,9 @@ const AccountBookingsPage = () => {
       <div className="space-y-6 sm:space-y-8">
         {/* Header */}
         <div>
-          <h2 className="text-3xl font-semibold">Lịch sử đặt phòng</h2>
+          <h2 className="text-3xl font-semibold">Lịch xem phòng</h2>
           <p className="text-neutral-500 dark:text-neutral-400 mt-2">
-            Quản lý các đơn đặt phòng của bạn
+            Quản lý các lịch hẹn xem phòng của bạn
           </p>
         </div>
 
@@ -114,7 +114,7 @@ const AccountBookingsPage = () => {
         ) : bookings.length === 0 ? (
           <div className="text-center py-16 bg-neutral-50 dark:bg-neutral-800 rounded-2xl">
             <p className="text-neutral-500 mb-4">
-              Bạn chưa có đơn đặt phòng nào
+              Bạn chưa có lịch xem phòng nào
             </p>
             <ButtonSecondary href="/phong-tro">
               Tìm phòng trọ ngay
@@ -201,8 +201,8 @@ const AccountBookingsPage = () => {
                     {booking.status === "approved" && (
                       <div className="mb-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
                         <p className="text-sm text-green-800 dark:text-green-200">
-                          ✅ Đơn đặt phòng đã được chấp nhận. Vui lòng liên hệ chủ
-                          nhà để hoàn tất thủ tục.
+                          ✅ Lịch xem phòng đã được xác nhận. Vui lòng liên hệ chủ
+                          nhà để sắp xếp giờ xem cụ thể.
                         </p>
                       </div>
                     )}
@@ -217,7 +217,7 @@ const AccountBookingsPage = () => {
                         >
                           {cancelling === booking.id
                             ? "Đang xử lý..."
-                            : "Hủy đơn đặt phòng"}
+                            : "Hủy lịch xem phòng"}
                         </ButtonSecondary>
                       </div>
                     )}

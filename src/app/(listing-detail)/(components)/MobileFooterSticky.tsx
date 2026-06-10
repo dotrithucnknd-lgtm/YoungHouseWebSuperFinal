@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
@@ -107,7 +107,7 @@ const MobileFooterSticky = () => {
         
         <div className="flex gap-2">
           <a
-            href="https://zalo.me/0372858098"
+            href="https://zalo.me/0962888797"
             target="_blank"
             rel="noopener noreferrer"
             className="px-4 py-2.5 bg-green-600 hover:bg-white-700 text-white rounded-xl font-medium text-sm flex items-center gap-2 transition-colors"
@@ -117,7 +117,7 @@ const MobileFooterSticky = () => {
           </a>
           
           <a
-            href="tel:0372858098"
+            href="tel:0962888797"
             className="px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium text-sm flex items-center gap-2 transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

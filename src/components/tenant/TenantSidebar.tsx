@@ -215,7 +215,7 @@ const TenantSidebar: React.FC<TenantSidebarProps> = ({
               ĐỘI NGŨ IT
             </p>
             <a
-              href="tel:0372858098"
+              href="tel:0962888797"
               className="text-sm text-primary-600 dark:text-primary-400 font-medium flex items-center gap-1 hover:underline"
             >
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

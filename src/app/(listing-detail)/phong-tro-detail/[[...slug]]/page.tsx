@@ -28,8 +28,7 @@ import {
   buildRoomDetailPath,
   parseRoomDetailSlugParam,
 } from "@/utils/roomDetailUrl";
-import StayDatesRangeInput from "../StayDatesRangeInput";
-import GuestsInput from "../GuestsInput";
+import ViewingScheduleSidebar from "../ViewingScheduleSidebar";
 import { 
   fetchRoomById,
   fetchRoomByIdAdmin, 
@@ -781,7 +780,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
             <div className="mt-1.5 flex items-center text-sm text-neutral-500 dark:text-neutral-400">
               <StartRating />
               <span className="mx-2">·</span>
-              <span>0372858098</span>
+              <span>0962 888 797</span>
             </div>
           </div>
         </div>
@@ -1135,42 +1134,12 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
   };
 
   const renderSidebar = () => {
-    return (
-      <div className="listingSectionSidebar__wrap shadow-xl">
-        <div className="flex justify-between">
-          <span className="text-3xl font-semibold">
-            {roomData?.price}
-            <span className="ml-1 text-base font-normal text-neutral-500 dark:text-neutral-400">
-              /tháng
-            </span>
-          </span>
-          <StartRating />
-        </div>
-
-        <form className="flex flex-col border border-neutral-200 dark:border-neutral-700 rounded-3xl ">
-          <StayDatesRangeInput className="flex-1 z-[11]" />
-          <div className="w-full border-b border-neutral-200 dark:border-neutral-700"></div>
-          <GuestsInput className="flex-1" />
-        </form>
-
-        <div className="flex flex-col space-y-4">
-          <div className="flex justify-between text-neutral-6000 dark:text-neutral-300">
-            <span>{roomData?.price}</span>
-            
-          </div>
-          <div className="flex justify-between text-neutral-6000 dark:text-neutral-300">
-            <span>Phí dịch vụ</span>
-            <span>230.000 đ</span>
-          </div>
-          <div className="border-b border-neutral-200 dark:border-neutral-700"></div>
-          <div className="flex justify-between font-semibold">
-           
-          </div>
-        </div>
-
-        <ButtonPrimary href={"/checkout"}>Đặt lịch xem phòng</ButtonPrimary>
-      </div>
-    );
+    if (!roomData) {
+      return (
+        <div className="listingSectionSidebar__wrap shadow-xl animate-pulse h-80 rounded-2xl bg-neutral-100 dark:bg-neutral-800" />
+      );
+    }
+    return <ViewingScheduleSidebar roomData={roomData} />;
   };
 
   const renderHeader = () => {

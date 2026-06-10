@@ -8,7 +8,7 @@ import Input from "@/shared/Input";
 import ButtonPrimary from "@/shared/ButtonPrimary";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { loginUser, LoginCredentials, loginWithFacebook, loginWithTwitter } from "@/lib/supabaseServices";
 import { useAuth } from "@/contexts/AuthContext";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
@@ -18,6 +18,8 @@ export interface PageLoginProps {}
 
 const PageLogin: FC<PageLoginProps> = ({}) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect");
   const { login } = useAuth();
   const [formData, setFormData] = useState<LoginCredentials>({
     email: '',
@@ -58,6 +60,10 @@ const PageLogin: FC<PageLoginProps> = ({}) => {
         login(user);
         setSuccess('Đăng nhập thành công! Đang chuyển hướng...');
         setTimeout(() => {
+          if (redirectTo && redirectTo.startsWith("/")) {
+            router.push(redirectTo);
+            return;
+          }
           if (user.role === 'operator') {
             router.push('/operator');
           } else if (user.role === 'admin') {
@@ -84,7 +90,8 @@ const PageLogin: FC<PageLoginProps> = ({}) => {
 
   const handleGoogleSuccess = () => {
     setSuccess('Đăng nhập thành công! Đang chuyển hướng...');
-    setTimeout(() => router.push('/'), 500);
+    const target = redirectTo?.startsWith('/') ? redirectTo : '/';
+    setTimeout(() => router.push(target), 500);
   };
 
   const handleFacebookLogin = async () => {
@@ -130,6 +137,7 @@ const PageLogin: FC<PageLoginProps> = ({}) => {
             {/* Google Login */}
             <div className="flex justify-center">
               <GoogleSignInButton
+                redirectTo={redirectTo}
                 onSuccess={handleGoogleSuccess}
                 onError={(msg) => {
                   setError(msg);

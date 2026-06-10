@@ -1216,12 +1216,13 @@ export async function updateUserRole(
 }
 
 // Login with Google
-export async function loginWithGoogle(): Promise<{ user: AuthUser | null; error: string | null }> {
+export async function loginWithGoogle(redirectPath?: string): Promise<{ user: AuthUser | null; error: string | null }> {
   try {
+    const safePath = redirectPath?.startsWith('/') ? redirectPath : '/';
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/` : undefined,
+        redirectTo: typeof window !== 'undefined' ? `${window.location.origin}${safePath}` : undefined,
       }
     });
 
@@ -2376,24 +2377,29 @@ export async function createBooking(booking: {
       return { success: false, error: 'Không tìm thấy phòng' };
     }
 
-    if (room.status !== 'available') {
+    const isViewingAppointment = booking.total_price === 0;
+
+    if (!isViewingAppointment && room.status !== 'available') {
       return { success: false, error: 'Phòng không còn trống' };
     }
 
-    // Check for overlapping bookings
-    const { data: overlapping, error: overlapError } = await supabase
-      .from('bookings')
-      .select('id')
-      .eq('room_id', booking.room_id)
-      .in('status', ['pending', 'approved'])
-      .or(`check_in_date.lte.${booking.check_out_date},check_out_date.gte.${booking.check_in_date}`);
+    // Overlap check only for paid rental bookings, not free viewing appointments
+    if (!isViewingAppointment) {
+      const { data: overlapping, error: overlapError } = await supabase
+        .from('bookings')
+        .select('id')
+        .eq('room_id', booking.room_id)
+        .in('status', ['pending', 'approved'])
+        .gt('total_price', 0)
+        .or(`check_in_date.lte.${booking.check_out_date},check_out_date.gte.${booking.check_in_date}`);
 
-    if (overlapError) {
-      console.error('Error checking overlapping bookings:', overlapError);
-    }
+      if (overlapError) {
+        console.error('Error checking overlapping bookings:', overlapError);
+      }
 
-    if (overlapping && overlapping.length > 0) {
-      return { success: false, error: 'Phòng đã có người đặt trong khoảng thời gian này' };
+      if (overlapping && overlapping.length > 0) {
+        return { success: false, error: 'Phòng đã có người đặt trong khoảng thời gian này' };
+      }
     }
 
     const { data, error } = await supabase

@@ -1,10 +1,10 @@
-﻿"use client";
+"use client";
 
 import React from "react";
 import Image from "next/image";
 import ZaloIcon from "@/images/logo_zalo.png";
 
-const ZALO_CHAT_URL = "https://zalo.me/0372858098";
+const ZALO_CHAT_URL = "https://zalo.me/0962888797";
 
 export default function ZaloWidget() {
   return (

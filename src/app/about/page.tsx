@@ -1,4 +1,4 @@
-﻿import rightImg from "@/images/travelhero2.jpg";
+import rightImg from "@/images/travelhero2.jpg";
 import React, { FC } from "react";
 import SectionFounder from "./SectionFounder";
 import SectionStatistic from "./SectionStatistic";
@@ -64,8 +64,8 @@ const PageAbout: FC<PageAboutProps> = ({}) => {
           </div>
           <div className="mt-2 text-sm text-neutral-600 dark:text-neutral-300">
             Nếu bạn là chủ trọ muốn đăng tin hoặc cần hỗ trợ, hãy liên hệ với chúng tôi tại Zalo{" "}
-            <a className="text-primary-600 hover:underline" href="https://zalo.me/0372858098">
-              0372858098
+            <a className="text-primary-600 hover:underline" href="https://zalo.me/0962888797">
+              0962 888 797
             </a>
             .
           </div>
