@@ -5,5 +5,5 @@ export const YOUNGHOUSE_COMPANY = {
     "Số 85 đường Mục Uyên - Công Nghệ, Xã Hạ Bằng, TP Hà Nội, Việt Nam",
   phone: "0962 888 797",
   phoneTel: "0962888797",
-  email: "bachqxhe180125@fpt.edu.vn",
+  email: "younghousehoalac@gmail.com",
 } as const;

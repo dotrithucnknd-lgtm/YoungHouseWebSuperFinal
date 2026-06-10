@@ -41,9 +41,8 @@ const widgetMenus: WidgetFooterMenu[] = [
     menus: [
       { href: "tel:0962888797", label: "Hotline: 0962 888 797" },
       { href: "https://zalo.me/0962888797", label: "Zalo YoungHouse" },
-      { href: "mailto:bachqxhe180125@fpt.edu.vn", label: "bachqxhe180125@fpt.edu.vn" },
       { href: "https://www.facebook.com/younghousehoalac/", label: "Facebook" },
-      { href: "https://www.instagram.com/younghousehoalac/", label: "Instagram" },
+      { href: "https://www.youtube.com/@Younggroup888", label: "YouTube" },
       { href: "https://www.tiktok.com/@younghousehoalac", label: "TikTok" },
     ],
   },

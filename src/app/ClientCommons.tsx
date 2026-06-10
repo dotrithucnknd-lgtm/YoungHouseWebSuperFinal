@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useThemeMode } from "@/utils/useThemeMode";
 
-const ZaloWidget = dynamic(() => import("@/components/ZaloWidget"), {
+const ContactChatWidget = dynamic(() => import("@/components/ContactChatWidget"), {
   ssr: false,
   loading: () => null,
 });
@@ -37,11 +37,21 @@ const ClientCommons = () => {
     };
   }, [pathname]);
 
-  const showZaloWidget = pathname === "/";
+  const hiddenWidgetPrefixes = [
+    "/admin",
+    "/operator",
+    "/tenant",
+    "/staff",
+    "/manager",
+    "/ctv",
+  ];
+  const showContactWidget = !hiddenWidgetPrefixes.some((prefix) =>
+    pathname?.startsWith(prefix)
+  );
 
   return (
     <>
-      {showZaloWidget && <ZaloWidget />}
+      {showContactWidget && <ContactChatWidget />}
       <CompareFloatingButton />
     </>
   );
