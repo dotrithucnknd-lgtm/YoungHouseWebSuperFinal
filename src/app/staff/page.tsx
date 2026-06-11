@@ -47,16 +47,16 @@ export default function StaffDashboard() {
             phone
           )
         `)
+        .eq("assigned_to", user.id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
 
-      // Filter: only show unassigned tickets OR tickets assigned to this staff
-      const items = (tickets || []).filter((t: any) => t.assigned_to === user.id || !t.assigned_to);
+      const items = tickets || [];
       
       // Calculate stats
       const total = items.length;
-      const assigned = items.filter(t => t.status === "assigned" || t.status === "pending").length;
+      const assigned = items.filter(t => t.status === "assigned").length;
       const inProgress = items.filter(t => t.status === "in_progress").length;
       const completed = items.filter(t => t.status === "completed" || t.status === "resolved").length;
 

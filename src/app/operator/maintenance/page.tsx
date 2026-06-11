@@ -14,7 +14,13 @@ import {
   DocumentTextIcon
 } from "@heroicons/react/24/outline";
 import { useAuth } from "@/contexts/AuthContext";
-import { fetchOwnerMaintenanceRequests, updateMaintenanceRequestStatus, type MaintenanceRequestWithDetails } from "@/lib/landlordServices";
+import {
+  fetchOwnerMaintenanceRequests,
+  updateMaintenanceRequestStatus,
+  fetchStaffTechnicians,
+  assignMaintenanceTicket,
+  type MaintenanceRequestWithDetails,
+} from "@/lib/landlordServices";
 
 export default function MaintenancePage() {
   const { user } = useAuth();
@@ -23,30 +29,60 @@ export default function MaintenancePage() {
   const [requests, setRequests] = useState<MaintenanceRequestWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRequest, setSelectedRequest] = useState<MaintenanceRequestWithDetails | null>(null);
+  const [staffList, setStaffList] = useState<{ id: string; name: string; phone: string | null }[]>([]);
+  const [assignStaffId, setAssignStaffId] = useState("");
+  const [assignPriority, setAssignPriority] = useState<"low" | "medium" | "high" | "urgent">("medium");
+  const [assigning, setAssigning] = useState(false);
 
   useEffect(() => {
     if (user?.id) {
       loadRequests();
+      fetchStaffTechnicians().then(setStaffList);
     }
-  }, [user, activeTab]);
+  }, [user]);
 
   const loadRequests = async () => {
     if (!user?.id) return;
     
     setLoading(true);
     try {
-      const filters: any = {};
-      if (activeTab !== "all") {
-        filters.status = activeTab;
-      }
-      
-      const data = await fetchOwnerMaintenanceRequests(user.id, filters);
+      const data = await fetchOwnerMaintenanceRequests(user.id);
       setRequests(data);
     } catch (error) {
       console.error('Error loading maintenance requests:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAssign = async () => {
+    if (!selectedRequest || !assignStaffId) {
+      alert("Vui lòng chọn kỹ thuật viên");
+      return;
+    }
+    setAssigning(true);
+    const { error } = await assignMaintenanceTicket(
+      selectedRequest.id,
+      assignStaffId,
+      assignPriority
+    );
+    setAssigning(false);
+    if (error) {
+      alert("Có lỗi xảy ra: " + error);
+      return;
+    }
+    setSelectedRequest(null);
+    setAssignStaffId("");
+    setAssignPriority("medium");
+    loadRequests();
+  };
+
+  const openRequestDetail = (request: MaintenanceRequestWithDetails) => {
+    setSelectedRequest(request);
+    setAssignStaffId(request.assigned_to || request.assigned?.id || "");
+    setAssignPriority(
+      (request.priority as "low" | "medium" | "high" | "urgent") || "medium"
+    );
   };
 
   const handleUpdateStatus = async (requestId: string, status: 'pending' | 'in_progress' | 'resolved' | 'rejected') => {
@@ -70,23 +106,41 @@ export default function MaintenancePage() {
     });
   };
 
+  const unassignedCount = requests.filter(
+    (r) => r.status === "pending" && !r.assigned_to && !r.assigned
+  ).length;
+
   const tabs = [
     { id: "all", label: "Tất cả", count: requests.length },
-    { id: "pending", label: "Chờ xử lý", count: requests.filter(r => r.status === 'pending').length },
+    { id: "unassigned", label: "Chờ phân công", count: unassignedCount },
+    { id: "pending", label: "Đã giao việc", count: requests.filter(r => r.status === 'assigned' || (r.status === 'pending' && (r.assigned_to || r.assigned))).length },
     { id: "in_progress", label: "Đang xử lý", count: requests.filter(r => r.status === 'in_progress').length },
     { id: "resolved", label: "Đã xong", count: requests.filter(r => r.status === 'resolved').length },
   ];
 
   const filteredRequests = requests.filter(request => {
+    if (activeTab === "unassigned") {
+      if (request.status !== "pending" || request.assigned_to || request.assigned) return false;
+    } else if (activeTab === "pending") {
+      const isAssigned =
+        request.status === "assigned" ||
+        (request.status === "pending" && (request.assigned_to || request.assigned));
+      if (!isAssigned) return false;
+    } else if (activeTab !== "all") {
+      if (request.status !== activeTab) return false;
+    }
+
     if (!searchTerm) return true;
-    
-    const roomName = request.room_units?.name || '';
-    const renterName = request.renter?.name || '';
-    const title = request.title || '';
-    
-    return roomName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           renterName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           title.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const roomName = request.room_units?.name || "";
+    const renterName = request.renter?.name || "";
+    const title = request.title || "";
+
+    return (
+      roomName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      renterName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
   });
 
   if (loading) {
@@ -127,6 +181,7 @@ export default function MaintenancePage() {
             >
               {tab.label}
               <span className={`px-2 py-0.5 rounded-full text-xs text-white ${
+                tab.id === 'unassigned' ? 'bg-red-500' :
                 tab.id === 'pending' ? 'bg-orange-500' :
                 tab.id === 'in_progress' ? 'bg-blue-500' :
                 tab.id === 'resolved' ? 'bg-green-500' :
@@ -151,7 +206,7 @@ export default function MaintenancePage() {
             <div 
               key={request.id} 
               className="bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => setSelectedRequest(request)}
+              onClick={() => openRequestDetail(request)}
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
@@ -191,12 +246,14 @@ export default function MaintenancePage() {
                 <span className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
                   request.status === 'resolved' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
                   request.status === 'in_progress' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
+                  request.status === 'assigned' ? 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400' :
                   request.status === 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
                   'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
                 }`}>
                   {request.status === 'resolved' ? 'Đã xong' :
                    request.status === 'in_progress' ? 'Đang xử lý' :
-                   request.status === 'rejected' ? 'Từ chối' : 'Chờ xử lý'}
+                   request.status === 'assigned' ? 'Đã giao việc' :
+                   request.status === 'rejected' ? 'Từ chối' : 'Chờ phân công'}
                 </span>
               </div>
 
@@ -256,7 +313,8 @@ export default function MaintenancePage() {
                     'bg-orange-100 text-orange-700'
                   }`}>
                     {selectedRequest.status === 'resolved' ? 'Đã xong' :
-                     selectedRequest.status === 'in_progress' ? 'Đang xử lý' : 'Chờ xử lý'}
+                     selectedRequest.status === 'in_progress' ? 'Đang xử lý' :
+                     selectedRequest.status === 'assigned' ? 'Đã giao việc' : 'Chờ phân công'}
                   </span>
                 </div>
               </div>
@@ -395,34 +453,80 @@ export default function MaintenancePage() {
               )}
             </div>
 
-            {selectedRequest.status !== 'resolved' && selectedRequest.status !== 'rejected' && (
-              <div className="flex gap-3 pt-6 border-t border-neutral-200 dark:border-neutral-700">
-                {selectedRequest.status === 'pending' && (
-                  <>
+            {selectedRequest.status !== "resolved" && selectedRequest.status !== "rejected" && (
+              <div className="space-y-4 pt-6 border-t border-neutral-200 dark:border-neutral-700">
+                <div>
+                  <h4 className="text-sm font-bold text-neutral-900 dark:text-white mb-3">
+                    Phân công kỹ thuật viên
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">
+                        Kỹ thuật viên <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        value={assignStaffId}
+                        onChange={(e) => setAssignStaffId(e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm"
+                      >
+                        <option value="">Chọn nhân viên kỹ thuật</option>
+                        {staffList.map((s) => (
+                          <option key={s.id} value={s.id}>
+                            {s.name}
+                            {s.phone ? ` — ${s.phone}` : ""}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">
+                        Mức độ ưu tiên <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        value={assignPriority}
+                        onChange={(e) =>
+                          setAssignPriority(
+                            e.target.value as "low" | "medium" | "high" | "urgent"
+                          )
+                        }
+                        className="w-full px-3 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm"
+                      >
+                        <option value="low">Thấp</option>
+                        <option value="medium">Trung bình</option>
+                        <option value="high">Cao</option>
+                        <option value="urgent">Khẩn cấp</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleAssign}
+                    disabled={assigning || !assignStaffId}
+                    className="mt-3 w-full px-4 py-2.5 bg-primary-6000 hover:bg-primary-700 disabled:opacity-50 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                  >
+                    <WrenchScrewdriverIcon className="w-5 h-5" />
+                    {assigning ? "Đang phân công..." : "Phân công xử lý"}
+                  </button>
+                </div>
+
+                <div className="flex gap-3">
+                  {selectedRequest.status === "pending" && !selectedRequest.assigned_to && !selectedRequest.assigned && (
                     <button
-                      onClick={() => handleUpdateStatus(selectedRequest.id, 'in_progress')}
-                      className="flex-1 px-4 py-2 bg-primary-6000 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
-                    >
-                      <ClockIcon className="w-5 h-5" />
-                      Bắt đầu xử lý
-                    </button>
-                    <button
-                      onClick={() => handleUpdateStatus(selectedRequest.id, 'rejected')}
+                      onClick={() => handleUpdateStatus(selectedRequest.id, "rejected")}
                       className="px-4 py-2 bg-red-100 text-red-600 hover:bg-red-200 rounded-lg font-medium transition-colors"
                     >
-                      Từ chối
+                      Từ chối yêu cầu
                     </button>
-                  </>
-                )}
-                {selectedRequest.status === 'in_progress' && (
-                  <button
-                    onClick={() => handleUpdateStatus(selectedRequest.id, 'resolved')}
-                    className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
-                  >
-                    <CheckCircleIcon className="w-5 h-5" />
-                    Đánh dấu hoàn thành
-                  </button>
-                )}
+                  )}
+                  {selectedRequest.status === "in_progress" && (
+                    <button
+                      onClick={() => handleUpdateStatus(selectedRequest.id, "resolved")}
+                      className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                    >
+                      <CheckCircleIcon className="w-5 h-5" />
+                      Đánh dấu hoàn thành
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </div>

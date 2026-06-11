@@ -7,7 +7,6 @@ import Image from "next/image";
 import StartRating from "@/components/StartRating";
 import ButtonPrimary from "@/shared/ButtonPrimary";
 import { StayDataType } from "@/data/types";
-import { useAuth } from "@/contexts/AuthContext";
 import ZaloIcon from "@/images/logo_zalo.png";
 
 interface ViewingScheduleSidebarProps {
@@ -16,7 +15,6 @@ interface ViewingScheduleSidebarProps {
 
 const ViewingScheduleSidebar: FC<ViewingScheduleSidebarProps> = ({ roomData }) => {
   const router = useRouter();
-  const { user } = useAuth();
   const [viewDate, setViewDate] = useState("");
   const [guests, setGuests] = useState(1);
   const [error, setError] = useState<string | null>(null);
@@ -38,12 +36,6 @@ const ViewingScheduleSidebar: FC<ViewingScheduleSidebarProps> = ({ roomData }) =
       setError("Ngày xem phòng không thể là ngày trong quá khứ");
       return;
     }
-    if (!user) {
-      const returnUrl = `/checkout?roomId=${roomData.id}&viewDate=${viewDate}&guests=${guests}`;
-      router.push(`/login?redirect=${encodeURIComponent(returnUrl)}`);
-      return;
-    }
-
     const params = new URLSearchParams({
       roomId: String(roomData.id),
       viewDate,

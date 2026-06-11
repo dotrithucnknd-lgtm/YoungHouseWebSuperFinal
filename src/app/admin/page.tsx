@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { canAccessPortal } from "@/utils/roles";
 import { supabase } from "@/lib/supabaseClient";
 import {
   fetchAllBookings,
@@ -27,13 +28,13 @@ const AdminDashboard = () => {
   const [loadingStats, setLoadingStats] = useState(true);
 
   useEffect(() => {
-    if (!loading && (!user || user.role !== "admin")) {
+    if (!loading && (!user || !canAccessPortal(user.role, "admin"))) {
       router.push("/");
     }
   }, [user, loading, router]);
 
   useEffect(() => {
-    if (user?.role === "admin") {
+    if (user && canAccessPortal(user.role, "admin")) {
       loadStats();
     }
   }, [user]);
@@ -86,7 +87,7 @@ const AdminDashboard = () => {
     );
   }
 
-  if (!user || user.role !== "admin") {
+  if (!user || !canAccessPortal(user.role, "admin")) {
     return null;
   }
 

@@ -57,7 +57,7 @@ export default function TenantMaintenancePage() {
 
       if (error) throw error;
 
-      // Trigger system notification for Operators and Staff
+      // Thông báo cho Operator phân công (không gửi thẳng cho toàn bộ kỹ thuật viên)
       const tenantName = user?.name || "Khách thuê";
       const roomName = roomUnit.name || "Phòng trọ";
       const houseTitle = roomUnit.rooms?.title || "";
@@ -65,7 +65,7 @@ export default function TenantMaintenancePage() {
 
       await supabase.from("notifications").insert({
         title: `🔧 Sự cố mới: ${form.title.trim()}`,
-        content: `Khách thuê ${tenantName} (${locationInfo}) vừa báo cáo sự cố: "${form.title.trim()}". Vui lòng kiểm tra và phân công xử lý.`,
+        content: `Khách thuê ${tenantName} (${locationInfo}) vừa báo cáo sự cố: "${form.title.trim()}". Operator vui lòng vào mục Bảo trì để phân công kỹ thuật viên và đặt mức ưu tiên.`,
         type: "warning",
         target_audience: "owners",
         is_active: true,

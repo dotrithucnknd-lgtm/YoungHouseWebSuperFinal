@@ -11,6 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import {
   fetchRoomById,
   createBooking,
+  createGuestViewingBooking,
 } from "@/lib/supabaseServices";
 import {
   lookupCTVByReferralCode,
@@ -38,6 +39,7 @@ function CheckOutContent({ className = "" }: CheckOutPagePageMainProps) {
   const [error, setError] = useState<string | null>(null);
   const [referralCTV, setReferralCTV] = useState<CTVProfile | null>(null);
 
+  const [guestName, setGuestName] = useState("");
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
 
@@ -51,12 +53,7 @@ function CheckOutContent({ className = "" }: CheckOutPagePageMainProps) {
   }, [searchParams]);
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.push(`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`);
-    }
-  }, [user, authLoading, router]);
-
-  useEffect(() => {
+    if (user?.name) setGuestName(user.name);
     if (user?.phone) setPhone(user.phone);
   }, [user]);
 
@@ -82,8 +79,13 @@ function CheckOutContent({ className = "" }: CheckOutPagePageMainProps) {
   };
 
   const handleConfirm = async () => {
-    if (!room || !viewDate || !user) return;
+    if (!room || !viewDate) return;
 
+    const name = guestName.trim();
+    if (!name) {
+      setError("Vui lòng nhập họ tên");
+      return;
+    }
     if (!phone.trim() || phone.replace(/\D/g, "").length < 10) {
       setError("Vui lòng nhập số điện thoại hợp lệ (10–11 số)");
       return;
@@ -92,28 +94,45 @@ function CheckOutContent({ className = "" }: CheckOutPagePageMainProps) {
     setSubmitting(true);
     setError(null);
 
-    const note = `SĐT: ${phone.trim()}${message.trim() ? `\n${message.trim()}` : ""}`;
+    let bookingId: string | undefined;
+    let bookingError: string | null = null;
 
-    const { success, bookingId, error: bookingError } = await createBooking({
-      room_id: roomId,
-      check_in_date: viewDate,
-      check_out_date: viewDate,
-      guests_count: guests,
-      total_price: 0,
-      message: note,
-    });
+    if (user) {
+      const note = `Khách: ${name}\nSĐT: ${phone.trim()}${message.trim() ? `\n${message.trim()}` : ""}`;
+      const result = await createBooking({
+        room_id: roomId,
+        check_in_date: viewDate,
+        check_out_date: viewDate,
+        guests_count: guests,
+        total_price: 0,
+        message: note,
+      });
+      bookingId = result.bookingId;
+      bookingError = result.error;
 
-    if (bookingError || !success) {
+      if (referralCTV && bookingId) {
+        await createReferral(referralCTV.id, roomId, bookingId, user.id);
+      }
+    } else {
+      const result = await createGuestViewingBooking({
+        room_id: roomId,
+        check_in_date: viewDate,
+        guests_count: guests,
+        guest_name: name,
+        phone: phone.trim(),
+        message: message.trim() || undefined,
+      });
+      bookingId = result.bookingId;
+      bookingError = result.error;
+    }
+
+    if (bookingError || !bookingId) {
       setError(bookingError || "Không thể đặt lịch xem phòng");
       setSubmitting(false);
       return;
     }
 
-    if (referralCTV && bookingId) {
-      await createReferral(referralCTV.id, roomId, bookingId, user.id);
-    }
-
-    router.push(`/pay-done?bookingId=${bookingId}`);
+    router.push(`/pay-done?bookingId=${bookingId}${user ? "" : "&guest=1"}`);
   };
 
   if (authLoading || loadingRoom) {
@@ -154,7 +173,9 @@ function CheckOutContent({ className = "" }: CheckOutPagePageMainProps) {
                 Xác nhận lịch xem phòng
               </h2>
               <p className="text-sm text-neutral-500 mt-2">
-                Bạn chỉ đi xem phòng — không cần thanh toán hay đặt cọc.
+                {user
+                  ? "Bạn chỉ đi xem phòng — không cần thanh toán hay đặt cọc."
+                  : "Không cần đăng nhập — chỉ cần điền họ tên và số điện thoại để đặt lịch xem phòng miễn phí."}
               </p>
             </div>
 
@@ -165,9 +186,15 @@ function CheckOutContent({ className = "" }: CheckOutPagePageMainProps) {
               <div className="space-y-4">
                 <div>
                   <Label>
-                    Họ tên
+                    Họ tên <span className="text-red-500">*</span>
                   </Label>
-                  <Input value={user?.name || user?.email || ""} disabled className="mt-1.5 bg-neutral-50 dark:bg-neutral-800" />
+                  <Input
+                    value={guestName}
+                    onChange={(e) => setGuestName(e.target.value)}
+                    placeholder="Nguyễn Văn A"
+                    className="mt-1.5"
+                    required
+                  />
                 </div>
                 <div>
                   <Label>
@@ -177,7 +204,7 @@ function CheckOutContent({ className = "" }: CheckOutPagePageMainProps) {
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="0123456789"
+                    placeholder="0962888797"
                     className="mt-1.5"
                     required
                   />
@@ -195,7 +222,7 @@ function CheckOutContent({ className = "" }: CheckOutPagePageMainProps) {
               </div>
             </div>
 
-            {referralCTV && (
+            {referralCTV && user && (
               <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 text-sm text-blue-700 dark:text-blue-300">
                 Giới thiệu bởi CTV: <strong>{referralCTV.referral_code}</strong>
               </div>
@@ -209,7 +236,10 @@ function CheckOutContent({ className = "" }: CheckOutPagePageMainProps) {
 
             <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200/50 dark:border-emerald-900/30">
               <p className="text-sm text-emerald-800 dark:text-emerald-300">
-                <strong>Lưu ý:</strong> Sau khi xác nhận, Young House sẽ liên hệ qua điện thoại để sắp xếp lịch hẹn cụ thể. Trạng thái lịch hẹn có thể xem tại mục Lịch xem phòng.
+                <strong>Lưu ý:</strong> Sau khi xác nhận, Young House sẽ liên hệ qua điện thoại để sắp xếp lịch hẹn cụ thể.
+                {user
+                  ? " Trạng thái lịch hẹn có thể xem tại mục Lịch xem phòng."
+                  : " Vui lòng giữ máy để nhận cuộc gọi xác nhận."}
               </p>
             </div>
 

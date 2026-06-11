@@ -50,12 +50,12 @@ export default function StaffTasksPage() {
             phone
           )
         `)
+        .eq("assigned_to", user.id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      
-      // Filter: only show unassigned tickets OR tickets assigned to this staff
-      const items = (data || []).filter((t: any) => t.assigned_to === user.id || !t.assigned_to);
+
+      const items = data || [];
       setTasks(items);
       
       // Update selected task reference if it's currently open
@@ -86,10 +86,10 @@ export default function StaffTasksPage() {
         .from("maintenance_tickets")
         .update({
           status: "in_progress",
-          assigned_to: user.id, // Auto-assign to self if unassigned
           updated_at: new Date().toISOString()
         })
-        .eq("id", taskId);
+        .eq("id", taskId)
+        .eq("assigned_to", user.id);
 
       if (error) throw error;
       await fetchTasks();
@@ -184,7 +184,7 @@ export default function StaffTasksPage() {
   // Filter and search tasks logic
   const filteredTasks = tasks.filter((task) => {
     // Status Filter
-    if (statusFilter === "new" && task.status !== "assigned" && task.status !== "pending") return false;
+    if (statusFilter === "new" && task.status !== "assigned") return false;
     if (statusFilter === "in_progress" && task.status !== "in_progress") return false;
     if (statusFilter === "completed" && task.status !== "completed" && task.status !== "resolved") return false;
 
@@ -239,7 +239,7 @@ export default function StaffTasksPage() {
                   : "bg-amber-50 dark:bg-amber-950/20 text-amber-600 hover:bg-amber-100 dark:hover:bg-amber-950/30"
               }`}
             >
-              Mới nhận ({tasks.filter(t => t.status === "assigned" || t.status === "pending").length})
+              Mới nhận ({tasks.filter(t => t.status === "assigned").length})
             </button>
             <button
               onClick={() => setStatusFilter("in_progress")}
@@ -410,7 +410,7 @@ export default function StaffTasksPage() {
 
             {/* Action transition panel */}
             <div className="pt-4 border-t border-neutral-100 dark:border-neutral-800">
-              {selectedTask.status === "assigned" || selectedTask.status === "pending" ? (
+              {selectedTask.status === "assigned" ? (
                 <button
                   onClick={() => handleStartTask(selectedTask.id)}
                   disabled={submitting}

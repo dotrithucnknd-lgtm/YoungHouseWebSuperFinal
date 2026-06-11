@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { canAccessPortal } from "@/utils/roles";
 import StaffSidebar from "@/components/staff/StaffSidebar";
 import StaffHeader from "@/components/staff/StaffHeader";
 import StaffBottomNav from "@/components/staff/StaffBottomNav";
@@ -37,8 +38,7 @@ export default function StaffLayout({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    // Only allow 'staff' and 'admin' roles to access the staff portal
-    if (!loading && (!user || (user.role !== "staff" && user.role !== "admin"))) {
+    if (!loading && (!user || !canAccessPortal(user.role, "staff"))) {
       router.push("/");
     }
   }, [user, loading, router]);
@@ -53,7 +53,7 @@ export default function StaffLayout({
     );
   }
 
-  if (!user || (user.role !== "staff" && user.role !== "admin")) {
+  if (!user || !canAccessPortal(user.role, "staff")) {
     return null;
   }
 

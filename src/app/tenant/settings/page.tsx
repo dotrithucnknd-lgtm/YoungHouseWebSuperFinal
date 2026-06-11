@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
-import { CogIcon } from "@heroicons/react/24/outline";
+import PushNotificationPrompt from "@/components/PushNotificationPrompt";
 
 export default function TenantSettingsPage() {
   const { user } = useAuth();
@@ -113,7 +113,10 @@ export default function TenantSettingsPage() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl">
+    <div className="space-y-6 max-w-5xl">
+      <PushNotificationPrompt />
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Profile Form */}
       <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-6 shadow-sm">
         <div className="flex items-center gap-3 mb-6">
@@ -256,6 +259,7 @@ export default function TenantSettingsPage() {
             )}
           </button>
         </form>
+      </div>
       </div>
     </div>
   );

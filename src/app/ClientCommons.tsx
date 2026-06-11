@@ -44,6 +44,7 @@ const ClientCommons = () => {
     "/staff",
     "/manager",
     "/ctv",
+    "/phong-tro-detail",
   ];
   const showContactWidget = !hiddenWidgetPrefixes.some((prefix) =>
     pathname?.startsWith(prefix)

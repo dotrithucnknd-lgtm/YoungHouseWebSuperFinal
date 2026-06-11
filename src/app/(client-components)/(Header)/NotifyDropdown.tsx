@@ -35,10 +35,11 @@ const NotifyDropdown: FC<Props> = ({ className = "" }) => {
   }, []);
 
   useEffect(() => {
-    if (user && user.role) {
+    if (user?.role) {
       loadNotifications();
     }
-  }, [user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id, user?.role]);
 
   const loadNotifications = async () => {
     if (!user?.role) return;

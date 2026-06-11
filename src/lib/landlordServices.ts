@@ -841,8 +841,7 @@ export async function fetchOwnerMaintenanceRequests(
 
     return (data || []).map((row: any) => {
       // Map database completed status back to resolved for frontend compatibility
-      const mappedStatus = row.status === 'completed' ? 'resolved' : 
-                           row.status === 'assigned' ? 'in_progress' : row.status;
+      const mappedStatus = row.status === 'completed' ? 'resolved' : row.status;
       return {
         ...row,
         status: mappedStatus,
@@ -857,6 +856,55 @@ export async function fetchOwnerMaintenanceRequests(
   } catch (error) {
     console.error('Error in fetchOwnerMaintenanceRequests:', error);
     return [];
+  }
+}
+
+// Fetch staff technicians for assignment
+export async function fetchStaffTechnicians(): Promise<
+  { id: string; name: string; phone: string | null }[]
+> {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id, name, phone')
+      .eq('role', 'staff')
+      .order('name');
+
+    if (error) {
+      console.error('Error fetching staff technicians:', error);
+      return [];
+    }
+    return data || [];
+  } catch (error) {
+    console.error('Error in fetchStaffTechnicians:', error);
+    return [];
+  }
+}
+
+// Operator assigns a maintenance ticket to staff with priority
+export async function assignMaintenanceTicket(
+  ticketId: string,
+  staffId: string,
+  priority: 'low' | 'medium' | 'high' | 'urgent'
+): Promise<{ error: string | null }> {
+  try {
+    const { error } = await supabase
+      .from('maintenance_tickets')
+      .update({
+        assigned_to: staffId,
+        priority,
+        status: 'assigned',
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', ticketId);
+
+    if (error) {
+      return { error: error.message };
+    }
+    return { error: null };
+  } catch (error) {
+    console.error('Error in assignMaintenanceTicket:', error);
+    return { error: 'Có lỗi xảy ra khi phân công' };
   }
 }
 

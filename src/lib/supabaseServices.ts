@@ -104,7 +104,7 @@ export interface FeedbackWithUser extends DatabaseFeedback {
   profiles: {
     name: string;
     role: 'admin' | 'manager' | 'sales' | 'operator' | 'staff' | 'tenant' | 'user';
-  };
+  } | null;
 }
 
 export interface DatabaseNearbyPlace {
@@ -180,7 +180,7 @@ export interface UniversityWithRoomCount extends DatabaseUniversity {
 export interface DatabaseBooking {
   id: string;
   room_id: string;
-  user_id: string;
+  user_id: string | null;
   check_in_date: string;
   check_out_date: string;
   guests_count: number;
@@ -1188,8 +1188,8 @@ export async function updateUserRole(
       .eq('id', currentUserData.user.id)
       .single();
 
-    if (!currentProfile || currentProfile.role !== 'admin') {
-      return { success: false, error: 'Chỉ quản trị viên mới có thể thay đổi role người dùng' };
+    if (!currentProfile || (currentProfile.role !== 'admin' && currentProfile.role !== 'manager')) {
+      return { success: false, error: 'Chỉ quản trị viên hoặc manager mới có thể thay đổi role người dùng' };
     }
 
     // Prevent admin from changing their own role
@@ -1212,72 +1212,6 @@ export async function updateUserRole(
   } catch (error) {
     console.error('Error in updateUserRole:', error);
     return { success: false, error: 'Có lỗi xảy ra khi cập nhật role người dùng' };
-  }
-}
-
-// Login with Google
-export async function loginWithGoogle(redirectPath?: string): Promise<{ user: AuthUser | null; error: string | null }> {
-  try {
-    const safePath = redirectPath?.startsWith('/') ? redirectPath : '/';
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: typeof window !== 'undefined' ? `${window.location.origin}${safePath}` : undefined,
-      }
-    });
-
-    if (error) {
-      return { user: null, error: error.message };
-    }
-
-    // OAuth redirects, so we return null for now
-    // The actual user data will be available after redirect
-    return { user: null, error: null };
-  } catch (error) {
-    console.error('Error in loginWithGoogle:', error);
-    return { user: null, error: 'Có lỗi xảy ra khi đăng nhập với Google' };
-  }
-}
-
-// Login with Facebook
-export async function loginWithFacebook(): Promise<{ user: AuthUser | null; error: string | null }> {
-  try {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'facebook',
-      options: {
-        redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/` : undefined,
-      }
-    });
-
-    if (error) {
-      return { user: null, error: error.message };
-    }
-
-    return { user: null, error: null };
-  } catch (error) {
-    console.error('Error in loginWithFacebook:', error);
-    return { user: null, error: 'Có lỗi xảy ra khi đăng nhập với Facebook' };
-  }
-}
-
-// Login with Twitter
-export async function loginWithTwitter(): Promise<{ user: AuthUser | null; error: string | null }> {
-  try {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'twitter',
-      options: {
-        redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/` : undefined,
-      }
-    });
-
-    if (error) {
-      return { user: null, error: error.message };
-    }
-
-    return { user: null, error: null };
-  } catch (error) {
-    console.error('Error in loginWithTwitter:', error);
-    return { user: null, error: 'Có lỗi xảy ra khi đăng nhập với Twitter' };
   }
 }
 
@@ -1660,7 +1594,12 @@ export async function fetchRoomFeedbacks(roomId: string): Promise<{ feedbacks: F
       return { feedbacks: [], error: error.message };
     }
 
-    return { feedbacks: data as FeedbackWithUser[], error: null };
+    const feedbacks = (data || []).map((item: FeedbackWithUser) => ({
+      ...item,
+      profiles: item.profiles ?? { name: 'Người dùng', role: 'user' as const },
+    }));
+
+    return { feedbacks, error: null };
   } catch (error) {
     console.error('Error in fetchRoomFeedbacks:', error);
     return { feedbacks: [], error: 'Có lỗi xảy ra khi tải đánh giá' };
@@ -2433,6 +2372,34 @@ export async function createBooking(booking: {
 }
 
 /**
+ * Create a viewing appointment without login (guest)
+ */
+export async function createGuestViewingBooking(booking: {
+  room_id: string;
+  check_in_date: string;
+  guests_count: number;
+  guest_name: string;
+  phone: string;
+  message?: string;
+}): Promise<{ success: boolean; bookingId?: string; error: string | null }> {
+  try {
+    const res = await fetch("/api/bookings/viewing", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(booking),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      return { success: false, error: data.error || "Không thể đặt lịch xem phòng" };
+    }
+    return { success: true, bookingId: data.bookingId, error: null };
+  } catch (error) {
+    console.error("Error in createGuestViewingBooking:", error);
+    return { success: false, error: "Có lỗi xảy ra khi đặt lịch xem phòng" };
+  }
+}
+
+/**
  * Fetch all bookings (admin only)
  */
 export async function fetchAllBookings(): Promise<{ bookings: BookingWithDetails[]; error: string | null }> {
@@ -2465,11 +2432,20 @@ export async function fetchAllBookings(): Promise<{ bookings: BookingWithDetails
     // Fetch profiles separately
     const bookingsWithProfiles = await Promise.all(
       (data || []).map(async (booking: any) => {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('id, name, phone')
-          .eq('id', booking.user_id)
-          .single();
+        let profile = null;
+        if (booking.user_id) {
+          const { data: p } = await supabase
+            .from('profiles')
+            .select('id, name, phone')
+            .eq('id', booking.user_id)
+            .single();
+          profile = p;
+        }
+
+        const guestName =
+          booking.message?.match(/^Khách: (.+)/m)?.[1]?.trim() || 'Khách vãng lai';
+        const guestPhone =
+          booking.message?.match(/^SĐT: (.+)/m)?.[1]?.trim() || '';
         
         const { data: approver } = booking.approved_by ? await supabase
           .from('profiles')
@@ -2479,7 +2455,11 @@ export async function fetchAllBookings(): Promise<{ bookings: BookingWithDetails
         
         return {
           ...booking,
-          profiles: profile || { id: booking.user_id, name: 'Unknown', phone: '' },
+          profiles: profile || {
+            id: booking.user_id || 'guest',
+            name: guestName,
+            phone: guestPhone,
+          },
           approver: approver || undefined
         };
       })
@@ -2574,11 +2554,20 @@ export async function fetchMyBookings(): Promise<{ bookings: BookingWithDetails[
     // Fetch profiles separately
     const bookingsWithProfiles = await Promise.all(
       (data || []).map(async (booking: any) => {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('id, name, phone')
-          .eq('id', booking.user_id)
-          .single();
+        let profile = null;
+        if (booking.user_id) {
+          const { data: p } = await supabase
+            .from('profiles')
+            .select('id, name, phone')
+            .eq('id', booking.user_id)
+            .single();
+          profile = p;
+        }
+
+        const guestName =
+          booking.message?.match(/^Khách: (.+)/m)?.[1]?.trim() || 'Khách vãng lai';
+        const guestPhone =
+          booking.message?.match(/^SĐT: (.+)/m)?.[1]?.trim() || '';
         
         const { data: approver } = booking.approved_by ? await supabase
           .from('profiles')
@@ -2588,7 +2577,11 @@ export async function fetchMyBookings(): Promise<{ bookings: BookingWithDetails[
         
         return {
           ...booking,
-          profiles: profile || { id: booking.user_id, name: 'Unknown', phone: '' },
+          profiles: profile || {
+            id: booking.user_id || 'guest',
+            name: guestName,
+            phone: guestPhone,
+          },
           approver: approver || undefined
         };
       })

@@ -15,6 +15,7 @@ import {
   updateNotification,
   DatabaseNotification,
 } from "@/lib/supabaseServices";
+import { broadcastPushNotification } from "@/lib/broadcastPushNotification";
 
 interface AdminNotificationFormProps {
   show: boolean;
@@ -99,6 +100,14 @@ const AdminNotificationForm: React.FC<AdminNotificationFormProps> = ({
         if (createError) {
           setError(createError);
         } else {
+          if (form.is_active) {
+            await broadcastPushNotification({
+              title: form.title,
+              content: form.content,
+              target_audience: form.target_audience,
+              url: "/",
+            });
+          }
           onSuccess();
         }
       }

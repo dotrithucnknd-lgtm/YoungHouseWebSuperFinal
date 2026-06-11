@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { canAccessPortal } from "@/utils/roles";
 import ManagerSidebar from "@/components/manager/ManagerSidebar";
 import ManagerHeader from "@/components/manager/ManagerHeader";
 import ManagerBottomNav from "@/components/manager/ManagerBottomNav";
@@ -35,10 +36,11 @@ export default function ManagerLayout({
   const router = useRouter();
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const handleMobileMenuClose = useCallback(() => setIsMobileMenuOpen(false), []);
+  const handleMobileMenuOpen = useCallback(() => setIsMobileMenuOpen(true), []);
 
   useEffect(() => {
-    // Only allow 'manager' and 'admin' roles to access the manager dashboard
-    if (!loading && (!user || (user.role !== "manager" && user.role !== "admin"))) {
+    if (!loading && (!user || !canAccessPortal(user.role, "manager"))) {
       router.push("/");
     }
   }, [user, loading, router]);
@@ -57,7 +59,7 @@ export default function ManagerLayout({
     );
   }
 
-  if (!user || (user.role !== "manager" && user.role !== "admin")) {
+  if (!user || !canAccessPortal(user.role, "manager")) {
     return null;
   }
 
@@ -66,7 +68,7 @@ export default function ManagerLayout({
       {/* Sidebar */}
       <ManagerSidebar
         isMobileOpen={isMobileMenuOpen}
-        onMobileClose={() => setIsMobileMenuOpen(false)}
+        onMobileClose={handleMobileMenuClose}
       />
 
       {/* Main Content */}
@@ -75,7 +77,7 @@ export default function ManagerLayout({
         <ManagerHeader
           title={pageInfo.title}
           subtitle={pageInfo.subtitle}
-          onMobileMenuClick={() => setIsMobileMenuOpen(true)}
+          onMobileMenuClick={handleMobileMenuOpen}
         />
 
         {/* Page Content */}
@@ -85,7 +87,7 @@ export default function ManagerLayout({
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <ManagerBottomNav onMenuClick={() => setIsMobileMenuOpen(true)} />
+      <ManagerBottomNav onMenuClick={handleMobileMenuOpen} />
     </div>
   );
 }

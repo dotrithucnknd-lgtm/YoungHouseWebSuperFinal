@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { canAccessPortal } from "@/utils/roles";
 import OperatorSidebar from "@/components/operator/OperatorSidebar";
 import OperatorHeader from "@/components/operator/OperatorHeader";
 import OperatorBottomNav from "@/components/operator/OperatorBottomNav";
@@ -85,8 +86,7 @@ export default function OperatorLayout({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    // Cho phép operator và admin truy cập
-    if (!loading && (!user || (user.role !== "operator" && user.role !== "admin"))) {
+    if (!loading && (!user || !canAccessPortal(user.role, "operator"))) {
       router.push("/");
     }
   }, [user, loading, router]);
@@ -110,7 +110,7 @@ export default function OperatorLayout({
     );
   }
 
-  if (!user || (user.role !== "operator" && user.role !== "admin")) {
+  if (!user || !canAccessPortal(user.role, "operator")) {
     return null;
   }
 

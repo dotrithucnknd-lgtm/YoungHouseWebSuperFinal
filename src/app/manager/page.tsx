@@ -43,45 +43,61 @@ export default function ManagerDashboard() {
   const loadManagerStats = async () => {
     setLoading(true);
     try {
-      // 1. Fetch Room Units
-      const { data: roomUnits } = await supabase.from("room_units").select("status");
-      const totalRooms = roomUnits?.length || 0;
-      const availableRooms = roomUnits?.filter(r => r.status === "available").length || 0;
-      const rentedRooms = roomUnits?.filter(r => r.status === "rented").length || 0;
-      const maintenanceRooms = roomUnits?.filter(r => r.status === "maintenance").length || 0;
+      const now = new Date();
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+      const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString();
 
-      // 2. Fetch Active Contracts
-      const { count: activeContracts } = await supabase
-        .from("contracts")
-        .select("id", { count: "exact", head: true })
-        .eq("status", "active");
-
-      // 3. Fetch Invoices
-      const { data: invoices } = await supabase.from("invoices").select("status, total_amount, paid_at");
-      const unpaidInvoices = invoices?.filter(i => i.status === "unpaid").length || 0;
-      const overdueInvoices = invoices?.filter(i => i.status === "overdue").length || 0;
-
-      // Calculate monthly revenue (paid this month)
-      const currentMonth = new Date().getMonth();
-      const currentYear = new Date().getFullYear();
-      const monthlyRevenue = invoices
-        ?.filter(i => {
-          if (i.status !== "paid" || !i.paid_at) return false;
-          const paidDate = new Date(i.paid_at);
-          return paidDate.getMonth() === currentMonth && paidDate.getFullYear() === currentYear;
-        })
-        .reduce((sum, i) => sum + (i.total_amount || 0), 0) || 0;
-
-      // 4. Fetch Maintenance Requests
-      let pendingMaintenance = 0;
-      try {
-        const { count } = await supabase
+      const [
+        roomUnitsResult,
+        activeContractsResult,
+        unpaidInvoicesResult,
+        overdueInvoicesResult,
+        monthlyRevenueResult,
+        maintenanceTicketsResult,
+        ctvProfilesResult,
+        commissionsResult,
+      ] = await Promise.all([
+        supabase.from("room_units").select("status"),
+        supabase
+          .from("contracts")
+          .select("id", { count: "exact", head: true })
+          .eq("status", "active"),
+        supabase
+          .from("invoices")
+          .select("id", { count: "exact", head: true })
+          .eq("status", "unpaid"),
+        supabase
+          .from("invoices")
+          .select("id", { count: "exact", head: true })
+          .eq("status", "overdue"),
+        supabase
+          .from("invoices")
+          .select("total_amount")
+          .eq("status", "paid")
+          .gte("paid_at", monthStart)
+          .lt("paid_at", monthEnd),
+        supabase
           .from("maintenance_tickets")
           .select("id", { count: "exact", head: true })
-          .eq("status", "pending");
-        pendingMaintenance = count || 0;
-      } catch (err) {
-        // Fallback if table name is different
+          .eq("status", "pending"),
+        supabase.from("ctv_profiles").select("status, total_paid"),
+        supabase.from("ctv_commissions").select("status, amount").eq("status", "pending"),
+      ]);
+
+      const roomUnits = roomUnitsResult.data;
+      const totalRooms = roomUnits?.length || 0;
+      const availableRooms = roomUnits?.filter((r) => r.status === "available").length || 0;
+      const rentedRooms = roomUnits?.filter((r) => r.status === "rented").length || 0;
+      const maintenanceRooms = roomUnits?.filter((r) => r.status === "maintenance").length || 0;
+
+      const activeContracts = activeContractsResult.count;
+      const unpaidInvoices = unpaidInvoicesResult.count || 0;
+      const overdueInvoices = overdueInvoicesResult.count || 0;
+      const monthlyRevenue =
+        monthlyRevenueResult.data?.reduce((sum, i) => sum + (i.total_amount || 0), 0) || 0;
+
+      let pendingMaintenance = maintenanceTicketsResult.count || 0;
+      if (maintenanceTicketsResult.error) {
         const { count } = await supabase
           .from("maintenance_requests")
           .select("id", { count: "exact", head: true })
@@ -89,18 +105,12 @@ export default function ManagerDashboard() {
         pendingMaintenance = count || 0;
       }
 
-      // 5. Fetch CTV stats
-      const { data: ctvProfiles } = await supabase.from("ctv_profiles").select("status, total_paid");
+      const ctvProfiles = ctvProfilesResult.data;
       const totalCTVs = ctvProfiles?.length || 0;
-      const pendingCTVs = ctvProfiles?.filter(c => c.status === "pending").length || 0;
+      const pendingCTVs = ctvProfiles?.filter((c) => c.status === "pending").length || 0;
       const totalPaidCommissions = ctvProfiles?.reduce((sum, c) => sum + (c.total_paid || 0), 0) || 0;
 
-      // 6. Fetch CTV Commissions
-      const { data: commissions } = await supabase
-        .from("ctv_commissions")
-        .select("status, amount");
-      
-      const pendingComms = commissions?.filter(c => c.status === "pending") || [];
+      const pendingComms = commissionsResult.data || [];
       const pendingCommissionsCount = pendingComms.length;
       const pendingCommissionsAmount = pendingComms.reduce((sum, c) => sum + (c.amount || 0), 0);
 

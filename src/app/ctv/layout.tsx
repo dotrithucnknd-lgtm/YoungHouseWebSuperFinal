@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { canAccessPortal } from "@/utils/roles";
 import SalesSidebar from "@/components/sales/SalesSidebar";
 import SalesBottomNav from "@/components/sales/SalesBottomNav";
 import SalesHeader from "@/components/sales/SalesHeader";
@@ -39,7 +40,7 @@ export default function SalesLayout({ children }: { children: React.ReactNode })
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (!loading && (!user || (user.role !== "sales" && user.role !== "admin"))) {
+    if (!loading && (!user || !canAccessPortal(user.role, "sales"))) {
       router.push("/");
     }
   }, [user, loading, router]);
@@ -56,7 +57,7 @@ export default function SalesLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  if (!user || (user.role !== "sales" && user.role !== "admin")) {
+  if (!user || !canAccessPortal(user.role, "sales")) {
     return null;
   }
 

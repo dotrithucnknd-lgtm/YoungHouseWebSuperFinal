@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { canAccessPortal } from "@/utils/roles";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminHeader from "@/components/admin/AdminHeader";
 
@@ -56,7 +57,7 @@ export default function AdminLayout({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (!loading && (!user || user.role !== "admin")) {
+    if (!loading && (!user || !canAccessPortal(user.role, "admin"))) {
       router.push("/");
     }
   }, [user, loading, router]);
@@ -71,7 +72,7 @@ export default function AdminLayout({
     );
   }
 
-  if (!user || user.role !== "admin") {
+  if (!user || !canAccessPortal(user.role, "admin")) {
     return null;
   }
 

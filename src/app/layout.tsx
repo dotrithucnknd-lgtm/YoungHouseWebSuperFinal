@@ -25,6 +25,12 @@ const beVietnamPro = Be_Vietnam_Pro({
 export const metadata: Metadata = {
   title: "YoungHouse Hòa Lạc - Tìm phòng trọ tại Hoà Lạc",
   description: "Nền tảng tìm kiếm và đặt phòng trọ tại Hoà Lạc uy tín và chất lượng",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "YoungHouse",
+  },
   icons: {
     icon: "/favicon.png",
     shortcut: "/favicon.png",

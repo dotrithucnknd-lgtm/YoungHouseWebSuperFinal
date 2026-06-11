@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { canAccessPortal } from "@/utils/roles";
 import { useRouter } from "next/navigation";
 import {
   fetchPendingTransfers,
@@ -26,13 +27,13 @@ const AdminPassPhongPage = () => {
   const [rejectionReason, setRejectionReason] = useState("");
 
   useEffect(() => {
-    if (!authLoading && (!user || user.role !== "admin")) {
+    if (!authLoading && (!user || !canAccessPortal(user.role, "admin"))) {
       router.push("/");
     }
   }, [user, authLoading, router]);
 
   useEffect(() => {
-    if (user && user.role === "admin") {
+    if (user && canAccessPortal(user.role, "admin")) {
       loadPendingTransfers();
     }
   }, [user]);
@@ -108,7 +109,7 @@ const AdminPassPhongPage = () => {
     );
   }
 
-  if (!user || user.role !== "admin") {
+  if (!user || !canAccessPortal(user.role, "admin")) {
     return null;
   }
 

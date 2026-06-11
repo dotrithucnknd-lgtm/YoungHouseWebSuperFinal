@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { getCurrentUser } from "@/lib/supabaseServices";
+import { canManageUsers } from "@/utils/roles";
 import EditRoleModal from "@/components/admin/EditRoleModal";
 
 const AdminUsersPage = () => {
@@ -104,8 +105,7 @@ const AdminUsersPage = () => {
   };
 
   const canEditRole = (user: any) => {
-    // Only admin can edit roles and can't edit their own role
-    return currentUser?.role === 'admin' && currentUser?.id !== user.id;
+    return canManageUsers(currentUser?.role) && currentUser?.id !== user.id;
   };
 
   return (

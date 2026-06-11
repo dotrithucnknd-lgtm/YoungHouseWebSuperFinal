@@ -6,6 +6,7 @@ import Avatar from "@/shared/Avatar";
 import SwitchDarkMode2 from "@/shared/SwitchDarkMode2";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import PortalQuickLinks from "@/components/PortalQuickLinks";
 
 interface Props {
   className?: string;
@@ -74,119 +75,7 @@ export default function AvatarDropdown({ className = "" }: Props) {
 
                     <div className="w-full border-b border-neutral-200 dark:border-neutral-700" />
 
-                    {/* ------------------ Admin portal quicklink --------------------- */}
-                    {user?.role === "admin" && (
-                      <>
-                        <Link
-                          href={"/admin"}
-                          className="flex items-center p-2 -m-3 transition duration-150 ease-in-out rounded-lg bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 border border-red-200/30 hover:bg-red-100 dark:hover:bg-red-950/50 focus:outline-none"
-                          onClick={() => close()}
-                        >
-                          <div className="flex items-center justify-center flex-shrink-0 text-red-600 dark:text-red-400">
-                            <span className="text-xl">⚙️</span>
-                          </div>
-                          <div className="ml-4">
-                            <p className="text-sm font-bold">{"Quản Trị Hệ Thống (Admin)"}</p>
-                          </div>
-                        </Link>
-                        <div className="w-full border-b border-neutral-200 dark:border-neutral-700" />
-                      </>
-                    )}
-
-                    {/* ------------------ Manager portal quicklink --------------------- */}
-                    {user?.role === "manager" && (
-                      <>
-                        <Link
-                          href={"/manager"}
-                          className="flex items-center p-2 -m-3 transition duration-150 ease-in-out rounded-lg bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400 border border-purple-200/30 hover:bg-purple-100 dark:hover:bg-purple-950/50 focus:outline-none"
-                          onClick={() => close()}
-                        >
-                          <div className="flex items-center justify-center flex-shrink-0 text-purple-600 dark:text-purple-400">
-                            <span className="text-xl">📊</span>
-                          </div>
-                          <div className="ml-4">
-                            <p className="text-sm font-bold">{"Giám Sát Vận Hành (Manager)"}</p>
-                          </div>
-                        </Link>
-                        <div className="w-full border-b border-neutral-200 dark:border-neutral-700" />
-                      </>
-                    )}
-
-                    {/* ------------------ Operator portal quicklink --------------------- */}
-                    {user?.role === "operator" && (
-                      <>
-                        <Link
-                          href={"/operator"}
-                          className="flex items-center p-2 -m-3 transition duration-150 ease-in-out rounded-lg bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400 border border-green-200/30 hover:bg-green-100 dark:hover:bg-green-950/50 focus:outline-none"
-                          onClick={() => close()}
-                        >
-                          <div className="flex items-center justify-center flex-shrink-0 text-green-600 dark:text-green-400">
-                            <span className="text-xl">🔧</span>
-                          </div>
-                          <div className="ml-4">
-                            <p className="text-sm font-bold">{"Vận Hành Kỹ Thuật (Operator)"}</p>
-                          </div>
-                        </Link>
-                        <div className="w-full border-b border-neutral-200 dark:border-neutral-700" />
-                      </>
-                    )}
-
-                    {/* ------------------ Staff portal quicklink --------------------- */}
-                    {user?.role === "staff" && (
-                      <>
-                        <Link
-                          href={"/staff"}
-                          className="flex items-center p-2 -m-3 transition duration-150 ease-in-out rounded-lg bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border border-blue-200/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 focus:outline-none"
-                          onClick={() => close()}
-                        >
-                          <div className="flex items-center justify-center flex-shrink-0 text-blue-600 dark:text-blue-400">
-                            <span className="text-xl">💼</span>
-                          </div>
-                          <div className="ml-4">
-                            <p className="text-sm font-bold">{"Bảng Nhân Viên (Staff)"}</p>
-                          </div>
-                        </Link>
-                        <div className="w-full border-b border-neutral-200 dark:border-neutral-700" />
-                      </>
-                    )}
-
-                    {/* ------------------ Sales portal quicklink --------------------- */}
-                    {user?.role === "sales" && (
-                      <>
-                        <Link
-                          href={"/ctv"}
-                          className="flex items-center p-2 -m-3 transition duration-150 ease-in-out rounded-lg bg-teal-50 dark:bg-teal-950/30 text-teal-600 dark:text-teal-400 border border-teal-200/30 hover:bg-teal-100 dark:hover:bg-teal-950/50 focus:outline-none"
-                          onClick={() => close()}
-                        >
-                          <div className="flex items-center justify-center flex-shrink-0 text-teal-600 dark:text-teal-400">
-                            <span className="text-xl">💼</span>
-                          </div>
-                          <div className="ml-4">
-                            <p className="text-sm font-bold">{"Dashboard Sales (/ctv)"}</p>
-                          </div>
-                        </Link>
-                        <div className="w-full border-b border-neutral-200 dark:border-neutral-700" />
-                      </>
-                    )}
-
-                    {/* ------------------ Tenant portal quicklink --------------------- */}
-                    {user?.role === "tenant" && (
-                      <>
-                        <Link
-                          href={"/tenant"}
-                          className="flex items-center p-2 -m-3 transition duration-150 ease-in-out rounded-lg bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200/30 hover:bg-emerald-100 dark:hover:bg-emerald-950/50 focus:outline-none"
-                          onClick={() => close()}
-                        >
-                          <div className="flex items-center justify-center flex-shrink-0 text-emerald-600 dark:text-emerald-400">
-                            <span className="text-xl">🏠</span>
-                          </div>
-                          <div className="ml-4">
-                            <p className="text-sm font-bold">{"Trang Cư Dân (Tenant)"}</p>
-                          </div>
-                        </Link>
-                        <div className="w-full border-b border-neutral-200 dark:border-neutral-700" />
-                      </>
-                    )}
+                    <PortalQuickLinks role={user?.role} onNavigate={() => close()} />
 
                     {/* ------------------ 1 --------------------- */}
                     <Link

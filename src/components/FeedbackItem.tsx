@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React from "react";
 import { StarIcon } from "@heroicons/react/24/solid";
@@ -41,6 +41,8 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({
     }
   };
 
+  const profile = feedback.profiles ?? { name: "Người dùng", role: "user" as const };
+
   const renderStars = (rating: number) => {
     return (
       <div className="flex items-center gap-0.5">
@@ -65,7 +67,7 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({
         <Avatar
           sizeClass="h-10 w-10"
           radius="rounded-full"
-          userName={feedback.profiles.name}
+          userName={profile.name}
         />
       </div>
 
@@ -76,14 +78,14 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
-                {feedback.profiles.name}
+                {profile.name}
               </h4>
-              {feedback.profiles.role === "admin" && (
+              {profile.role === "admin" && (
                 <span className="px-2 py-0.5 text-xs rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
                   Admin
                 </span>
               )}
-              {feedback.profiles.role === "operator" && (
+              {profile.role === "operator" && (
                 <span className="px-2 py-0.5 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
                   Vận hành
                 </span>

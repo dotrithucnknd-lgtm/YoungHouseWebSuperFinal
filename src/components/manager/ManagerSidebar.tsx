@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { XMarkIcon } from "@heroicons/react/24/outline";
@@ -24,14 +24,6 @@ interface ManagerSidebarProps {
 
 const ManagerSidebar: React.FC<ManagerSidebarProps> = ({ isMobileOpen = false, onMobileClose }) => {
   const pathname = usePathname();
-
-  // Close mobile sidebar when route changes
-  useEffect(() => {
-    if (onMobileClose) {
-      onMobileClose();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
 
   const navSections: NavSection[] = [
     {
@@ -81,7 +73,7 @@ const ManagerSidebar: React.FC<ManagerSidebarProps> = ({ isMobileOpen = false, o
     if (href === "/manager") {
       return pathname === "/manager";
     }
-    return pathname.startsWith(href);
+    return pathname === href || pathname.startsWith(`${href}/`);
   };
 
   const sidebarContent = (

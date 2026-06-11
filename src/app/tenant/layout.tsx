@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { canAccessPortal } from "@/utils/roles";
 import { TenantProvider, useTenant } from "./TenantContext";
 import TenantSidebar from "@/components/tenant/TenantSidebar";
 import TenantHeader from "@/components/tenant/TenantHeader";
@@ -51,7 +52,7 @@ function TenantDashboardLayoutContent({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (!authLoading && (!user || (user.role !== "tenant" && user.role !== "admin"))) {
+    if (!authLoading && (!user || !canAccessPortal(user.role, "tenant"))) {
       router.push("/");
     }
   }, [user, authLoading, router]);
@@ -71,7 +72,7 @@ function TenantDashboardLayoutContent({
     );
   }
 
-  if (!user || (user.role !== "tenant" && user.role !== "admin")) {
+  if (!user || !canAccessPortal(user.role, "tenant")) {
     return null;
   }
 

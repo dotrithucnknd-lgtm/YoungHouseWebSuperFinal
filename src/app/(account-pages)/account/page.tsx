@@ -9,6 +9,7 @@ import Select from "@/shared/Select";
 import Textarea from "@/shared/Textarea";
 import { useAuth } from "@/contexts/AuthContext";
 import { AuthUser } from "@/lib/supabaseServices";
+import PushNotificationPrompt from "@/components/PushNotificationPrompt";
 
 export interface AccountPageProps {}
 
@@ -70,11 +71,14 @@ const AccountPage = () => {
       {user.avatar && (
         <div className="bg-blue-50 border border-blue-200 text-blue-600 px-4 py-3 rounded-md">
           <p className="text-sm">
-            <span className="font-medium">📸 Ảnh đại diện:</span> Được lấy từ Google Account của bạn
+            <span className="font-medium">Ảnh đại diện:</span> Được lấy từ hồ sơ tài khoản của bạn
           </p>
         </div>
       )}
       <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
+
+      <PushNotificationPrompt />
+
       <div className="flex flex-col md:flex-row">
         <div className="flex-shrink-0 flex items-start">
           <div className="relative rounded-full overflow-hidden flex">

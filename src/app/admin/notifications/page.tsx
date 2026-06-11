@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { canAccessPortal } from "@/utils/roles";
 import ButtonPrimary from "@/shared/ButtonPrimary";
 import ButtonSecondary from "@/shared/ButtonSecondary";
 import {
@@ -23,13 +24,13 @@ const AdminNotificationsPage = () => {
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!loading && (!user || user.role !== 'admin')) {
+    if (!loading && (!user || !canAccessPortal(user.role, "admin"))) {
       router.push('/');
     }
   }, [user, loading, router]);
 
   useEffect(() => {
-    if (user && user.role === 'admin') {
+    if (user && canAccessPortal(user.role, "admin")) {
       loadNotifications();
     }
   }, [user]);
@@ -124,7 +125,7 @@ const AdminNotificationsPage = () => {
     }
   };
 
-  if (loading || (user && user.role === 'admin' && loadingNotifications)) {
+  if (loading || (user && canAccessPortal(user.role, "admin") && loadingNotifications)) {
     return (
       <div className="container py-16">
         <div className="flex items-center justify-center">
@@ -134,7 +135,7 @@ const AdminNotificationsPage = () => {
     );
   }
 
-  if (!user || user.role !== 'admin') {
+  if (!user || !canAccessPortal(user.role, "admin")) {
     return null;
   }
 

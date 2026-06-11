@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 import ButtonPrimary from "@/shared/ButtonPrimary";
 import ButtonSecondary from "@/shared/ButtonSecondary";
 import SupabaseImage from "@/components/SupabaseImage";
-import { supabase } from "@/lib/supabaseClient";
 import { CheckCircleIcon, CalendarIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 
 interface BookingSummary {
@@ -25,6 +24,7 @@ interface BookingSummary {
 function PayDoneContent() {
   const searchParams = useSearchParams();
   const bookingId = searchParams.get("bookingId");
+  const isGuest = searchParams.get("guest") === "1";
   const [booking, setBooking] = useState<BookingSummary | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -33,18 +33,13 @@ function PayDoneContent() {
       setLoading(false);
       return;
     }
-    supabase
-      .from("bookings")
-      .select(`
-        id, check_in_date, guests_count, status, message,
-        rooms ( title, address, banner, price )
-      `)
-      .eq("id", bookingId)
-      .single()
-      .then(({ data }) => {
-        setBooking(data as BookingSummary);
+    fetch(`/api/bookings/viewing/${bookingId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setBooking(data.booking ?? null);
         setLoading(false);
-      });
+      })
+      .catch(() => setLoading(false));
   }, [bookingId]);
 
   const formatDate = (dateStr: string) =>
@@ -132,8 +127,13 @@ function PayDoneContent() {
           )}
 
           <div className="flex flex-col sm:flex-row gap-3 mt-8 justify-center">
-            <ButtonPrimary href="/account-bookings">Xem lịch hẹn của tôi</ButtonPrimary>
+            {!isGuest && (
+              <ButtonPrimary href="/account-bookings">Xem lịch hẹn của tôi</ButtonPrimary>
+            )}
             <ButtonSecondary href="/phong-tro">Tiếp tục tìm phòng</ButtonSecondary>
+            {isGuest && (
+              <ButtonPrimary href="/login">Đăng nhập để quản lý lịch hẹn</ButtonPrimary>
+            )}
           </div>
         </div>
       </main>

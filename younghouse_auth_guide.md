@@ -39,7 +39,7 @@ sequenceDiagram
 | STT | Vai trò (Role) | Email đăng nhập | Mật khẩu mặc định | Mô tả quyền hạn |
 | :--- | :--- | :--- | :--- | :--- |
 | **1** | **Admin** (Quản trị viên) | `admin@younghouse.vn` | `AdminPassword123` | Toàn quyền kiểm soát cấu hình hệ thống, duyệt thành viên, xem logs hệ thống. |
-| **2** | **Manager** (Giám đốc / Chị Nhường) | `nhuong.manager@younghouse.vn` | `ManagerPassword123` | Giám sát vận hành tổng thể, xem báo cáo doanh thu, duyệt hoa hồng CTV. |
+| **2** | **Manager** (Giám đốc / Chị Nhường) | `nhuong.manager@younghouse.vn` | `ManagerPassword123` | **Master role** — truy cập toàn bộ portal (Admin, Manager, Operator, Staff, Sales, Tenant), quản lý người dùng, giám sát vận hành và duyệt hoa hồng CTV. |
 | **3** | **Sales** (Nhân viên / CTV) | `sales@younghouse.vn` | `SalesPassword123` | Tìm kiếm phòng trọ, hold phòng trống nội bộ cho khách thuê, đăng ký hoa hồng giới thiệu. |
 | **4** | **Operator** (Kỹ thuật / Vận hành) | `operator@younghouse.vn` | `OperatorPassword123` | Ghi nhận chỉ số điện nước hàng tháng, xử lý phiếu báo hỏng/bảo trì của phòng trọ. |
 | **5** | **Tenant** (Khách thuê trọ) | `tenant@younghouse.vn` | `TenantPassword123` | Tra cứu hợp đồng cá nhân, xem hóa đơn hàng tháng, gửi phiếu yêu cầu sửa chữa hỏng hóc. |
@@ -215,5 +215,45 @@ if (user) {
   }, 1500);
 }
 ```
+
+---
+
+## 6. Thông báo đẩy lên điện thoại (Web Push)
+
+Hệ thống hỗ trợ **2 loại thông báo**:
+
+| Loại | Khi nào thấy | Cách bật |
+| :--- | :--- | :--- |
+| **Trong app** | Chỉ khi đang mở website | Icon chuông 🔔 trên header |
+| **Push điện thoại** | Hiện trên màn hình khóa / thanh thông báo | Bật trong **Cài đặt tenant** hoặc **Tài khoản** |
+
+### Cấu hình server (chạy 1 lần)
+
+**Bước 1 — Tạo VAPID keys:**
+```bash
+npx web-push generate-vapid-keys
+```
+
+**Bước 2 — Thêm vào `.env.local`:**
+```env
+NEXT_PUBLIC_VAPID_PUBLIC_KEY=<publicKey>
+VAPID_PRIVATE_KEY=<privateKey>
+VAPID_SUBJECT=mailto:admin@younghouse.vn
+```
+
+**Bước 3 — Chạy SQL trên Supabase:** file `database/push_subscriptions.sql`
+
+**Bước 4 — Deploy với HTTPS** (bắt buộc cho push; localhost OK khi dev)
+
+### Người dùng bật trên điện thoại
+
+1. Đăng nhập → **Tenant → Cài đặt** (hoặc `/account`)
+2. Nhấn **Bật thông báo đẩy** → Cho phép trình duyệt
+3. **iPhone (Safari):** Thêm site vào Màn hình chính trước, rồi mở app và bật thông báo
+4. **Android (Chrome):** Mở site → bật thông báo trực tiếp
+
+Khi Admin tạo thông báo mới (đang bật), hệ thống tự gửi push tới các thiết bị đã đăng ký thuộc đúng nhóm đối tượng.
+
+---
 
 Chúc bạn trải nghiệm và vận hành hệ thống YoungHouse PMS thuận lợi! Nếu bạn gặp bất kỳ vướng mắc gì về phân quyền hay kết nối Database, đừng ngần ngại nhắn tôi nhé!

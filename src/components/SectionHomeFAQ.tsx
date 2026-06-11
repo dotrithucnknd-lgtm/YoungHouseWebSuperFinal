@@ -62,7 +62,7 @@ const FAQ_ITEMS: FaqItem[] = [
     id: "contract",
     question: "Hợp đồng thuê phòng tối thiểu bao lâu?",
     answer:
-      "Thời hạn thuê 1 tháng. Điều khoản cụ thể được thỏa thuận khi ký hợp đồng.",
+      "Thời hạn thuê 1 năm. Điều khoản cụ thể được thỏa thuận khi ký hợp đồng.",
   },
   {
     id: "fpt-distance",

@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { syncPropertyPriceRange } from "@/lib/landlordServices";
 import { fetchRooms } from "@/lib/supabaseServices";
 import { sortByTitle } from "@/utils/sortProperties";
+import { formatPriceInput, parsePriceInput } from "@/utils/formatPriceRange";
 
 export default function NewRoomUnitPage() {
   const { user } = useAuth();
@@ -19,6 +20,9 @@ export default function NewRoomUnitPage() {
   const [selectedServices, setSelectedServices] = useState<{ id: string; name: string; price: number; unit: string }[]>([]);
   const [showServiceModal, setShowServiceModal] = useState(false);
   const [newService, setNewService] = useState({ name: "", type: "fixed", price: "", unit: "" });
+
+  const [displayRentPrice, setDisplayRentPrice] = useState("");
+  const [displayDeposit, setDisplayDeposit] = useState("");
 
   const [form, setForm] = useState({
     room_id: "",
@@ -98,6 +102,22 @@ export default function NewRoomUnitPage() {
     setSelectedServices(prev => prev.filter(s => s.id !== serviceId));
   };
 
+  const handleRentPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parsePriceInput(e.target.value);
+    if (value === "" || /^\d+$/.test(value)) {
+      setForm((prev) => ({ ...prev, rent_price: value }));
+      setDisplayRentPrice(formatPriceInput(value));
+    }
+  };
+
+  const handleDepositChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parsePriceInput(e.target.value);
+    if (value === "" || /^\d+$/.test(value)) {
+      setForm((prev) => ({ ...prev, deposit: value }));
+      setDisplayDeposit(formatPriceInput(value));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user?.id) return;
@@ -105,14 +125,25 @@ export default function NewRoomUnitPage() {
     if (!form.name.trim()) { alert("Vui lòng nhập tên phòng"); return; }
     if (!form.area) { alert("Vui lòng nhập diện tích"); return; }
     if (!form.max_occupants) { alert("Vui lòng nhập số người ở tối đa"); return; }
+    if (form.rent_price && !/^\d+$/.test(form.rent_price)) {
+      alert("Giá thuê không hợp lệ. Vui lòng nhập theo định dạng 000.000");
+      return;
+    }
+    if (form.deposit && !/^\d+$/.test(form.deposit)) {
+      alert("Giá cọc không hợp lệ. Vui lòng nhập theo định dạng 000.000");
+      return;
+    }
 
     setLoading(true);
     try {
+      const rentPrice = form.rent_price ? Number(form.rent_price) : null;
+      const deposit = form.deposit ? Number(form.deposit) : null;
+
       const { data, error } = await supabase.from("room_units").insert({
         room_id: form.room_id,
         name: form.name.trim(),
-        rent_price: parseFloat(form.rent_price) || null,
-        deposit: parseFloat(form.deposit) || null,
+        rent_price: rentPrice,
+        deposit: deposit,
         area: parseFloat(form.area) || null,
         max_occupants: parseInt(form.max_occupants) || null,
         beds: parseInt(form.beds) || 1,
@@ -211,14 +242,36 @@ export default function NewRoomUnitPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">Giá thuê (VNĐ/tháng)</label>
-              <input type="number" value={form.rent_price} onChange={(e) => setForm({ ...form, rent_price: e.target.value })} placeholder="Nhập giá thuê"
-                className="w-full px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus:ring-2 focus:ring-green-500 focus:border-transparent" />
-              <p className="text-xs text-neutral-400 mt-1">Giá này sẽ được tính vào khoảng giá hiển thị của nhà trọ</p>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={displayRentPrice || form.rent_price}
+                onChange={handleRentPriceChange}
+                placeholder="2.500.000"
+                className="w-full px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              />
+              {form.rent_price && (
+                <p className="text-xs text-neutral-500 mt-1">
+                  {Number(form.rent_price).toLocaleString("vi-VN")} VNĐ
+                </p>
+              )}
+              <p className="text-xs text-neutral-400 mt-1">Nhập theo định dạng 000.000 — giá này sẽ được tính vào khoảng giá hiển thị của nhà trọ</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">Giá cọc</label>
-              <input type="number" value={form.deposit} onChange={(e) => setForm({ ...form, deposit: e.target.value })} placeholder="Giá cọc"
-                className="w-full px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus:ring-2 focus:ring-green-500 focus:border-transparent" />
+              <input
+                type="text"
+                inputMode="numeric"
+                value={displayDeposit || form.deposit}
+                onChange={handleDepositChange}
+                placeholder="1.000.000"
+                className="w-full px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              />
+              {form.deposit && (
+                <p className="text-xs text-neutral-500 mt-1">
+                  {Number(form.deposit).toLocaleString("vi-VN")} VNĐ
+                </p>
+              )}
             </div>
           </div>
 
