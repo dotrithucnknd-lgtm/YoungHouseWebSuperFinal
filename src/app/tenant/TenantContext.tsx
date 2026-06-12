@@ -26,7 +26,7 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       setLoading(true);
       // 1. Fetch Room Unit associated with this current_renter_id
-      const { data: unitData, error: unitError } = await supabase
+      let { data: unitData, error: unitError } = await supabase
         .from("room_units")
         .select(`
           *,
@@ -40,6 +40,39 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         .maybeSingle();
 
       if (unitError) console.error("Error fetching room unit:", unitError);
+
+      // Fallback: metadata trong tenant_profiles (khi liên kết vừa được tạo)
+      if (!unitData) {
+        const { data: tenantProfile } = await supabase
+          .from("tenant_profiles")
+          .select("metadata")
+          .eq("profile_id", user?.id)
+          .maybeSingle();
+
+        const linkedRoomUnitId = (tenantProfile?.metadata as { room_unit_id?: string } | null)
+          ?.room_unit_id;
+
+        if (linkedRoomUnitId) {
+          const { data: linkedUnit, error: linkedError } = await supabase
+            .from("room_units")
+            .select(`
+              *,
+              rooms (
+                id,
+                title,
+                address
+              )
+            `)
+            .eq("id", linkedRoomUnitId)
+            .maybeSingle();
+
+          if (linkedError) {
+            console.error("Error fetching linked room unit:", linkedError);
+          } else if (linkedUnit) {
+            unitData = linkedUnit;
+          }
+        }
+      }
       
       let finalUnit = unitData;
       let finalContract = null;

@@ -102,10 +102,15 @@ export default function RoomsPage() {
           });
           const result = await response.json();
           if (response.ok && result.success) {
-            alert(`Thêm phòng thành công!\n\nTài khoản: ${result.username}\nMật khẩu: ${result.password}`);
+            const note = result.alreadyLinked
+              ? "Phòng đã có tài khoản."
+              : "Thêm phòng và tạo tài khoản thành công!";
+            alert(`${note}\n\nTài khoản: ${result.username}\nMật khẩu: ${result.password}`);
           } else {
             console.error("Auto account creation failed:", result.error);
-            alert("Thêm phòng thành công! (Lưu ý: Không thể tự động tạo tài khoản, hãy click nút Tạo TK sau)");
+            alert(
+              "Thêm phòng thành công! (Không thể tự động tạo tài khoản — hãy bấm nút Tạo TK Phòng)"
+            );
           }
         } catch (err: any) {
           console.error("Auto account creation failed:", err);
@@ -130,27 +135,33 @@ export default function RoomsPage() {
     }
   };
 
-  const handleCreateAccount = async (unit: any) => {
+  const handleCreateAccount = async (unit: RoomUnitWithDetails) => {
     if (!confirm(`Bạn có muốn tạo tài khoản phòng cho ${unit.name} không?`)) return;
+
     try {
-      const response = await fetch('/api/rooms/create-account', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/rooms/create-account", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           roomUnitId: unit.id,
           roomName: unit.name,
           houseTitle: unit.rooms?.title || "",
-        })
+        }),
       });
       const result = await response.json();
+
       if (response.ok && result.success) {
-        alert(`Tạo tài khoản thành công!\nTài khoản: ${result.username}\nMật khẩu: ${result.password}`);
-        loadData();
+        const note = result.alreadyLinked
+          ? "Phòng đã được liên kết tài khoản trước đó."
+          : result.message || "Tạo tài khoản thành công!";
+        alert(`${note}\n\nTài khoản: ${result.username}\nMật khẩu: ${result.password}`);
+        await loadData();
       } else {
         alert("Lỗi: " + (result.error || "Không thể tạo tài khoản"));
       }
-    } catch (err: any) {
-      alert("Lỗi kết nối: " + err.message);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Lỗi không xác định";
+      alert("Lỗi kết nối: " + message);
     }
   };
 
