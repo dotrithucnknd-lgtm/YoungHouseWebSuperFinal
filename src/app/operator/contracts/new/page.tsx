@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadImage } from "@/lib/supabaseServices";
+import { isRoomAccountProfile } from "@/lib/landlordServices";
 
 export default function NewContractPage() {
   const { user } = useAuth();
@@ -77,14 +78,15 @@ export default function NewContractPage() {
     try {
       const { data: tenantProfiles } = await supabase
         .from("tenant_profiles")
-        .select("profile_id, id_card_number");
+        .select("profile_id, id_card_number, metadata");
 
       if (!tenantProfiles || tenantProfiles.length === 0) {
         setTenants([]);
         return;
       }
 
-      const profileIds = tenantProfiles.map(tp => tp.profile_id);
+      const humanProfiles = tenantProfiles.filter((tp) => !isRoomAccountProfile(tp));
+      const profileIds = humanProfiles.map(tp => tp.profile_id);
 
       const { data: profiles } = await supabase
         .from("profiles")
@@ -94,7 +96,7 @@ export default function NewContractPage() {
 
       if (profiles) {
         const mapped = profiles.map(p => {
-          const tp = tenantProfiles.find(item => item.profile_id === p.id);
+          const tp = humanProfiles.find(item => item.profile_id === p.id);
           return {
             id: p.id,
             name: p.name,

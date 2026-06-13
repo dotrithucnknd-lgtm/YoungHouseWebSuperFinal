@@ -96,8 +96,12 @@ export function getAccessiblePortals(
   if (!role) return [];
 
   let portals: PortalLink[];
-  if (role === "manager" || role === "admin") {
+  if (role === "admin") {
     portals = SYSTEM_PORTALS;
+  } else if (role === "manager") {
+    portals = SYSTEM_PORTALS.filter(
+      (p) => p.id !== "admin" && p.id !== "tenant" && p.id !== "sales"
+    );
   } else {
     portals = SYSTEM_PORTALS.filter((p) => p.id === role);
   }

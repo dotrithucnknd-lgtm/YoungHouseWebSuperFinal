@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import React, { useState, useEffect } from "react";
-import { MagnifyingGlassIcon, PlusIcon, DocumentIcon, EyeIcon, PencilSquareIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, PlusIcon, DocumentIcon, EyeIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
@@ -231,6 +231,13 @@ export default function ContractsPage() {
                       <td className="px-6 py-4"><span className={`px-3 py-1 rounded-full text-xs font-medium ${status.color}`}>{status.text}</span></td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end gap-2">
+                          <Link
+                            href={`/operator/contracts/${contract.id}`}
+                            className="p-2 bg-blue-100 text-blue-600 hover:bg-blue-200 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 rounded-lg transition-colors"
+                            title="Xem chi tiết hợp đồng"
+                          >
+                            <EyeIcon className="w-4 h-4" />
+                          </Link>
                           {contract.status === "active" && (
                             <button onClick={() => handleEndContract(contract.id)}
                               className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 dark:bg-red-900/20 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30">
@@ -299,12 +306,21 @@ export default function ContractsPage() {
                 {/* Footer: rent + action */}
                 <div className="flex items-center justify-between border-t border-neutral-100 dark:border-neutral-700 pt-3">
                   <p className="text-lg font-extrabold text-green-600">{Number(contract.rent_price).toLocaleString("vi-VN")}đ<span className="text-xs font-normal text-neutral-400">/tháng</span></p>
-                  {contract.status === "active" && (
-                    <button onClick={() => handleEndContract(contract.id)}
-                      className="px-3 py-2 text-xs font-medium text-red-600 bg-red-50 dark:bg-red-900/20 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
-                      Kết thúc HĐ
-                    </button>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/operator/contracts/${contract.id}`}
+                      className="p-2 bg-blue-100 text-blue-600 hover:bg-blue-200 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 rounded-lg transition-colors"
+                      title="Xem chi tiết"
+                    >
+                      <EyeIcon className="w-4 h-4" />
+                    </Link>
+                    {contract.status === "active" && (
+                      <button onClick={() => handleEndContract(contract.id)}
+                        className="px-3 py-2 text-xs font-medium text-red-600 bg-red-50 dark:bg-red-900/20 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
+                        Kết thúc HĐ
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             );

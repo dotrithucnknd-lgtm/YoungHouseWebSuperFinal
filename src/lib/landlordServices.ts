@@ -84,11 +84,14 @@ export interface TenantProfile {
   id_card_number?: string;
   id_card_front_url?: string;
   id_card_back_url?: string;
+  id_card_issue_date?: string;
+  id_card_issue_place?: string;
   university_id?: string;
   student_id?: string;
   hometown?: string;
   emergency_contact_name?: string;
   emergency_contact_phone?: string;
+  metadata?: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 }
@@ -1087,6 +1090,13 @@ export async function fetchOwnerDashboardStats(ownerId: string): Promise<Dashboa
 
 // ==================== TENANTS MANAGEMENT ====================
 
+/** Tài khoản đăng nhập phòng (vd. P101Yh1) — không phải khách thuê thật */
+export function isRoomAccountProfile(tenantProfile: Pick<TenantProfile, "metadata">): boolean {
+  const meta = tenantProfile.metadata as Record<string, unknown> | undefined;
+  if (!meta) return false;
+  return Boolean(meta.room_unit_id || meta.username);
+}
+
 export interface TenantWithDetails {
   id: string;
   name: string;
@@ -1114,6 +1124,21 @@ export interface TenantWithDetails {
   has_temporary_residence: boolean;
   stay_status: 'not_rented' | 'renting' | 'moved_out';
   property_ids?: string[];
+  contract_history?: {
+    id: string;
+    contract_code?: string;
+    start_date: string;
+    end_date: string;
+    actual_end_date?: string | null;
+    status: string;
+    rent_price?: number;
+    rent_amount?: number;
+    room_unit?: {
+      id: string;
+      name: string;
+      room?: { id: string; title: string; address: string };
+    };
+  }[];
 }
 
 /**
@@ -1136,7 +1161,14 @@ export async function fetchOwnerTenants(ownerId: string): Promise<TenantWithDeta
       return [];
     }
 
-    const profileIds = tenantProfiles.map(tp => tp.profile_id);
+    // Bỏ tài khoản phòng (P101Yh1...) — đã quản lý ở mục Tài khoản phòng
+    const humanTenantProfiles = tenantProfiles.filter((tp) => !isRoomAccountProfile(tp));
+
+    if (humanTenantProfiles.length === 0) {
+      return [];
+    }
+
+    const profileIds = humanTenantProfiles.map(tp => tp.profile_id);
 
     // Get profiles separately
     const { data: profiles, error: profilesError } = await supabase
@@ -1179,7 +1211,7 @@ export async function fetchOwnerTenants(ownerId: string): Promise<TenantWithDeta
     }
 
     // Build tenant list with details
-    const tenants: TenantWithDetails[] = tenantProfiles.map(tenantProfile => {
+    const tenants: TenantWithDetails[] = humanTenantProfiles.map(tenantProfile => {
       const profile = profiles?.find(p => p.id === tenantProfile.profile_id);
       
       if (!profile) {
@@ -1247,6 +1279,167 @@ export async function fetchOwnerTenants(ownerId: string): Promise<TenantWithDeta
   } catch (error) {
     console.error('Error in fetchOwnerTenants:', error);
     return [];
+  }
+}
+
+function buildTenantWithDetails(
+  profile: { id: string; name?: string; phone?: string; role?: string; dob?: string; avatar?: string },
+  tenantProfile: TenantProfile,
+  ownerContracts: Array<{
+    id: string;
+    contract_code?: string;
+    renter_id: string;
+    start_date: string;
+    end_date: string;
+    actual_end_date?: string | null;
+    status: string;
+    rent_price?: number;
+    rent_amount?: number;
+    room_units?: {
+      id: string;
+      name: string;
+      rooms?: { id: string; title: string; address: string };
+    };
+  }>
+): TenantWithDetails {
+  const currentContract = ownerContracts.find(
+    (c) => c.renter_id === tenantProfile.profile_id && c.status === 'active'
+  );
+
+  let stayStatus: 'not_rented' | 'renting' | 'moved_out' = 'not_rented';
+  if (currentContract) {
+    stayStatus = 'renting';
+  } else if (ownerContracts.some((c) => c.renter_id === tenantProfile.profile_id)) {
+    stayStatus = 'moved_out';
+  }
+
+  const hasTemporaryResidence = Boolean(tenantProfile.metadata?.has_temporary_residence);
+  const propertyIds = [
+    ...new Set(
+      ownerContracts
+        .map((c) => c.room_units?.rooms?.id)
+        .filter(Boolean) as string[]
+    ),
+  ];
+
+  const mapContract = (c: (typeof ownerContracts)[0]) => ({
+    id: c.id,
+    contract_code: c.contract_code,
+    start_date: c.start_date,
+    end_date: c.end_date,
+    actual_end_date: c.actual_end_date,
+    status: c.status,
+    rent_price: c.rent_price,
+    rent_amount: c.rent_amount,
+    room_unit: c.room_units
+      ? {
+          id: c.room_units.id,
+          name: c.room_units.name,
+          room: c.room_units.rooms
+            ? {
+                id: c.room_units.rooms.id,
+                title: c.room_units.rooms.title,
+                address: c.room_units.rooms.address,
+              }
+            : undefined,
+        }
+      : undefined,
+  });
+
+  return {
+    id: profile.id,
+    name: profile.name || 'N/A',
+    phone: profile.phone || 'N/A',
+    email: (tenantProfile.metadata?.email as string) || undefined,
+    role: profile.role || 'tenant',
+    DoB: profile.dob,
+    avatar: profile.avatar,
+    tenant_profile: tenantProfile,
+    current_contract: currentContract
+      ? {
+          id: currentContract.id,
+          start_date: currentContract.start_date,
+          end_date: currentContract.end_date,
+          status: currentContract.status,
+          room_unit: mapContract(currentContract).room_unit,
+        }
+      : undefined,
+    has_temporary_residence: hasTemporaryResidence,
+    stay_status: stayStatus,
+    property_ids: propertyIds,
+    contract_history: ownerContracts.map(mapContract),
+  };
+}
+
+/**
+ * Fetch a single tenant with details for an owner
+ */
+export async function fetchOwnerTenantById(
+  ownerId: string,
+  tenantId: string
+): Promise<TenantWithDetails | null> {
+  try {
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', tenantId)
+      .single();
+
+    if (profileError || !profile) {
+      console.error('Error fetching tenant profile:', profileError);
+      return null;
+    }
+
+    const { data: tenantProfile, error: tenantProfileError } = await supabase
+      .from('tenant_profiles')
+      .select('*')
+      .eq('profile_id', tenantId)
+      .maybeSingle();
+
+    if (tenantProfileError || !tenantProfile) {
+      console.error('Error fetching tenant_profiles:', tenantProfileError);
+      return null;
+    }
+
+    if (isRoomAccountProfile(tenantProfile)) {
+      return null;
+    }
+
+    const { data: contracts, error: contractsError } = await supabase
+      .from('contracts')
+      .select(`
+        id,
+        contract_code,
+        renter_id,
+        start_date,
+        end_date,
+        actual_end_date,
+        status,
+        rent_price,
+        rent_amount,
+        room_units (
+          id,
+          name,
+          rooms (
+            id,
+            title,
+            address,
+            owner_id
+          )
+        )
+      `)
+      .eq('renter_id', tenantId)
+      .eq('room_units.rooms.owner_id', ownerId)
+      .order('created_at', { ascending: false });
+
+    if (contractsError) {
+      console.error('Error fetching tenant contracts:', contractsError);
+    }
+
+    return buildTenantWithDetails(profile, tenantProfile, contracts || []);
+  } catch (error) {
+    console.error('Error in fetchOwnerTenantById:', error);
+    return null;
   }
 }
 
