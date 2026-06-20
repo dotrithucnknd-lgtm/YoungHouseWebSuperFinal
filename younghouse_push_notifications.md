@@ -27,7 +27,7 @@ Kết quả có 2 dòng: `Public Key` và `Private Key`. Giữ private key bí m
 
 ### Bước 2 — Thêm biến môi trường
 
-Mở `.env.local` (tham khảo `.env.local.example`) và thêm:
+Mở `.env.local` và thêm:
 
 ```env
 NEXT_PUBLIC_VAPID_PUBLIC_KEY=<dán Public Key>

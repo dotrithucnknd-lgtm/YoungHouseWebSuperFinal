@@ -12,8 +12,8 @@ self.addEventListener("push", (event) => {
   event.waitUntil(
     self.registration.showNotification(payload.title, {
       body: payload.body,
-      icon: "/favicon.png",
-      badge: "/favicon.png",
+      icon: "/icon-192.png",
+      badge: "/icon-48.png",
       data: { url: payload.url || "/" },
       tag: payload.tag || "younghouse-notification",
       renotify: true,

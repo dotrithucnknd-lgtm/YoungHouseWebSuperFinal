@@ -25,6 +25,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * - favicon.png (favicon file)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|favicon.png).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|favicon.png|icon-).*)',
   ],
 };
