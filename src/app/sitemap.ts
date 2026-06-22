@@ -1,17 +1,15 @@
 import { MetadataRoute } from 'next';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://trohoalac.com';
+  const baseUrl = 'https://younghouse.com.vn';
 
   // Core pages of the website
   const routes = [
-    '',
-    '/about',
-    '/privacy',
-    '/term',
-    '/blog',
+
     '/phong-tro',
-    '/pass-phong-public',
+    '/wishlist',
+    '/tuyen-dung',
+    '/contact',
   ];
 
   const sitemapEntries = routes.map((route) => ({
